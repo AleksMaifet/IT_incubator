@@ -1,0 +1,25 @@
+{
+  "name": "it_incubator",
+  "version": "0.0.1",
+  "description": "pet_project",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "concurrently \"tsc -w\" \"yarn nodemon --inspect dist/main.js\""
+  },
+  "dependencies": {
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "express": "^4.18.2",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.10.6",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2",
+    "prettier": "3.1.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
