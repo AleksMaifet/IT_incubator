@@ -26,8 +26,8 @@ class App {
   private normalizePort(val: string | number) {
     const port = parseInt(val as string, 10)
 
-    if (isNaN(port) || port < 0) {
-      this.loggerService.error(`Invalid port: ${val}`)
+    if (isNaN(port)) {
+      return +val
     }
 
     return port

@@ -12,18 +12,18 @@ class ValidateVideoMiddleware implements IMiddleware {
 
     validate(instance).then((errors) => {
       if (errors.length > 0) {
-        const errorMessages: ErrorResponse[] = errors.map(
-          ({ constraints, property }) => ({
-            errorsMessages: [
-              {
-                message: Object.values(constraints || {}).join(', '),
-                field: property,
-              },
-            ],
-          })
-        )
+        const errorResponse: ErrorResponse = {
+          errorsMessages: [],
+        }
 
-        res.status(400).json(...errorMessages)
+        errors.forEach(({ constraints, property }) => {
+          errorResponse.errorsMessages.push({
+            message: Object.values(constraints || {}).join(', '),
+            field: property,
+          })
+        })
+
+        res.status(400).json(errorResponse)
       } else {
         next()
       }
