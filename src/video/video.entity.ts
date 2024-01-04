@@ -18,7 +18,7 @@ class Video implements IVideo {
     availableResolutions: AvailableResolutionsType
   ) {
     const createdAt = new Date()
-    const publicationDate = createdAt
+    const publicationDate = new Date()
     publicationDate.setDate(createdAt.getDate() + 1)
 
     this.id = createdAt.getTime()
@@ -26,7 +26,7 @@ class Video implements IVideo {
     this.author = author
     this.canBeDownloaded = canBeDownloaded
     this.minAgeRestriction = minAgeRestriction
-    this.createdAt = publicationDate.toISOString()
+    this.createdAt = createdAt.toISOString()
     this.publicationDate = publicationDate.toISOString()
     this.availableResolutions = availableResolutions
   }
