@@ -26,7 +26,7 @@ class Video implements IVideo {
     this.author = author
     this.canBeDownloaded = canBeDownloaded
     this.minAgeRestriction = minAgeRestriction
-    this.createdAt = createdAt.toISOString()
+    this.createdAt = publicationDate.toISOString()
     this.publicationDate = publicationDate.toISOString()
     this.availableResolutions = availableResolutions
   }
