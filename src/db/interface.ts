@@ -1,4 +1,4 @@
-import { AVAILABLE_RESOLUTIONS } from './constants'
+import { AVAILABLE_RESOLUTIONS } from '../video/constants'
 
 type AvailableResolutionsType = Nullable<
   (typeof AVAILABLE_RESOLUTIONS)[number][]

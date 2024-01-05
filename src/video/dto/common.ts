@@ -5,7 +5,7 @@ import {
   MAX_AUTHOR_TITLE_LENGTH,
   MAX_TITLE_LENGTH,
 } from '../constants'
-import { AvailableResolutionsType } from '../interface'
+import { AvailableResolutionsType } from '../../db/interface'
 
 class CommonVideoDto {
   @IsString()

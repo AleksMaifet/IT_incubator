@@ -1,12 +1,13 @@
-import { Express, json } from 'express'
-import { app } from './settings'
+import express, { Express, json } from 'express'
 import { VideoController } from './video'
 import { ExceptionFilter } from './errors'
 import { ILogger } from './services/logger/logger.interface'
 import { TestingController } from './testing'
+import { Server } from 'http'
 
 class App {
-  private readonly app: Express
+  public readonly app: Express
+  private server: Server
   private readonly port: number
   private readonly logger: ILogger
   private readonly _exceptionFilter: ExceptionFilter
@@ -17,7 +18,7 @@ class App {
     private readonly videoController: VideoController,
     private readonly testingController: TestingController
   ) {
-    this.app = app
+    this.app = express()
     this.port = this.normalizePort(process.env.PORT || 9090)
     this.logger = loggerService
     this._exceptionFilter = exceptionFilter
@@ -55,9 +56,13 @@ class App {
     this.useMiddleware()
     this.useRoutes()
     this.useExceptionFilter()
-    this.app.listen(this.port)
+    this.server = this.app.listen(this.port)
 
     this.logger.log(`Server started on port: ${this.port}`)
+  }
+
+  public close = () => {
+    this.server.close()
   }
 }
 

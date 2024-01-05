@@ -1,42 +1,42 @@
-import { IVideo } from './interface'
+import { DB } from '../db'
 import { CreateVideoDto, UpdateVideoDto } from './dto'
 import { Video } from './video.entity'
 
 class VideoRepository {
-  private stash = new Map<number, IVideo>()
+  constructor(private readonly videosDB: DB) {}
 
   public getAll = () => {
-    return [...this.stash.values()]
+    return [...this.videosDB.db.values()]
   }
 
   public getById = (id: number) => {
-    return this.stash.get(id)
+    return this.videosDB.db.get(id)
   }
 
   public updateById = (id: number, body: UpdateVideoDto) => {
-    const currentVideo = this.stash.get(id)
+    const currentVideo = this.videosDB.db.get(id)
 
     if (!currentVideo) {
       return false
     }
 
-    this.stash.set(id, { ...currentVideo, ...body })
+    this.videosDB.db.set(id, { ...currentVideo, ...body })
     return true
   }
 
   public create = ({ title, author, availableResolutions }: CreateVideoDto) => {
     const newVideo = new Video(title, author, false, null, availableResolutions)
 
-    this.stash.set(newVideo.id, newVideo)
+    this.videosDB.db.set(newVideo.id, newVideo)
     return newVideo
   }
 
   public deleteAll = () => {
-    return this.stash.clear()
+    return this.videosDB.db.clear()
   }
 
   public deleteById = (id: number) => {
-    return this.stash.delete(id)
+    return this.videosDB.db.delete(id)
   }
 }
 

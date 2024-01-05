@@ -3,10 +3,11 @@ import { VideoController, VideoRepository } from './video'
 import { LoggerService } from './services'
 import { ExceptionFilter } from './errors'
 import { TestingController } from './testing'
+import { DB } from './db'
 
 const bootstrap = () => {
   const logger = new LoggerService()
-  const videoRepository = new VideoRepository()
+  const videoRepository = new VideoRepository(new DB())
 
   const app = new App(
     logger,
@@ -16,6 +17,8 @@ const bootstrap = () => {
   )
 
   app.init()
+
+  return { app }
 }
 
-bootstrap()
+export const boot = bootstrap()
