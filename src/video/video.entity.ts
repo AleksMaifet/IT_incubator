@@ -1,65 +1,55 @@
-import { AvailableResolutionsType, IVideo } from './interface'
+import { AvailableResolutionsType } from './interface'
 
-class Video implements IVideo {
-  public readonly id
-  public readonly title
-  public readonly author
-  public readonly canBeDownloaded
-  public readonly minAgeRestriction
-  public readonly createdAt
-  public readonly publicationDate
-  public readonly availableResolutions
+class Video {
+  public readonly id: number
+  public readonly createdAt: string
+  public readonly publicationDate: string
 
   constructor(
-    title: string,
-    author: string,
-    canBeDownloaded: boolean,
-    minAgeRestriction: Nullable<number>,
-    availableResolutions: AvailableResolutionsType
+    public readonly title: string,
+    public readonly author: string,
+    public readonly canBeDownloaded: boolean,
+    public readonly minAgeRestriction: Nullable<number>,
+    public readonly availableResolutions: AvailableResolutionsType
   ) {
     const createdAt = new Date()
     const publicationDate = new Date()
     publicationDate.setDate(createdAt.getDate() + 1)
 
     this.id = createdAt.getTime()
-    this.title = title
-    this.author = author
-    this.canBeDownloaded = canBeDownloaded
-    this.minAgeRestriction = minAgeRestriction
     this.createdAt = createdAt.toISOString()
     this.publicationDate = publicationDate.toISOString()
-    this.availableResolutions = availableResolutions
   }
 
-  get _id() {
+  get getId() {
     return this.id
   }
 
-  get _title() {
+  get getTitle() {
     return this.title
   }
 
-  get _author() {
+  get getAuthor() {
     return this.author
   }
 
-  get _canBeDownloaded() {
+  get getCanBeDownloaded() {
     return this.canBeDownloaded
   }
 
-  get _minAgeRestriction() {
+  get getMinAgeRestriction() {
     return this.minAgeRestriction
   }
 
-  get _createdAt() {
+  get getCreatedAt() {
     return this.createdAt
   }
 
-  get _publicationDate() {
+  get getPublicationDate() {
     return this.publicationDate
   }
 
-  get _availableResolutions() {
+  get getAvailableResolutions() {
     return this.availableResolutions
   }
 }

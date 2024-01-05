@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { ILogger } from '../services/logger/interface'
-import { IExceptionFilterInterface } from './interface'
+import { ILogger } from '../services/logger/logger.interface'
 import { HttpError } from './httpError.class'
+import { IExceptionFilterInterface } from './exceptionFilter.interface'
 
 class ExceptionFilter implements IExceptionFilterInterface {
   private logger: ILogger

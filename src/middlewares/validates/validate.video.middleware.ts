@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import { validate } from 'class-validator'
 import { ClassConstructor, plainToInstance } from 'class-transformer'
-import { IMiddleware } from './interface'
-import { ErrorResponse } from '../errors'
+import { IMiddleware } from '../middleware.interface'
+import { IErrorResponse } from './interface'
 
 class ValidateVideoMiddleware implements IMiddleware {
   constructor(private readonly classToValidate: ClassConstructor<object>) {}
@@ -12,7 +12,7 @@ class ValidateVideoMiddleware implements IMiddleware {
 
     validate(instance).then((errors) => {
       if (errors.length > 0) {
-        const errorResponse: ErrorResponse = {
+        const errorResponse: IErrorResponse = {
           errorsMessages: [],
         }
 

@@ -1,9 +1,7 @@
 import { AVAILABLE_RESOLUTIONS } from './constants'
 
-const availableResolutions = AVAILABLE_RESOLUTIONS
-
 type AvailableResolutionsType = Nullable<
-  (typeof availableResolutions)[number][]
+  (typeof AVAILABLE_RESOLUTIONS)[number][]
 >
 
 interface IVideo {

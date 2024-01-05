@@ -6,7 +6,7 @@ class VideoRepository {
   private stash = new Map<number, IVideo>()
 
   public getAll = () => {
-    return Array.from(this.stash.values())
+    return [...this.stash.values()]
   }
 
   public getById = (id: number) => {
@@ -14,17 +14,14 @@ class VideoRepository {
   }
 
   public updateById = (id: number, body: UpdateVideoDto) => {
-    const isVideoExist = this.stash.has(id)
+    const currentVideo = this.stash.get(id)
 
-    if (!isVideoExist) {
+    if (!currentVideo) {
       return false
     }
 
-    const currentVideo = this.stash.get(id)
-
-    this.stash.set(id, { ...currentVideo!, ...body })
-
-    return isVideoExist
+    this.stash.set(id, { ...currentVideo, ...body })
+    return true
   }
 
   public create = ({ title, author, availableResolutions }: CreateVideoDto) => {

@@ -34,7 +34,6 @@ class VideoController extends BaseController {
 
     if (!id) {
       res.sendStatus(404)
-
       return
     }
 
@@ -42,7 +41,6 @@ class VideoController extends BaseController {
 
     if (!result) {
       res.sendStatus(404)
-
       return
     }
 
@@ -62,7 +60,6 @@ class VideoController extends BaseController {
 
     if (!id) {
       res.sendStatus(404)
-
       return
     }
 
@@ -70,7 +67,6 @@ class VideoController extends BaseController {
 
     if (!result) {
       res.sendStatus(404)
-
       return
     }
 
@@ -81,7 +77,6 @@ class VideoController extends BaseController {
 
     if (!id) {
       res.sendStatus(404)
-
       return
     }
 
@@ -89,7 +84,6 @@ class VideoController extends BaseController {
 
     if (!result) {
       res.sendStatus(404)
-
       return
     }
 

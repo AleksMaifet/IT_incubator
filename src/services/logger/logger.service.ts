@@ -1,5 +1,5 @@
 import { createLogger, format, Logger, transports } from 'winston'
-import { ILogger } from './interface'
+import { ILogger } from './logger.interface'
 
 class LoggerService implements ILogger {
   public logger: Logger

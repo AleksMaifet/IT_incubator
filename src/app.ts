@@ -2,7 +2,7 @@ import { Express, json } from 'express'
 import { app } from './settings'
 import { VideoController } from './video'
 import { ExceptionFilter } from './errors'
-import { ILogger } from './services/logger/interface'
+import { ILogger } from './services/logger/logger.interface'
 import { TestingController } from './testing'
 
 class App {
@@ -24,13 +24,11 @@ class App {
   }
 
   private normalizePort(val: string | number) {
-    const port = parseInt(val as string, 10)
-
-    if (isNaN(port)) {
-      return +val
+    if (typeof val === 'string') {
+      return parseInt(val, 10)
     }
 
-    return port
+    return val
   }
 
   private useMiddleware = () => {
@@ -43,6 +41,9 @@ class App {
      */
     this.app.use('/testing', this.testingController.router)
 
+    /**
+     App routes
+     */
     this.app.use('/videos', this.videoController.router)
   }
 
