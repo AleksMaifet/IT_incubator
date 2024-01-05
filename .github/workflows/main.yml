@@ -2,13 +2,13 @@ name: GitHub Actions
 on:
   pull_request:
   push:
-    branches: [ main ]
+    branches: [main]
 jobs:
   init:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
       - name: Staring Node.js ${{ matrix.node-version }}
@@ -22,5 +22,5 @@ jobs:
 
       - name: run and test app
         run: |
-          yarn prettier
+          yarn format
           yarn jest

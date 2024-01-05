@@ -9,7 +9,7 @@
     "start": "node ./dist/main.js",
     "dev": "concurrently \"tsc -w\" \"yarn nodemon --inspect dist/main.js\"",
     "jest": "PORT=0 jest -i",
-    "format": "prettier --write '*/**/*.{js,ts,tsx,json,md}'"
+    "format": "prettier . --write"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
