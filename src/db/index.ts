@@ -1,8 +1,10 @@
-import { IVideo } from './interface'
+import { IBlog, IPost, IVideo } from './interface'
 
 class DB {
   private static singleton: DB
-  public readonly db = new Map<number, IVideo>()
+  public readonly videos = new Map<number, IVideo>()
+  public readonly blogs = new Map<string, IBlog>()
+  public readonly posts = new Map<string, IPost>()
 
   constructor() {
     if (DB.singleton) {

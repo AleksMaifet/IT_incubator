@@ -1,1 +1,1 @@
-export * from './validate.video.middleware'
+export * from './validate.middleware'

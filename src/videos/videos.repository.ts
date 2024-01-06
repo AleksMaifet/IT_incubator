@@ -2,42 +2,38 @@ import { DB } from '../db'
 import { CreateVideoDto, UpdateVideoDto } from './dto'
 import { Video } from './video.entity'
 
-class VideoRepository {
-  constructor(private readonly videosDB: DB) {}
+class VideosRepository {
+  constructor(private readonly DB: DB) {}
 
   public getAll = () => {
-    return [...this.videosDB.db.values()]
+    return [...this.DB.videos.values()]
   }
 
   public getById = (id: number) => {
-    return this.videosDB.db.get(id)
+    return this.DB.videos.get(id)
   }
 
   public updateById = (id: number, body: UpdateVideoDto) => {
-    const currentVideo = this.videosDB.db.get(id)
+    const currentVideo = this.DB.videos.get(id)
 
     if (!currentVideo) {
       return false
     }
 
-    this.videosDB.db.set(id, { ...currentVideo, ...body })
+    this.DB.videos.set(id, { ...currentVideo, ...body })
     return true
   }
 
   public create = ({ title, author, availableResolutions }: CreateVideoDto) => {
     const newVideo = new Video(title, author, false, null, availableResolutions)
 
-    this.videosDB.db.set(newVideo.id, newVideo)
+    this.DB.videos.set(newVideo.id, newVideo)
     return newVideo
   }
 
-  public deleteAll = () => {
-    return this.videosDB.db.clear()
-  }
-
   public deleteById = (id: number) => {
-    return this.videosDB.db.delete(id)
+    return this.DB.videos.delete(id)
   }
 }
 
-export { VideoRepository }
+export { VideosRepository }

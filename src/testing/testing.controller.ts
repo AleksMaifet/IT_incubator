@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { BaseController } from '../common/base.controller'
-import { VideoRepository } from '../video'
+import { TestingRepository } from './testing.repository'
 
 class TestingController extends BaseController {
-  constructor(private readonly videoRepository: VideoRepository) {
+  constructor(private readonly testingRepository: TestingRepository) {
     super()
     this.bindRoutes({
       path: '/all-data',
@@ -13,7 +13,7 @@ class TestingController extends BaseController {
   }
 
   cleanDBs = (_: Request, res: Response) => {
-    this.videoRepository.deleteAll()
+    this.testingRepository.deleteAll()
 
     res.sendStatus(204)
   }

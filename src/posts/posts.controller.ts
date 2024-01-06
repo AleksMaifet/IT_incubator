@@ -1,11 +1,12 @@
 import { Request, Response } from 'express'
 import { BaseController } from '../common/base.controller'
-import { ValidateVideoMiddleware } from '../middlewares'
-import { VideoRepository } from './video.repository'
-import { CreateVideoDto, UpdateVideoDto } from './dto'
+import { AuthMiddlewareGuard, ValidateMiddleware } from '../middlewares'
+import { ConfigService, LoggerService } from '../services'
+import { PostsRepository } from './posts.repository'
+import { CreatePostDto, UpdatePostDto } from './dto'
 
-class VideoController extends BaseController {
-  constructor(private readonly videoRepository: VideoRepository) {
+class PostsController extends BaseController {
+  constructor(private readonly postsRepository: PostsRepository) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
     this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
@@ -13,19 +14,32 @@ class VideoController extends BaseController {
       path: '',
       method: 'post',
       func: this.create,
-      middlewares: [new ValidateVideoMiddleware(CreateVideoDto)],
+      middlewares: [
+        new ValidateMiddleware(CreatePostDto),
+        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+      ],
     })
     this.bindRoutes({
       path: '/:id',
       method: 'put',
       func: this.updateById,
-      middlewares: [new ValidateVideoMiddleware(UpdateVideoDto)],
+      middlewares: [
+        new ValidateMiddleware(UpdatePostDto),
+        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+      ],
     })
-    this.bindRoutes({ path: '/:id', method: 'delete', func: this.deleteById })
+    this.bindRoutes({
+      path: '/:id',
+      method: 'delete',
+      func: this.deleteById,
+      middlewares: [
+        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+      ],
+    })
   }
 
   getAll = (_: Request, res: Response) => {
-    const result = this.videoRepository.getAll()
+    const result = this.postsRepository.getAll()
 
     res.status(200).json(result)
   }
@@ -37,7 +51,7 @@ class VideoController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.getById(+id)
+    const result = this.postsRepository.getById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -47,13 +61,13 @@ class VideoController extends BaseController {
     res.status(200).json(result)
   }
 
-  create = ({ body }: Request<{}, {}, CreateVideoDto>, res: Response) => {
-    const result = this.videoRepository.create(body)
+  create = ({ body }: Request<{}, {}, CreatePostDto>, res: Response) => {
+    const result = this.postsRepository.create(body)
 
     res.status(201).json(result)
   }
   updateById = (
-    { params, body }: Request<{ id?: string }, {}, UpdateVideoDto>,
+    { params, body }: Request<{ id?: string }, {}, UpdatePostDto>,
     res: Response
   ) => {
     const { id } = params
@@ -63,7 +77,7 @@ class VideoController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.updateById(+id, body)
+    const result = this.postsRepository.updateById(id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -80,7 +94,7 @@ class VideoController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.deleteById(+id)
+    const result = this.postsRepository.deleteById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -91,4 +105,4 @@ class VideoController extends BaseController {
   }
 }
 
-export { VideoController }
+export { PostsController }

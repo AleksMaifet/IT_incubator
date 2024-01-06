@@ -8,9 +8,9 @@ import {
   ValidateIf,
 } from 'class-validator'
 import { AGE_RESTRICTION } from '../constants'
-import { CommonVideoDto } from './common'
+import { BaseVideoDto } from './baseVideo'
 
-class UpdateVideoDto extends CommonVideoDto {
+class UpdateVideoDto extends BaseVideoDto {
   @IsBoolean()
   canBeDownloaded: boolean
 

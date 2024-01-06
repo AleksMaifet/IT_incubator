@@ -7,7 +7,7 @@ import {
 } from '../constants'
 import { AvailableResolutionsType } from '../../db/interface'
 
-class CommonVideoDto {
+class BaseVideoDto {
   @IsString()
   @Transform(({ value }) => value?.trim())
   @Length(1, MAX_TITLE_LENGTH)
@@ -24,4 +24,4 @@ class CommonVideoDto {
   availableResolutions: AvailableResolutionsType
 }
 
-export { CommonVideoDto }
+export { BaseVideoDto }

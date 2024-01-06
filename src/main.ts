@@ -1,19 +1,24 @@
 import { App } from './app'
-import { VideoController, VideoRepository } from './video'
-import { LoggerService } from './services'
-import { ExceptionFilter } from './errors'
-import { TestingController } from './testing'
 import { DB } from './db'
+import { ConfigService, LoggerService } from './services'
+import { ExceptionFilter } from './errors'
+import { TestingController, TestingRepository } from './testing'
+import { VideosController, VideosRepository } from './videos'
+import { BlogsController, BlogsRepository } from './blogs'
+import { PostsController, PostsRepository } from './posts'
 
 const bootstrap = () => {
   const logger = new LoggerService()
-  const videoRepository = new VideoRepository(new DB())
+  const db = new DB()
 
   const app = new App(
     logger,
     new ExceptionFilter(logger),
-    new VideoController(videoRepository),
-    new TestingController(videoRepository)
+    new ConfigService(logger),
+    new TestingController(new TestingRepository(db)),
+    new VideosController(new VideosRepository(db)),
+    new BlogsController(new BlogsRepository(db)),
+    new PostsController(new PostsRepository(db))
   )
 
   app.init()

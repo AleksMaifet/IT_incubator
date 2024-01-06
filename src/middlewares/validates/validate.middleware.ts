@@ -4,7 +4,7 @@ import { ClassConstructor, plainToInstance } from 'class-transformer'
 import { IMiddleware } from '../middleware.interface'
 import { IErrorResponse } from './interface'
 
-class ValidateVideoMiddleware implements IMiddleware {
+class ValidateMiddleware implements IMiddleware {
   constructor(private readonly classToValidate: ClassConstructor<object>) {}
 
   execute = async ({ body }: Request, res: Response, next: NextFunction) => {
@@ -31,4 +31,4 @@ class ValidateVideoMiddleware implements IMiddleware {
   }
 }
 
-export { ValidateVideoMiddleware }
+export { ValidateMiddleware }

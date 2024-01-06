@@ -1,4 +1,4 @@
-import { AVAILABLE_RESOLUTIONS } from '../video/constants'
+import { AVAILABLE_RESOLUTIONS } from '../videos/constants'
 
 type AvailableResolutionsType = Nullable<
   (typeof AVAILABLE_RESOLUTIONS)[number][]
@@ -15,4 +15,20 @@ interface IVideo {
   availableResolutions: AvailableResolutionsType
 }
 
-export { AvailableResolutionsType, IVideo }
+interface IBlog {
+  id: string
+  name: string
+  description: string
+  websiteUrl: string
+}
+
+interface IPost {
+  id: string
+  title: string
+  shortDescription: string
+  content: string
+  blogId: string
+  blogName: string
+}
+
+export { AvailableResolutionsType, IVideo, IBlog, IPost }
