@@ -15,8 +15,8 @@ class BlogsController extends BaseController {
       method: 'post',
       func: this.create,
       middlewares: [
-        new ValidateMiddleware(CreateBlogDto),
         new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+        new ValidateMiddleware(CreateBlogDto),
       ],
     })
     this.bindRoutes({
@@ -24,8 +24,8 @@ class BlogsController extends BaseController {
       method: 'put',
       func: this.updateById,
       middlewares: [
-        new ValidateMiddleware(UpdateBlogDto),
         new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+        new ValidateMiddleware(UpdateBlogDto),
       ],
     })
     this.bindRoutes({
