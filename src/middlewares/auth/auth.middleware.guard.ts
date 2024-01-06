@@ -17,8 +17,14 @@ class AuthMiddlewareGuard implements IMiddleware {
       return
     }
 
-    const verify = authorization.split(' ')[1]
-    const decoded = Buffer.from(verify, 'base64').toString()
+    const [basic, token] = authorization.split(' ')
+
+    if (basic !== 'Basic') {
+      sendResponse()
+      return
+    }
+
+    const decoded = Buffer.from(token, 'base64').toString()
     const [login, password] = decoded.split(':')
 
     if (
