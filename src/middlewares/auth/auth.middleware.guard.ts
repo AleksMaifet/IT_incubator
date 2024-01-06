@@ -23,9 +23,9 @@ class AuthMiddlewareGuard implements IMiddleware {
 
     if (
       login !==
-        (this.configService.get('BASIC_LOGIN') || process.env.BASIC_LOGIN) ||
+        (process.env.BASIC_LOGIN || this.configService.get('BASIC_LOGIN')) ||
       password !==
-        (this.configService.get('BASIC_PASSWORD') || process.env.BASIC_PASSWORD)
+        (process.env.BASIC_PASSWORD || this.configService.get('BASIC_PASSWORD'))
     ) {
       sendResponse()
       return
