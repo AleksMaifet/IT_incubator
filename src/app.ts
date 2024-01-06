@@ -25,9 +25,7 @@ class App {
     private readonly postsController: PostsController
   ) {
     this.app = express()
-    this.port = this.normalizePort(
-      process.env.PORT || this.configService.get('PORT')
-    )
+    this.port = this.normalizePort(process.env.PORT || 9090)
     this.logger = loggerService
     this._exceptionFilter = exceptionFilter
   }
