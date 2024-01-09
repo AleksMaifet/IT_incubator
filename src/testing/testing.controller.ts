@@ -12,8 +12,8 @@ class TestingController extends BaseController {
     })
   }
 
-  cleanDBs = (_: Request, res: Response) => {
-    this.testingRepository.deleteAll()
+  cleanDBs = async (_: Request, res: Response) => {
+    await this.testingRepository.deleteAll()
 
     res.sendStatus(204)
   }

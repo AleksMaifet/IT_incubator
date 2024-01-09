@@ -1,17 +1,45 @@
-import { IBlog, IPost, IVideo } from './interface'
+import { connect, disconnect } from 'mongoose'
+import { ConfigService, LoggerService } from '../services'
 
-class DB {
-  private static singleton: DB
-  public readonly videos = new Map<number, IVideo>()
-  public readonly blogs = new Map<string, IBlog>()
-  public readonly posts = new Map<string, IPost>()
+class MongoService {
+  private static singleton: MongoService
 
-  constructor() {
-    if (DB.singleton) {
-      return DB.singleton
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly loggerService: LoggerService
+  ) {
+    if (MongoService.singleton) {
+      return MongoService.singleton
     }
-    DB.singleton = this
+
+    MongoService.singleton = this
+  }
+
+  connect = async () => {
+    try {
+      await connect(
+        process.env.MONGO_DB_URL || this.configService.get('MONGO_DB_URL'),
+        {
+          dbName:
+            process.env.MONGO_DB_NAME ||
+            this.configService.get('MONGO_DB_NAME').toString(),
+          autoIndex: true,
+          autoCreate: true,
+        }
+      )
+
+      this.loggerService.log('Connected to MongoDB')
+    } catch (err) {
+      if (err instanceof Error) {
+        this.loggerService.error('Connection to MongoDB failed: ' + err.message)
+      }
+    }
+  }
+
+  disconnect = async () => {
+    await disconnect()
+    this.loggerService.log('Disconnect to MongoDB')
   }
 }
 
-export { DB }
+export { MongoService }

@@ -1,38 +1,34 @@
-import { DB } from '../db'
 import { CreateVideoDto, UpdateVideoDto } from './dto'
 import { Video } from './video.entity'
+import { VideoModel } from './video.model'
 
 class VideosRepository {
-  constructor(private readonly DB: DB) {}
+  constructor(private readonly videoModel: typeof VideoModel) {}
 
-  public getAll = () => {
-    return [...this.DB.videos.values()]
+  public getAll = async () => {
+    return await this.videoModel.find().exec()
   }
 
-  public getById = (id: number) => {
-    return this.DB.videos.get(id)
+  public getById = async (id: number) => {
+    return await this.videoModel.findOne({ id }).exec()
   }
 
-  public updateById = (id: number, body: UpdateVideoDto) => {
-    const currentVideo = this.DB.videos.get(id)
-
-    if (!currentVideo) {
-      return false
-    }
-
-    this.DB.videos.set(id, { ...currentVideo, ...body })
-    return true
+  public updateById = async (id: number, body: UpdateVideoDto) => {
+    return await this.videoModel.findOneAndUpdate({ id }, body).exec()
   }
 
-  public create = ({ title, author, availableResolutions }: CreateVideoDto) => {
+  public create = async ({
+    title,
+    author,
+    availableResolutions,
+  }: CreateVideoDto) => {
     const newVideo = new Video(title, author, false, null, availableResolutions)
 
-    this.DB.videos.set(newVideo.id, newVideo)
-    return newVideo
+    return await this.videoModel.create(newVideo)
   }
 
-  public deleteById = (id: number) => {
-    return this.DB.videos.delete(id)
+  public deleteById = async (id: number) => {
+    return await this.videoModel.findOneAndDelete({ id }).exec()
   }
 }
 

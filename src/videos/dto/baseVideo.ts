@@ -5,7 +5,7 @@ import {
   MAX_AUTHOR_TITLE_LENGTH,
   MAX_TITLE_LENGTH,
 } from '../constants'
-import { AvailableResolutionsType } from '../../db/interface'
+import { AvailableResolutionsType } from '../video.model'
 
 class BaseVideoDto {
   @IsString()

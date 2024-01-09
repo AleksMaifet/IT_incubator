@@ -38,12 +38,12 @@ class PostsController extends BaseController {
     })
   }
 
-  getAll = (_: Request, res: Response) => {
-    const result = this.postsRepository.getAll()
+  getAll = async (_: Request, res: Response) => {
+    const result = await this.postsRepository.getAll()
 
     res.status(200).json(result)
   }
-  getById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  getById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -51,7 +51,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = this.postsRepository.getById(id)
+    const result = await this.postsRepository.getById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -61,12 +61,12 @@ class PostsController extends BaseController {
     res.status(200).json(result)
   }
 
-  create = ({ body }: Request<{}, {}, CreatePostDto>, res: Response) => {
-    const result = this.postsRepository.create(body)
+  create = async ({ body }: Request<{}, {}, CreatePostDto>, res: Response) => {
+    const result = await this.postsRepository.create(body)
 
     res.status(201).json(result)
   }
-  updateById = (
+  updateById = async (
     { params, body }: Request<{ id?: string }, {}, UpdatePostDto>,
     res: Response
   ) => {
@@ -77,7 +77,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = this.postsRepository.updateById(id, body)
+    const result = await this.postsRepository.updateById(id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -86,7 +86,7 @@ class PostsController extends BaseController {
 
     res.sendStatus(204)
   }
-  deleteById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  deleteById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -94,7 +94,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = this.postsRepository.deleteById(id)
+    const result = await this.postsRepository.deleteById(id)
 
     if (!result) {
       res.sendStatus(404)

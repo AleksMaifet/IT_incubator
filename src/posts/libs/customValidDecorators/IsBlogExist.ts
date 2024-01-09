@@ -4,13 +4,12 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator'
-import { BlogsRepository } from '../../../blogs'
-import { DB } from '../../../db'
+import { BlogModel, BlogsRepository } from '../../../blogs'
 
-@ValidatorConstraint({ async: false })
+@ValidatorConstraint({ async: true })
 class IsBlogExistConstraint implements ValidatorConstraintInterface {
-  validate(blogId: string) {
-    const blog = new BlogsRepository(new DB()).getById(blogId)
+  async validate(blogId: string) {
+    const blog = await new BlogsRepository(BlogModel).getById(blogId)
 
     return !!blog
   }

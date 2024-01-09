@@ -7,6 +7,7 @@ import { VideosController } from './videos'
 import { BlogsController } from './blogs'
 import { ConfigService } from './services'
 import { PostsController } from './posts'
+import { MongoService } from './db'
 
 class App {
   public readonly app: Express
@@ -19,6 +20,7 @@ class App {
     private readonly loggerService: ILogger,
     private readonly exceptionFilter: ExceptionFilter,
     private readonly configService: ConfigService,
+    private readonly mongoService: MongoService,
     private readonly testingController: TestingController,
     private readonly videoController: VideosController,
     private readonly blogsController: BlogsController,
@@ -46,26 +48,36 @@ class App {
 
   private useRoutes = () => {
     /**
-     Route for test
-     */
-    this.app.use('/testing', this.testingController.router)
-
-    /**
      App routes
      */
-    this.app.use('/videos', this.videoController.router)
-    this.app.use('/blogs', this.blogsController.router)
-    this.app.use('/posts', this.postsController.router)
+
+    const primaryRoutes = [
+      { path: '/videos', controller: this.videoController.router },
+      { path: '/blogs', controller: this.blogsController.router },
+      { path: '/posts', controller: this.postsController.router },
+    ]
+
+    /**
+     Route for test
+     */
+
+    this.app.use('/testing', this.testingController.router)
+
+    primaryRoutes.forEach((r) => {
+      this.app.use(r.path, r.controller)
+      this.logger.log(`${r.path} controller connected`)
+    })
   }
 
   private useExceptionFilter = () => {
     this.app.use(this._exceptionFilter.catch)
   }
 
-  public init = () => {
+  public init = async () => {
     this.useMiddleware()
     this.useRoutes()
     this.useExceptionFilter()
+    await this.mongoService.connect()
     this.server = this.app.listen(this.port)
 
     this.logger.log(`Server started on port: ${this.port}`)

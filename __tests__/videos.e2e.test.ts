@@ -1,6 +1,8 @@
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
+import { MongoService } from '../src/db'
+import { ConfigService, LoggerService } from '../src/services'
 
 let application: App
 const createdVideo = {
@@ -81,6 +83,9 @@ describe('Videos', () => {
 
 afterAll(async () => {
   await request(application.app).delete('/testing/all-data').expect(204)
-
+  await new MongoService(
+    new ConfigService(new LoggerService()),
+    new LoggerService()
+  ).disconnect()
   application.close()
 })

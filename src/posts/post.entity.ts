@@ -1,5 +1,7 @@
 class Post {
   public readonly id: string
+  public readonly createdAt: Date
+  public readonly isMembership: boolean
 
   constructor(
     public readonly title: string,
@@ -9,6 +11,8 @@ class Post {
     public readonly blogName: string
   ) {
     this.id = new Date().getTime().toString()
+    this.createdAt = new Date()
+    this.isMembership = false
   }
 
   get getId() {
@@ -33,6 +37,14 @@ class Post {
 
   get getBlogName() {
     return this.blogName
+  }
+
+  get getCreatedAt() {
+    return this.createdAt
+  }
+
+  get getIsMembership() {
+    return this.isMembership
   }
 }
 

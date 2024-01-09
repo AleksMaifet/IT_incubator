@@ -16,9 +16,9 @@ class ConfigService implements IConfigService {
     const result = config()
 
     if (result.error) {
-      this.loggerService.error('[ConfigService] fail')
+      this.loggerService.error('ConfigService failed')
     } else {
-      this.loggerService.log('[ConfigService] success')
+      this.loggerService.log('ConfigService connected')
       this.config = result.parsed as DotenvParseOutput
     }
   }

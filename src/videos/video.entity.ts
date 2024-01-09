@@ -1,4 +1,4 @@
-import { AvailableResolutionsType } from '../db/interface'
+import { AvailableResolutionsType } from './video.model'
 
 class Video {
   public readonly id: number

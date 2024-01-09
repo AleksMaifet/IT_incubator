@@ -1,38 +1,30 @@
-import { DB } from '../db'
 import { Blog } from './blog.entity'
 import { CreateBlogDto, UpdateBlogDto } from './dto'
+import { BlogModel } from './blog.model'
 
 class BlogsRepository {
-  constructor(private readonly DB: DB) {}
+  constructor(private readonly blogModel: typeof BlogModel) {}
 
-  public getAll = () => {
-    return [...this.DB.blogs.values()]
+  public getAll = async () => {
+    return await this.blogModel.find().exec()
   }
 
-  public getById = (id: string) => {
-    return this.DB.blogs.get(id)
+  public getById = async (id: string) => {
+    return await this.blogModel.findOne({ id }).exec()
   }
 
-  public updateById = (id: string, body: UpdateBlogDto) => {
-    const currentVideo = this.DB.blogs.get(id)
-
-    if (!currentVideo) {
-      return false
-    }
-
-    this.DB.blogs.set(id, { ...currentVideo, ...body })
-    return true
+  public updateById = async (id: string, body: UpdateBlogDto) => {
+    return await this.blogModel.findOneAndUpdate({ id }, body).exec()
   }
 
-  public create = ({ name, description, websiteUrl }: CreateBlogDto) => {
+  public create = async ({ name, description, websiteUrl }: CreateBlogDto) => {
     const newBlog = new Blog(name, description, websiteUrl)
 
-    this.DB.blogs.set(newBlog.id, newBlog)
-    return newBlog
+    return await this.blogModel.create(newBlog)
   }
 
-  public deleteById = (id: string) => {
-    return this.DB.blogs.delete(id)
+  public deleteById = async (id: string) => {
+    return await this.blogModel.findOneAndDelete({ id }).exec()
   }
 }
 

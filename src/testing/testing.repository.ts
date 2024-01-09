@@ -1,12 +1,18 @@
-import { DB } from '../db'
+import { VideoModel } from '../videos'
+import { PostModel } from '../posts'
+import { BlogModel } from '../blogs'
 
 class TestingRepository {
-  constructor(private readonly DB: DB) {}
+  constructor(
+    private readonly videoModel: typeof VideoModel,
+    private readonly blogModel: typeof BlogModel,
+    private readonly postModel: typeof PostModel
+  ) {}
 
-  public deleteAll = () => {
-    this.DB.videos.clear()
-    this.DB.blogs.clear()
-    this.DB.posts.clear()
+  public deleteAll = async () => {
+    await this.videoModel.deleteMany()
+    await this.blogModel.deleteMany()
+    await this.postModel.deleteMany()
   }
 }
 

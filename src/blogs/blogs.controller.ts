@@ -38,12 +38,12 @@ class BlogsController extends BaseController {
     })
   }
 
-  getAll = (_: Request, res: Response) => {
-    const result = this.blogsRepository.getAll()
+  getAll = async (_: Request, res: Response) => {
+    const result = await this.blogsRepository.getAll()
 
     res.status(200).json(result)
   }
-  getById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  getById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -51,7 +51,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = this.blogsRepository.getById(id)
+    const result = await this.blogsRepository.getById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -61,12 +61,12 @@ class BlogsController extends BaseController {
     res.status(200).json(result)
   }
 
-  create = ({ body }: Request<{}, {}, CreateBlogDto>, res: Response) => {
-    const result = this.blogsRepository.create(body)
+  create = async ({ body }: Request<{}, {}, CreateBlogDto>, res: Response) => {
+    const result = await this.blogsRepository.create(body)
 
     res.status(201).json(result)
   }
-  updateById = (
+  updateById = async (
     { params, body }: Request<{ id?: string }, {}, UpdateBlogDto>,
     res: Response
   ) => {
@@ -77,7 +77,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = this.blogsRepository.updateById(id, body)
+    const result = await this.blogsRepository.updateById(id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -86,7 +86,7 @@ class BlogsController extends BaseController {
 
     res.sendStatus(204)
   }
-  deleteById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  deleteById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -94,7 +94,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = this.blogsRepository.deleteById(id)
+    const result = await this.blogsRepository.deleteById(id)
 
     if (!result) {
       res.sendStatus(404)

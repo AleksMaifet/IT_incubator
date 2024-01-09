@@ -24,12 +24,12 @@ class VideosController extends BaseController {
     this.bindRoutes({ path: '/:id', method: 'delete', func: this.deleteById })
   }
 
-  getAll = (_: Request, res: Response) => {
-    const result = this.videoRepository.getAll()
+  getAll = async (_: Request, res: Response) => {
+    const result = await this.videoRepository.getAll()
 
     res.status(200).json(result)
   }
-  getById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  getById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -37,7 +37,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.getById(+id)
+    const result = await this.videoRepository.getById(+id)
 
     if (!result) {
       res.sendStatus(404)
@@ -47,12 +47,12 @@ class VideosController extends BaseController {
     res.status(200).json(result)
   }
 
-  create = ({ body }: Request<{}, {}, CreateVideoDto>, res: Response) => {
-    const result = this.videoRepository.create(body)
+  create = async ({ body }: Request<{}, {}, CreateVideoDto>, res: Response) => {
+    const result = await this.videoRepository.create(body)
 
     res.status(201).json(result)
   }
-  updateById = (
+  updateById = async (
     { params, body }: Request<{ id?: string }, {}, UpdateVideoDto>,
     res: Response
   ) => {
@@ -63,7 +63,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.updateById(+id, body)
+    const result = await this.videoRepository.updateById(+id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -72,7 +72,7 @@ class VideosController extends BaseController {
 
     res.sendStatus(204)
   }
-  deleteById = ({ params }: Request<{ id?: string }>, res: Response) => {
+  deleteById = async ({ params }: Request<{ id?: string }>, res: Response) => {
     const { id } = params
 
     if (!id) {
@@ -80,7 +80,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = this.videoRepository.deleteById(+id)
+    const result = await this.videoRepository.deleteById(+id)
 
     if (!result) {
       res.sendStatus(404)
