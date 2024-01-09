@@ -10,7 +10,7 @@ class Blog {
   ) {
     this.id = new Date().getTime().toString()
     this.createdAt = new Date()
-    this.isMembership = true
+    this.isMembership = false
   }
 
   get getId() {
