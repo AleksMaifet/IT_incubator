@@ -27,7 +27,14 @@ const VideoSchema = new Schema<IVideo>(
     publicationDate: { type: String, required: true },
     availableResolutions: { type: Schema.Types.Mixed, required: true },
   },
-  { versionKey: false }
+  {
+    toJSON: {
+      transform: function (_, ret) {
+        delete ret.__v
+        delete ret._id
+      },
+    },
+  }
 )
 
 const VideoModel = model<IVideo>('Video', VideoSchema)

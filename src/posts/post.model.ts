@@ -22,7 +22,14 @@ const PostSchema = new Schema<IPost>(
     createdAt: { type: Date, required: true },
     isMembership: { type: Boolean, required: true },
   },
-  { versionKey: false }
+  {
+    toJSON: {
+      transform: function (_, ret) {
+        delete ret.__v
+        delete ret._id
+      },
+    },
+  }
 )
 
 const PostModel = model<IPost>('Post', PostSchema)

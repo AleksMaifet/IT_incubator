@@ -18,7 +18,14 @@ const BlogSchema = new Schema<IBlog>(
     createdAt: { type: Date, required: true },
     isMembership: { type: Boolean, required: true },
   },
-  { versionKey: false }
+  {
+    toJSON: {
+      transform: function (_, ret) {
+        delete ret.__v
+        delete ret._id
+      },
+    },
+  }
 )
 
 const BlogModel = model<IBlog>('Blog', BlogSchema)
