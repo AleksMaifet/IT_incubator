@@ -12,7 +12,7 @@ class Post {
   ) {
     this.id = new Date().getTime().toString()
     this.createdAt = new Date()
-    this.isMembership = false
+    this.isMembership = true
   }
 
   get getId() {

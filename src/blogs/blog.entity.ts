@@ -10,7 +10,7 @@ class Blog {
   ) {
     this.id = new Date().getTime().toString()
     this.createdAt = new Date()
-    this.isMembership = false
+    this.isMembership = true
   }
 
   get getId() {
@@ -33,9 +33,9 @@ class Blog {
     return this.createdAt
   }
 
-  // get getIsMembership() {
-  //   return this.isMembership
-  // }
+  get getIsMembership() {
+    return this.isMembership
+  }
 }
 
 export { Blog }
