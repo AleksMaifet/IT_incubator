@@ -43,9 +43,9 @@ class Post {
     return this.createdAt
   }
 
-  get getIsMembership() {
-    return this.isMembership
-  }
+  // get getIsMembership() {
+  //   return this.isMembership
+  // }
 }
 
 export { Post }

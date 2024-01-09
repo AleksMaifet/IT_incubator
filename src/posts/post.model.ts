@@ -8,7 +8,7 @@ interface IPost {
   blogId: string
   blogName: string
   createdAt: Date
-  isMembership: boolean
+  // isMembership: boolean
 }
 
 const PostSchema = new Schema<IPost>(
@@ -20,7 +20,7 @@ const PostSchema = new Schema<IPost>(
     blogId: { type: String, required: true },
     blogName: { type: String, required: true },
     createdAt: { type: Date, required: true },
-    isMembership: { type: Boolean, required: true },
+    // isMembership: { type: Boolean, required: true },
   },
   {
     toJSON: {

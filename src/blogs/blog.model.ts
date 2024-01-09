@@ -6,7 +6,7 @@ interface IBlog {
   description: string
   websiteUrl: string
   createdAt: Date
-  isMembership: boolean
+  // isMembership: boolean
 }
 
 const BlogSchema = new Schema<IBlog>(
@@ -16,7 +16,7 @@ const BlogSchema = new Schema<IBlog>(
     description: { type: String, required: true },
     websiteUrl: { type: String, required: true },
     createdAt: { type: Date, required: true },
-    isMembership: { type: Boolean, required: true },
+    // isMembership: { type: Boolean, required: true },
   },
   {
     toJSON: {
