@@ -12,7 +12,6 @@ class Post {
   ) {
     this.id = new Date().getTime().toString()
     this.createdAt = new Date()
-    this.isMembership = true
   }
 
   get getId() {
@@ -42,10 +41,6 @@ class Post {
   get getCreatedAt() {
     return this.createdAt
   }
-
-  // get getIsMembership() {
-  //   return this.isMembership
-  // }
 }
 
 export { Post }
