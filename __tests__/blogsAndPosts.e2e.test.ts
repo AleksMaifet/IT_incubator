@@ -39,10 +39,12 @@ const makeAuthRequest = <T>(
   return req
 }
 
-beforeAll(() => {
+beforeAll(async () => {
   const { app } = boot
 
   application = app
+
+  await request(application.app).delete('/testing/all-data').expect(204)
 })
 
 describe('Blogs', () => {

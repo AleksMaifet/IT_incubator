@@ -12,10 +12,12 @@ const createdVideo = {
 }
 const videoId = '00000000000000'
 
-beforeAll(() => {
+beforeAll(async () => {
   const { app } = boot
 
   application = app
+
+  await request(application.app).delete('/testing/all-data').expect(204)
 })
 
 describe('Videos', () => {
