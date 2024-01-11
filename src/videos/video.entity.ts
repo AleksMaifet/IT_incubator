@@ -20,38 +20,6 @@ class Video {
     this.createdAt = createdAt.toISOString()
     this.publicationDate = publicationDate.toISOString()
   }
-
-  get getId() {
-    return this.id
-  }
-
-  get getTitle() {
-    return this.title
-  }
-
-  get getAuthor() {
-    return this.author
-  }
-
-  get getCanBeDownloaded() {
-    return this.canBeDownloaded
-  }
-
-  get getMinAgeRestriction() {
-    return this.minAgeRestriction
-  }
-
-  get getCreatedAt() {
-    return this.createdAt
-  }
-
-  get getPublicationDate() {
-    return this.publicationDate
-  }
-
-  get getAvailableResolutions() {
-    return this.availableResolutions
-  }
 }
 
 export { Video }

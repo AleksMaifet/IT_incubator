@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
 import { BaseController } from '../common/base.controller'
 import { ValidateMiddleware } from '../middlewares'
-import { VideosRepository } from './videos.repository'
 import { CreateVideoDto, UpdateVideoDto } from './dto'
+import { VideosService } from './videos.service'
 
 class VideosController extends BaseController {
-  constructor(private readonly videoRepository: VideosRepository) {
+  constructor(private readonly videosService: VideosService) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
     this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
@@ -25,7 +25,7 @@ class VideosController extends BaseController {
   }
 
   getAll = async (_: Request, res: Response) => {
-    const result = await this.videoRepository.getAll()
+    const result = await this.videosService.getAll()
 
     res.status(200).json(result)
   }
@@ -37,7 +37,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = await this.videoRepository.getById(+id)
+    const result = await this.videosService.getById(+id)
 
     if (!result) {
       res.sendStatus(404)
@@ -48,7 +48,7 @@ class VideosController extends BaseController {
   }
 
   create = async ({ body }: Request<{}, {}, CreateVideoDto>, res: Response) => {
-    const result = await this.videoRepository.create(body)
+    const result = await this.videosService.create(body)
 
     res.status(201).json(result)
   }
@@ -63,7 +63,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = await this.videoRepository.updateById(+id, body)
+    const result = await this.videosService.updateById(+id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -80,7 +80,7 @@ class VideosController extends BaseController {
       return
     }
 
-    const result = await this.videoRepository.deleteById(+id)
+    const result = await this.videosService.deleteById(+id)
 
     if (!result) {
       res.sendStatus(404)

@@ -8,14 +8,13 @@ import { MongoService } from '../src/db'
 import { ConfigService, LoggerService } from '../src/services'
 
 let application: App
-
+const errorId = '00000000000000'
 const updateCreatePost: BasePostDto = {
   title: 'string',
   content: 'string',
   shortDescription: 'string',
   blogId: 'string',
 }
-
 const updateCreateBlog: BaseBlogDto = {
   name: 'string',
   description: 'string',
@@ -54,7 +53,7 @@ describe('Blogs', () => {
 
   it('GET blog by id with error', async () => {
     await request(application.app)
-      .get('/blogs' + `/00000000000000`)
+      .get('/blogs' + `/${errorId}`)
       .expect(404)
   })
 
@@ -74,10 +73,10 @@ describe('Blogs', () => {
   it('POST/PUT/DELETE  blog with Unauthorized error', async () => {
     await request(application.app).post('/blogs').expect(401)
     await request(application.app)
-      .delete('/blogs' + '/44')
+      .delete('/blogs' + `/${errorId}`)
       .expect(401)
     await request(application.app)
-      .put('/blogs' + '/33')
+      .put('/blogs' + `/${errorId}`)
       .expect(401)
   })
 
@@ -113,7 +112,7 @@ describe('Blogs', () => {
     await makeAuthRequest(
       application.app,
       'put',
-      '/blogs' + `/0000000000`
+      '/blogs' + `/${errorId}`
     ).expect(400)
   })
 
@@ -136,7 +135,7 @@ describe('Blogs', () => {
     await makeAuthRequest(
       application.app,
       'delete',
-      '/blogs' + '/1001010101010'
+      '/blogs' + `/${errorId}`
     ).expect(404)
   })
 })
@@ -148,7 +147,7 @@ describe('Posts', () => {
 
   it('GET posts by id with error', async () => {
     await request(application.app)
-      .get('/posts' + `/00000000000000`)
+      .get('/posts' + `/${errorId}`)
       .expect(404)
   })
 
@@ -173,10 +172,10 @@ describe('Posts', () => {
   it('POST/PUT/DELETE  post with Unauthorized error', async () => {
     await request(application.app).post('/posts').expect(401)
     await request(application.app)
-      .delete('/posts' + '/44')
+      .delete('/posts' + `/${errorId}`)
       .expect(401)
     await request(application.app)
-      .put('/posts' + '/33')
+      .put('/posts' + `/${errorId}`)
       .expect(401)
   })
 
@@ -225,7 +224,7 @@ describe('Posts', () => {
     await makeAuthRequest(
       application.app,
       'put',
-      '/posts' + `/0000000000`
+      '/posts' + `/${errorId}`
     ).expect(400)
   })
 
@@ -252,7 +251,7 @@ describe('Posts', () => {
     await makeAuthRequest(
       application.app,
       'delete',
-      '/posts' + '/1001010101010'
+      '/posts' + `/${errorId}`
     ).expect(404)
   })
 })

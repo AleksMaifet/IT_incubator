@@ -3,9 +3,24 @@ import { MongoService } from './db'
 import { ConfigService, LoggerService } from './services'
 import { ExceptionFilter } from './errors'
 import { TestingController, TestingRepository } from './testing'
-import { VideoModel, VideosController, VideosRepository } from './videos'
-import { BlogModel, BlogsController, BlogsRepository } from './blogs'
-import { PostModel, PostsController, PostsRepository } from './posts'
+import {
+  VideoModel,
+  VideosController,
+  VideosRepository,
+  VideosService,
+} from './videos'
+import {
+  BlogModel,
+  BlogsController,
+  BlogsRepository,
+  BlogsService,
+} from './blogs'
+import {
+  PostModel,
+  PostsController,
+  PostsRepository,
+  PostsService,
+} from './posts'
 
 const bootstrap = () => {
   const logger = new LoggerService()
@@ -18,9 +33,14 @@ const bootstrap = () => {
     new TestingController(
       new TestingRepository(VideoModel, BlogModel, PostModel)
     ),
-    new VideosController(new VideosRepository(VideoModel)),
-    new BlogsController(new BlogsRepository(BlogModel)),
-    new PostsController(new PostsRepository(BlogModel, PostModel))
+    new VideosController(new VideosService(new VideosRepository(VideoModel))),
+    new BlogsController(new BlogsService(new BlogsRepository(BlogModel))),
+    new PostsController(
+      new PostsService(
+        new BlogsRepository(BlogModel),
+        new PostsRepository(PostModel)
+      )
+    )
   )
 
   app.init()

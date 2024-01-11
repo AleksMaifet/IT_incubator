@@ -1,5 +1,4 @@
 import { CreateVideoDto, UpdateVideoDto } from './dto'
-import { Video } from './video.entity'
 import { VideoModel } from './video.model'
 
 class VideosRepository {
@@ -13,18 +12,12 @@ class VideosRepository {
     return await this.videoModel.findOne({ id }).exec()
   }
 
-  public updateById = async (id: number, body: UpdateVideoDto) => {
-    return await this.videoModel.findOneAndUpdate({ id }, body).exec()
+  public updateById = async (id: number, dto: UpdateVideoDto) => {
+    return await this.videoModel.findOneAndUpdate({ id }, dto).exec()
   }
 
-  public create = async ({
-    title,
-    author,
-    availableResolutions,
-  }: CreateVideoDto) => {
-    const newVideo = new Video(title, author, false, null, availableResolutions)
-
-    return await this.videoModel.create(newVideo)
+  public create = async (dto: CreateVideoDto) => {
+    return await this.videoModel.create(dto)
   }
 
   public deleteById = async (id: number) => {

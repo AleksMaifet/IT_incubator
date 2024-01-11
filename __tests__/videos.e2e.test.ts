@@ -5,12 +5,12 @@ import { MongoService } from '../src/db'
 import { ConfigService, LoggerService } from '../src/services'
 
 let application: App
+const errorVideoId = '00000000000000'
 const createdVideo = {
   title: 'string',
   author: 'string',
   availableResolutions: ['P144'],
 }
-const videoId = '00000000000000'
 
 beforeAll(async () => {
   const { app } = boot
@@ -34,7 +34,7 @@ describe('Videos', () => {
   })
 
   it('GET video by id with error', async () => {
-    await request(application.app).get(`/videos/${videoId}`).expect(404)
+    await request(application.app).get(`/videos/${errorVideoId}`).expect(404)
   })
 
   it('POST created video success', async () => {
@@ -67,7 +67,7 @@ describe('Videos', () => {
   })
 
   it('PUT not update video by id with error', async () => {
-    await request(application.app).put(`/videos/${videoId}`).expect(400)
+    await request(application.app).put(`/videos/${errorVideoId}`).expect(400)
   })
 
   it('DELETE delete video by id success', async () => {
@@ -79,7 +79,7 @@ describe('Videos', () => {
   })
 
   it('DELETE not delete video by id with error', async () => {
-    await request(application.app).delete(`/videos/${videoId}`).expect(404)
+    await request(application.app).delete(`/videos/${errorVideoId}`).expect(404)
   })
 })
 

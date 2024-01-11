@@ -2,11 +2,11 @@ import { Request, Response } from 'express'
 import { BaseController } from '../common/base.controller'
 import { AuthMiddlewareGuard, ValidateMiddleware } from '../middlewares'
 import { ConfigService, LoggerService } from '../services'
-import { PostsRepository } from './posts.repository'
 import { CreatePostDto, UpdatePostDto } from './dto'
+import { PostsService } from './posts.service'
 
 class PostsController extends BaseController {
-  constructor(private readonly postsRepository: PostsRepository) {
+  constructor(private readonly postsService: PostsService) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
     this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
@@ -39,7 +39,7 @@ class PostsController extends BaseController {
   }
 
   getAll = async (_: Request, res: Response) => {
-    const result = await this.postsRepository.getAll()
+    const result = await this.postsService.getAll()
 
     res.status(200).json(result)
   }
@@ -51,7 +51,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = await this.postsRepository.getById(id)
+    const result = await this.postsService.getById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -62,7 +62,7 @@ class PostsController extends BaseController {
   }
 
   create = async ({ body }: Request<{}, {}, CreatePostDto>, res: Response) => {
-    const result = await this.postsRepository.create(body)
+    const result = await this.postsService.create(body)
 
     res.status(201).json(result)
   }
@@ -77,7 +77,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = await this.postsRepository.updateById(id, body)
+    const result = await this.postsService.updateById(id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -94,7 +94,7 @@ class PostsController extends BaseController {
       return
     }
 
-    const result = await this.postsRepository.deleteById(id)
+    const result = await this.postsService.deleteById(id)
 
     if (!result) {
       res.sendStatus(404)

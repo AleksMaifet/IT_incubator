@@ -12,30 +12,6 @@ class Blog {
     this.createdAt = new Date()
     this.isMembership = false
   }
-
-  get getId() {
-    return this.id
-  }
-
-  get getName() {
-    return this.name
-  }
-
-  get getDescription() {
-    return this.description
-  }
-
-  get getWebsiteUrl() {
-    return this.websiteUrl
-  }
-
-  get getCreatedAt() {
-    return this.createdAt
-  }
-
-  get getIsMembership() {
-    return this.isMembership
-  }
 }
 
 export { Blog }

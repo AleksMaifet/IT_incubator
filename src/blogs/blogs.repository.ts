@@ -1,4 +1,3 @@
-import { Blog } from './blog.entity'
 import { CreateBlogDto, UpdateBlogDto } from './dto'
 import { BlogModel } from './blog.model'
 
@@ -13,14 +12,12 @@ class BlogsRepository {
     return await this.blogModel.findOne({ id }).exec()
   }
 
-  public updateById = async (id: string, body: UpdateBlogDto) => {
-    return await this.blogModel.findOneAndUpdate({ id }, body).exec()
+  public updateById = async (id: string, dto: UpdateBlogDto) => {
+    return await this.blogModel.findOneAndUpdate({ id }, dto).exec()
   }
 
-  public create = async ({ name, description, websiteUrl }: CreateBlogDto) => {
-    const newBlog = new Blog(name, description, websiteUrl)
-
-    return await this.blogModel.create(newBlog)
+  public create = async (dto: CreateBlogDto) => {
+    return await this.blogModel.create(dto)
   }
 
   public deleteById = async (id: string) => {

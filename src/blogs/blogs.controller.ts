@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import { BaseController } from '../common/base.controller'
-import { ValidateMiddleware, AuthMiddlewareGuard } from '../middlewares'
+import { AuthMiddlewareGuard, ValidateMiddleware } from '../middlewares'
 import { ConfigService, LoggerService } from '../services'
-import { BlogsRepository } from './blogs.repository'
 import { CreateBlogDto, UpdateBlogDto } from './dto'
+import { BlogsService } from './blogs.service'
 
 class BlogsController extends BaseController {
-  constructor(private readonly blogsRepository: BlogsRepository) {
+  constructor(private readonly blogsService: BlogsService) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
     this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
@@ -39,7 +39,7 @@ class BlogsController extends BaseController {
   }
 
   getAll = async (_: Request, res: Response) => {
-    const result = await this.blogsRepository.getAll()
+    const result = await this.blogsService.getAll()
 
     res.status(200).json(result)
   }
@@ -51,7 +51,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = await this.blogsRepository.getById(id)
+    const result = await this.blogsService.getById(id)
 
     if (!result) {
       res.sendStatus(404)
@@ -62,7 +62,7 @@ class BlogsController extends BaseController {
   }
 
   create = async ({ body }: Request<{}, {}, CreateBlogDto>, res: Response) => {
-    const result = await this.blogsRepository.create(body)
+    const result = await this.blogsService.create(body)
 
     res.status(201).json(result)
   }
@@ -77,7 +77,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = await this.blogsRepository.updateById(id, body)
+    const result = await this.blogsService.updateById(id, body)
 
     if (!result) {
       res.sendStatus(404)
@@ -94,7 +94,7 @@ class BlogsController extends BaseController {
       return
     }
 
-    const result = await this.blogsRepository.deleteById(id)
+    const result = await this.blogsService.deleteById(id)
 
     if (!result) {
       res.sendStatus(404)
