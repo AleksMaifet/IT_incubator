@@ -1,9 +1,16 @@
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
 import { VideosRepository } from './videos.repository'
-import { CreateVideoDto, UpdateVideoDto } from './dto'
+import { CreateVideoDto, UpdateVideoDto } from './dto/body'
 import { Video } from './video.entity'
+import { TYPES } from '../types'
 
+@injectable()
 class VideosService {
-  constructor(private readonly videosRepository: VideosRepository) {}
+  constructor(
+    @inject(TYPES.VideosRepository)
+    private readonly videosRepository: VideosRepository
+  ) {}
 
   public getAll = async () => {
     return await this.videosRepository.getAll()

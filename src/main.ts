@@ -1,7 +1,9 @@
+import { Container, ContainerModule, interfaces } from 'inversify'
+import { useContainer } from 'class-validator'
+import 'module-alias/register'
 import { App } from './app'
 import { MongoService } from './db'
 import { ConfigService, LoggerService } from './services'
-import { ExceptionFilter } from './errors'
 import { TestingController, TestingRepository } from './testing'
 import {
   VideoModel,
@@ -21,28 +23,38 @@ import {
   PostsRepository,
   PostsService,
 } from './posts'
+import { TYPES } from './types'
+import { ILogger } from './services/logger/logger.interface'
+import { AuthMiddlewareGuard, IMiddleware } from '@src/middlewares'
+
+const appBindings = new ContainerModule((bind: interfaces.Bind) => {
+  bind<App>(TYPES.Application).to(App)
+  bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope()
+  bind<ConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope()
+  bind<MongoService>(TYPES.MongoService).to(MongoService).inSingletonScope()
+  bind<VideosController>(TYPES.VideosController).to(VideosController)
+  bind<BlogsController>(TYPES.BlogsController).to(BlogsController)
+  bind<PostsController>(TYPES.PostsController).to(PostsController)
+  bind<VideosService>(TYPES.VideosService).to(VideosService)
+  bind<BlogsService>(TYPES.BlogsService).to(BlogsService)
+  bind<PostsService>(TYPES.PostsService).to(PostsService)
+  bind<VideosRepository>(TYPES.VideosRepository).to(VideosRepository)
+  bind<BlogsRepository>(TYPES.BlogsRepository).to(BlogsRepository)
+  bind<PostsRepository>(TYPES.PostsRepository).to(PostsRepository)
+  bind<TestingController>(TYPES.TestingController).to(TestingController)
+  bind<TestingRepository>(TYPES.TestingRepository).to(TestingRepository)
+  bind<typeof BlogModel>(TYPES.BlogModel).toConstantValue(BlogModel)
+  bind<typeof PostModel>(TYPES.PostModel).toConstantValue(PostModel)
+  bind<typeof VideoModel>(TYPES.VideoModel).toConstantValue(VideoModel)
+  bind<IMiddleware>(TYPES.AuthMiddlewareGuard).to(AuthMiddlewareGuard)
+})
 
 const bootstrap = () => {
-  const logger = new LoggerService()
+  const appContainer = new Container({ autoBindInjectable: true })
+  useContainer(appContainer, { fallbackOnErrors: true })
+  appContainer.load(appBindings)
 
-  const app = new App(
-    logger,
-    new ExceptionFilter(logger),
-    new ConfigService(logger),
-    new MongoService(new ConfigService(logger), logger),
-    new TestingController(
-      new TestingRepository(VideoModel, BlogModel, PostModel)
-    ),
-    new VideosController(new VideosService(new VideosRepository(VideoModel))),
-    new BlogsController(new BlogsService(new BlogsRepository(BlogModel))),
-    new PostsController(
-      new PostsService(
-        new BlogsRepository(BlogModel),
-        new PostsRepository(PostModel)
-      )
-    )
-  )
-
+  const app = appContainer.get<App>(TYPES.Application)
   app.init()
 
   return { app }

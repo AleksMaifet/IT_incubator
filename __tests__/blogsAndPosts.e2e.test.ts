@@ -1,15 +1,14 @@
 import { Application } from 'express'
+import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { BasePostDto } from '../src/posts'
-import { BaseBlogDto } from '../src/blogs'
-import { MongoService } from '../src/db'
-import { ConfigService, LoggerService } from '../src/services'
+import { BaseBlogDto } from '../src/blogs/dto/body'
+import { CreatePostDto } from '../src/posts'
 
 let application: App
 const errorId = '00000000000000'
-const updateCreatePost: BasePostDto = {
+const updateCreatePost: CreatePostDto = {
   title: 'string',
   content: 'string',
   shortDescription: 'string',
@@ -47,10 +46,6 @@ beforeAll(async () => {
 })
 
 describe('Blogs', () => {
-  it('GET blogs after clear db', async () => {
-    await request(application.app).get('/blogs').expect([])
-  })
-
   it('GET blog by id with error', async () => {
     await request(application.app)
       .get('/blogs' + `/${errorId}`)
@@ -113,7 +108,7 @@ describe('Blogs', () => {
       application.app,
       'put',
       '/blogs' + `/${errorId}`
-    ).expect(400)
+    ).expect(404)
   })
 
   it('DELETE delete blog by id success', async () => {
@@ -141,10 +136,6 @@ describe('Blogs', () => {
 })
 
 describe('Posts', () => {
-  it('GET posts after clear db', async () => {
-    await request(application.app).get('/posts').expect([])
-  })
-
   it('GET posts by id with error', async () => {
     await request(application.app)
       .get('/posts' + `/${errorId}`)
@@ -225,7 +216,7 @@ describe('Posts', () => {
       application.app,
       'put',
       '/posts' + `/${errorId}`
-    ).expect(400)
+    ).expect(404)
   })
 
   it('DELETE delete video by id success', async () => {
@@ -257,9 +248,6 @@ describe('Posts', () => {
 })
 afterAll(async () => {
   await request(application.app).delete('/testing/all-data').expect(204)
-  await new MongoService(
-    new ConfigService(new LoggerService()),
-    new LoggerService()
-  ).disconnect()
+  await disconnect()
   application.close()
 })

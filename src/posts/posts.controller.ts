@@ -1,22 +1,41 @@
 import { Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
 import { BaseController } from '../common/base.controller'
-import { AuthMiddlewareGuard, ValidateMiddleware } from '../middlewares'
-import { ConfigService, LoggerService } from '../services'
-import { CreatePostDto, UpdatePostDto } from './dto'
+import {
+  AuthMiddlewareGuard,
+  ValidateBodyMiddleware,
+  ValidateParamsMiddleware,
+} from '../middlewares'
+import { TYPES } from '../types'
+import { CreatePostDto, UpdatePostDto } from './dto/body'
 import { PostsService } from './posts.service'
+import { PostExist } from './dto/params'
+import { GetPostsRequestQuery } from './interfaces'
 
+@injectable()
 class PostsController extends BaseController {
-  constructor(private readonly postsService: PostsService) {
+  constructor(
+    @inject(TYPES.PostsService)
+    private readonly postsService: PostsService,
+    @inject(TYPES.AuthMiddlewareGuard)
+    private readonly authMiddlewareGuard: AuthMiddlewareGuard
+  ) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
-    this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
+    this.bindRoutes({
+      path: '/:id',
+      method: 'get',
+      func: this.getById,
+      middlewares: [new ValidateParamsMiddleware(PostExist)],
+    })
     this.bindRoutes({
       path: '',
       method: 'post',
       func: this.create,
       middlewares: [
-        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
-        new ValidateMiddleware(CreatePostDto),
+        this.authMiddlewareGuard,
+        new ValidateBodyMiddleware(CreatePostDto),
       ],
     })
     this.bindRoutes({
@@ -24,8 +43,9 @@ class PostsController extends BaseController {
       method: 'put',
       func: this.updateById,
       middlewares: [
-        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
-        new ValidateMiddleware(UpdatePostDto),
+        this.authMiddlewareGuard,
+        new ValidateParamsMiddleware(PostExist),
+        new ValidateBodyMiddleware(UpdatePostDto),
       ],
     })
     this.bindRoutes({
@@ -33,30 +53,26 @@ class PostsController extends BaseController {
       method: 'delete',
       func: this.deleteById,
       middlewares: [
-        new AuthMiddlewareGuard(new ConfigService(new LoggerService())),
+        this.authMiddlewareGuard,
+        new ValidateParamsMiddleware(PostExist),
       ],
     })
   }
 
-  getAll = async (_: Request, res: Response) => {
-    const result = await this.postsService.getAll()
+  getAll = async (
+    req: Request<{}, {}, {}, GetPostsRequestQuery<string>>,
+    res: Response
+  ) => {
+    const { query } = req
+
+    const result = await this.postsService.getAll(query)
 
     res.status(200).json(result)
   }
-  getById = async ({ params }: Request<{ id?: string }>, res: Response) => {
+  getById = async ({ params }: Request<PostExist>, res: Response) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
     const result = await this.postsService.getById(id)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
 
     res.status(200).json(result)
   }
@@ -67,39 +83,19 @@ class PostsController extends BaseController {
     res.status(201).json(result)
   }
   updateById = async (
-    { params, body }: Request<{ id?: string }, {}, UpdatePostDto>,
+    { params, body }: Request<PostExist, {}, UpdatePostDto>,
     res: Response
   ) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
-    const result = await this.postsService.updateById(id, body)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
+    await this.postsService.updateById(id, body)
 
     res.sendStatus(204)
   }
-  deleteById = async ({ params }: Request<{ id?: string }>, res: Response) => {
+  deleteById = async ({ params }: Request<PostExist>, res: Response) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
-    const result = await this.postsService.deleteById(id)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
+    await this.postsService.deleteById(id)
 
     res.sendStatus(204)
   }

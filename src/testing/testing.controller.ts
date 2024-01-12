@@ -1,9 +1,16 @@
 import { Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
 import { BaseController } from '../common/base.controller'
+import { TYPES } from '../types'
 import { TestingRepository } from './testing.repository'
 
+@injectable()
 class TestingController extends BaseController {
-  constructor(private readonly testingRepository: TestingRepository) {
+  constructor(
+    @inject(TYPES.TestingRepository)
+    private readonly testingRepository: TestingRepository
+  ) {
     super()
     this.bindRoutes({
       path: '/all-data',

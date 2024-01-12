@@ -5,6 +5,9 @@ const config: Config.InitialOptions = {
   testEnvironment: 'node',
   testTimeout: 100000, //от этой ошибки! -> thrown: "Exceeded timeout of 5000 ms for a test.
   testRegex: '.e2e.test.ts$', //<-- чтобы запускались только файлы с расширением ".e2e.test.ts"
+  moduleNameMapper: {
+    '^@src(.*)$': '<rootDir>/src$1',
+  },
 }
 
 export default config

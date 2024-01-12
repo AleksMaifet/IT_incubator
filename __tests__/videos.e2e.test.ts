@@ -1,12 +1,12 @@
+import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { MongoService } from '../src/db'
-import { ConfigService, LoggerService } from '../src/services'
+import { CreateVideoDto } from '../src/videos'
 
 let application: App
 const errorVideoId = '00000000000000'
-const createdVideo = {
+const createdVideo: CreateVideoDto = {
   title: 'string',
   author: 'string',
   availableResolutions: ['P144'],
@@ -67,7 +67,7 @@ describe('Videos', () => {
   })
 
   it('PUT not update video by id with error', async () => {
-    await request(application.app).put(`/videos/${errorVideoId}`).expect(400)
+    await request(application.app).put(`/videos/${errorVideoId}`).expect(404)
   })
 
   it('DELETE delete video by id success', async () => {
@@ -85,9 +85,6 @@ describe('Videos', () => {
 
 afterAll(async () => {
   await request(application.app).delete('/testing/all-data').expect(204)
-  await new MongoService(
-    new ConfigService(new LoggerService()),
-    new LoggerService()
-  ).disconnect()
+  await disconnect()
   application.close()
 })

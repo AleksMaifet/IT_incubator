@@ -1,10 +1,13 @@
 import { Router } from 'express'
+import { injectable } from 'inversify'
+import 'reflect-metadata'
 import { IControllerRouter } from './route.interface'
 
+@injectable()
 export abstract class BaseController {
   private readonly _router: Router
 
-  protected constructor() {
+  public constructor() {
     this._router = Router()
   }
 

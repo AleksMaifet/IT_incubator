@@ -1,8 +1,14 @@
-import { CreateVideoDto, UpdateVideoDto } from './dto'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
+import { CreateVideoDto, UpdateVideoDto } from './dto/body'
 import { VideoModel } from './video.model'
+import { TYPES } from '../types'
 
+@injectable()
 class VideosRepository {
-  constructor(private readonly videoModel: typeof VideoModel) {}
+  constructor(
+    @inject(TYPES.VideoModel) private readonly videoModel: typeof VideoModel
+  ) {}
 
   public getAll = async () => {
     return await this.videoModel.find().exec()
@@ -13,7 +19,7 @@ class VideosRepository {
   }
 
   public updateById = async (id: number, dto: UpdateVideoDto) => {
-    return await this.videoModel.findOneAndUpdate({ id }, dto).exec()
+    return await this.videoModel.updateOne({ id }, dto).exec()
   }
 
   public create = async (dto: CreateVideoDto) => {
@@ -21,7 +27,7 @@ class VideosRepository {
   }
 
   public deleteById = async (id: number) => {
-    return await this.videoModel.findOneAndDelete({ id }).exec()
+    return await this.videoModel.deleteOne({ id }).exec()
   }
 }
 

@@ -2,8 +2,19 @@ const MAX_POST_TITLE_LENGTH = 30
 const MAX_POST_SHORT_DESCRIPTION_LENGTH = 100
 const MAX_POST_CONTENT_LENGTH = 1000
 
+const DEFAULTS = {
+  SORT_BY: 'createdAt',
+  PAGE_NUMBER: 1,
+  PAGE_SIZE: 10,
+  SORT_DIRECTION: {
+    ['asc']: 'asc',
+    ['desc']: 'desc',
+  } as const,
+}
+
 export {
   MAX_POST_TITLE_LENGTH,
   MAX_POST_SHORT_DESCRIPTION_LENGTH,
   MAX_POST_CONTENT_LENGTH,
+  DEFAULTS,
 }

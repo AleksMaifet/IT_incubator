@@ -1,13 +1,5 @@
 import { model, Schema } from 'mongoose'
-
-interface IBlog {
-  id: string
-  name: string
-  description: string
-  websiteUrl: string
-  createdAt: Date
-  isMembership: boolean
-}
+import { IBlog } from './interfaces'
 
 const BlogSchema = new Schema<IBlog>(
   {

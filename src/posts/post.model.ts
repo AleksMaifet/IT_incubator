@@ -1,14 +1,5 @@
 import { model, Schema } from 'mongoose'
-
-interface IPost {
-  id: string
-  title: string
-  shortDescription: string
-  content: string
-  blogId: string
-  blogName: string
-  createdAt: Date
-}
+import { IPost } from './interfaces'
 
 const PostSchema = new Schema<IPost>(
   {

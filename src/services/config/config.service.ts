@@ -1,18 +1,15 @@
 import { config, DotenvParseOutput } from 'dotenv'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
+import { TYPES } from '@src/types'
 import { ILogger } from '../logger/logger.interface'
 import { IConfigService } from './config.interface'
 
+@injectable()
 class ConfigService implements IConfigService {
-  private static singleton: ConfigService
   private readonly config: DotenvParseOutput
 
-  constructor(private readonly loggerService: ILogger) {
-    if (ConfigService.singleton) {
-      return ConfigService.singleton
-    }
-
-    ConfigService.singleton = this
-
+  constructor(@inject(TYPES.ILogger) private readonly loggerService: ILogger) {
     const result = config()
 
     if (result.error) {
@@ -24,7 +21,7 @@ class ConfigService implements IConfigService {
   }
 
   get = <T extends number | string>(key: string) => {
-    return this.config[key] as T
+    return (process.env[key] || this.config[key]) as T
   }
 }
 

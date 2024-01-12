@@ -1,1 +1,2 @@
-export * from './validate.middleware'
+export * from './validate.body.middleware'
+export * from './validate.params.middleware'

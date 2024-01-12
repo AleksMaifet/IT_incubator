@@ -1,17 +1,13 @@
 import { createLogger, format, Logger, transports } from 'winston'
+import { injectable } from 'inversify'
+import 'reflect-metadata'
 import { ILogger } from './logger.interface'
 
+@injectable()
 class LoggerService implements ILogger {
-  private static singleton: LoggerService
   public logger: Logger
 
   constructor() {
-    if (LoggerService.singleton) {
-      return LoggerService.singleton
-    }
-
-    LoggerService.singleton = this
-
     const { combine, timestamp, colorize, printf } = format
 
     this.logger = createLogger({

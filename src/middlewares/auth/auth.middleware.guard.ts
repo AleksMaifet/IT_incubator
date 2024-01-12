@@ -1,9 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
-import { IMiddleware } from '../middleware.interface'
-import { ConfigService } from '../../services'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
+import { IMiddleware } from '@src/middlewares'
+import { ConfigService } from '@src/services'
+import { TYPES } from '@src/types'
 
+@injectable()
 class AuthMiddlewareGuard implements IMiddleware {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    @inject(TYPES.ConfigService)
+    private readonly configService: ConfigService
+  ) {}
 
   execute = (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers
@@ -28,10 +35,8 @@ class AuthMiddlewareGuard implements IMiddleware {
     const [login, password] = decoded.split(':')
 
     if (
-      login !==
-        (process.env.BASIC_LOGIN || this.configService.get('BASIC_LOGIN')) ||
-      password !==
-        (process.env.BASIC_PASSWORD || this.configService.get('BASIC_PASSWORD'))
+      login !== this.configService.get('BASIC_LOGIN') ||
+      password !== this.configService.get('BASIC_PASSWORD')
     ) {
       sendResponse()
       return

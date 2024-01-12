@@ -1,27 +1,50 @@
 import { Request, Response } from 'express'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
+import { VideoExist } from '@src/videos/dto/params'
 import { BaseController } from '../common/base.controller'
-import { ValidateMiddleware } from '../middlewares'
-import { CreateVideoDto, UpdateVideoDto } from './dto'
+import {
+  ValidateBodyMiddleware,
+  ValidateParamsMiddleware,
+} from '../middlewares'
+import { TYPES } from '../types'
+import { CreateVideoDto, UpdateVideoDto } from './dto/body'
 import { VideosService } from './videos.service'
 
+@injectable()
 class VideosController extends BaseController {
-  constructor(private readonly videosService: VideosService) {
+  constructor(
+    @inject(TYPES.VideosService) private readonly videosService: VideosService
+  ) {
     super()
     this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
-    this.bindRoutes({ path: '/:id', method: 'get', func: this.getById })
+    this.bindRoutes({
+      path: '/:id',
+      method: 'get',
+      func: this.getById,
+      middlewares: [new ValidateParamsMiddleware(VideoExist)],
+    })
     this.bindRoutes({
       path: '',
       method: 'post',
       func: this.create,
-      middlewares: [new ValidateMiddleware(CreateVideoDto)],
+      middlewares: [new ValidateBodyMiddleware(CreateVideoDto)],
     })
     this.bindRoutes({
       path: '/:id',
       method: 'put',
       func: this.updateById,
-      middlewares: [new ValidateMiddleware(UpdateVideoDto)],
+      middlewares: [
+        new ValidateParamsMiddleware(VideoExist),
+        new ValidateBodyMiddleware(UpdateVideoDto),
+      ],
     })
-    this.bindRoutes({ path: '/:id', method: 'delete', func: this.deleteById })
+    this.bindRoutes({
+      path: '/:id',
+      method: 'delete',
+      func: this.deleteById,
+      middlewares: [new ValidateParamsMiddleware(VideoExist)],
+    })
   }
 
   getAll = async (_: Request, res: Response) => {
@@ -29,20 +52,10 @@ class VideosController extends BaseController {
 
     res.status(200).json(result)
   }
-  getById = async ({ params }: Request<{ id?: string }>, res: Response) => {
+  getById = async ({ params }: Request<VideoExist>, res: Response) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
     const result = await this.videosService.getById(+id)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
 
     res.status(200).json(result)
   }
@@ -53,39 +66,19 @@ class VideosController extends BaseController {
     res.status(201).json(result)
   }
   updateById = async (
-    { params, body }: Request<{ id?: string }, {}, UpdateVideoDto>,
+    { params, body }: Request<VideoExist, {}, UpdateVideoDto>,
     res: Response
   ) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
-    const result = await this.videosService.updateById(+id, body)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
+    await this.videosService.updateById(+id, body)
 
     res.sendStatus(204)
   }
-  deleteById = async ({ params }: Request<{ id?: string }>, res: Response) => {
+  deleteById = async ({ params }: Request<VideoExist>, res: Response) => {
     const { id } = params
 
-    if (!id) {
-      res.sendStatus(404)
-      return
-    }
-
-    const result = await this.videosService.deleteById(+id)
-
-    if (!result) {
-      res.sendStatus(404)
-      return
-    }
+    await this.videosService.deleteById(+id)
 
     res.sendStatus(204)
   }

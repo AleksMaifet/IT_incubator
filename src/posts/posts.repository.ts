@@ -1,11 +1,43 @@
-import { CreatePostDto, UpdatePostDto } from './dto'
+import { inject, injectable } from 'inversify'
+import 'reflect-metadata'
+import { TYPES } from '../types'
+import { CreatePostDto, UpdatePostDto } from './dto/body'
 import { PostModel } from './post.model'
+import { GetPostsRequestQuery, IPostsResponse } from './interfaces'
 
+@injectable()
 class PostsRepository {
-  constructor(private readonly postModel: typeof PostModel) {}
+  constructor(
+    @inject(TYPES.PostModel)
+    private readonly postModel: typeof PostModel
+  ) {}
 
-  public getAll = async () => {
-    return await this.postModel.find().exec()
+  public getAll = async (dto: GetPostsRequestQuery<number>) => {
+    const { sortBy, sortDirection, pageNumber, pageSize } = dto
+
+    const totalCount = await this.postModel.countDocuments()
+    const pagesCount = Math.ceil(totalCount / pageSize)
+    const skipBlogs = (pageNumber - 1) * pageSize
+
+    const findOptions = {
+      limit: pageSize,
+      skip: skipBlogs,
+      sort: { [sortBy]: sortDirection },
+    }
+
+    const postsResponse: IPostsResponse = {
+      pagesCount,
+      page: pageNumber,
+      pageSize,
+      totalCount,
+      items: [],
+    }
+
+    postsResponse.items = await this.postModel
+      .find({}, null, findOptions)
+      .exec()
+
+    return postsResponse
   }
 
   public getById = async (id: string) => {
@@ -13,7 +45,7 @@ class PostsRepository {
   }
 
   public updateById = async (id: string, dto: UpdatePostDto) => {
-    return await this.postModel.findOneAndUpdate({ id }, dto).exec()
+    return await this.postModel.updateOne({ id }, dto).exec()
   }
 
   public create = async (dto: CreatePostDto) => {
@@ -21,7 +53,7 @@ class PostsRepository {
   }
 
   public deleteById = async (id: string) => {
-    return await this.postModel.findOneAndDelete({ id }).exec()
+    return await this.postModel.deleteOne({ id }).exec()
   }
 }
 

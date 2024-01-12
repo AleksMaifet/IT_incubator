@@ -4,18 +4,18 @@ import {
   MAX_BLOG_DESCRIPTION_LENGTH,
   MAX_BLOG_NAME_LENGTH,
   MAX_BLOG_WEBSITE_URL_LENGTH,
-} from '../constants'
+} from '@src/blogs/constants'
 
 class BaseBlogDto {
   @IsString()
   @Transform(({ value }) => value?.trim())
   @Length(1, MAX_BLOG_NAME_LENGTH)
-  name: string
+  readonly name: string
 
   @IsString()
   @Transform(({ value }) => value?.trim())
   @Length(1, MAX_BLOG_DESCRIPTION_LENGTH)
-  description: string
+  readonly description: string
 
   @IsString()
   @Transform(({ value }) => value?.trim())
@@ -26,7 +26,7 @@ class BaseBlogDto {
       message: 'websiteUrl must be a valid URL',
     }
   )
-  websiteUrl: string
+  readonly websiteUrl: string
 }
 
 export { BaseBlogDto }
