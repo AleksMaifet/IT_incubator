@@ -32,9 +32,7 @@ class App {
     private readonly postsController: PostsController
   ) {
     this.app = express()
-    this.port = this.normalizePort(
-      process.env.PORT || this.configService.get('PORT')
-    )
+    this.port = this.normalizePort(this.configService.get('PORT'))
   }
 
   private normalizePort(val: string | number) {

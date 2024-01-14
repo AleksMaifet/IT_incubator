@@ -25,7 +25,7 @@ import {
 } from './posts'
 import { TYPES } from './types'
 import { ILogger } from './services/logger/logger.interface'
-import { AuthMiddlewareGuard, IMiddleware } from '@src/middlewares'
+import { AuthMiddlewareGuard, IMiddleware } from './middlewares'
 
 const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App)

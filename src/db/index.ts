@@ -15,16 +15,11 @@ class MongoService {
 
   connect = async () => {
     try {
-      await connect(
-        process.env.MONGO_DB_URL || this.configService.get('MONGO_DB_URL'),
-        {
-          dbName:
-            process.env.MONGO_DB_NAME ||
-            this.configService.get('MONGO_DB_NAME').toString(),
-          autoIndex: true,
-          autoCreate: true,
-        }
-      )
+      await connect(this.configService.get('MONGO_DB_URL'), {
+        dbName: this.configService.get('MONGO_DB_NAME').toString(),
+        autoIndex: true,
+        autoCreate: true,
+      })
 
       this.loggerService.log('Connected to MongoDB')
     } catch (err) {

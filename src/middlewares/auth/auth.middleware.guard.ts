@@ -35,10 +35,8 @@ class AuthMiddlewareGuard implements IMiddleware {
     const [login, password] = decoded.split(':')
 
     if (
-      login !==
-        (this.configService.get('BASIC_LOGIN') || process.env.BASIC_LOGIN) ||
-      password !==
-        (this.configService.get('BASIC_PASSWORD') || process.env.BASIC_PASSWORD)
+      login !== this.configService.get('BASIC_LOGIN') ||
+      password !== this.configService.get('BASIC_PASSWORD')
     ) {
       sendResponse()
       return
