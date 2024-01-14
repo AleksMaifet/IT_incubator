@@ -2,14 +2,14 @@
   "version": 2,
   "name": "it_incubator",
   "functions": {
-    "api/main.js": {
+    "src/main.js": {
       "runtime": "@vercel/node@2.7.0"
     }
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "source": "/src/(.*)",
+      "destination": "/src"
     }
   ]
 }
