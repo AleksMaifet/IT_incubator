@@ -12,7 +12,8 @@
     "format": "prettier . --write"
   },
   "_moduleAliases": {
-    "@src": "./dist"
+    "@src": "dist",
+    "@types": "dist/types"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
