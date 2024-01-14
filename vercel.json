@@ -1,16 +1,15 @@
 {
   "version": 2,
   "name": "it_incubator",
-  "builds": [
-    {
-      "src": "src/main.ts",
-      "use": "@vercel/node"
+  "functions": {
+    "api/main.js": {
+      "runtime": "@vercel/node@2.7.0"
     }
-  ],
-  "routes": [
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "src/main.ts"
+      "source": "/api/(.*)",
+      "destination": "/api"
     }
   ]
 }
