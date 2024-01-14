@@ -15,7 +15,46 @@ class BlogsRepository {
     private readonly postModel: typeof PostModel
   ) {}
 
-  private createdFindOptionsAndResponse = async <T>(
+  private getAllBySearchNameTerm = async (
+    dto: GetBlogsRequestQuery<number>
+  ) => {
+    const { searchNameTerm, ...rest } = dto
+
+    const regex = new RegExp(searchNameTerm!, 'i')
+    const totalCount = await this.blogModel
+      .find({ name: { $regex: regex } })
+      .countDocuments()
+
+    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+      ...rest,
+      totalCount,
+    })
+
+    blogsResponse.items = await this.blogModel
+      .find({ name: { $regex: regex } }, null, findOptions)
+      .exec()
+
+    return blogsResponse
+  }
+
+  private getAllWithoutSearchNameTerm = async (
+    dto: Omit<GetBlogsRequestQuery<number>, 'searchNameTerm'>
+  ) => {
+    const totalCount = await this.blogModel.countDocuments()
+
+    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+      ...dto,
+      totalCount,
+    })
+
+    blogsResponse.items = await this.blogModel
+      .find({}, null, findOptions)
+      .exec()
+
+    return blogsResponse
+  }
+
+  private createdFindOptionsAndResponse = <T>(
     dto: Omit<
       GetBlogsRequestQuery<number> & {
         totalCount: number
@@ -50,24 +89,11 @@ class BlogsRepository {
   public getAll = async (dto: GetBlogsRequestQuery<number>) => {
     const { searchNameTerm, ...rest } = dto
 
-    const totalCount = await this.blogModel.countDocuments()
-
-    const { blogsResponse, findOptions } =
-      await this.createdFindOptionsAndResponse({ ...rest, totalCount })
-
     if (searchNameTerm === 'null' || !searchNameTerm) {
-      blogsResponse.items = await this.blogModel
-        .find({}, null, findOptions)
-        .exec()
-      return blogsResponse
+      return await this.getAllWithoutSearchNameTerm(rest)
     }
 
-    const regex = new RegExp(searchNameTerm, 'i')
-
-    blogsResponse.items = await this.blogModel
-      .find({ name: { $regex: regex } }, null, findOptions)
-      .exec()
-    return blogsResponse
+    return await this.getAllBySearchNameTerm(dto)
   }
 
   public getById = async (id: string) => {
