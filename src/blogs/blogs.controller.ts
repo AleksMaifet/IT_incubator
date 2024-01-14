@@ -56,6 +56,7 @@ class BlogsController extends BaseController {
       middlewares: [
         this.authMiddlewareGuard,
         new ValidateParamsMiddleware(BlogExist),
+        new ValidateBodyMiddleware(BasePostDto),
       ],
     })
     this.bindRoutes({

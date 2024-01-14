@@ -30,9 +30,9 @@ class BlogsService {
     id: string,
     query: Omit<GetBlogsRequestQuery<string>, 'searchNameTerm'>
   ) => {
-    const { searchNameTerm, ...rest } = this._mapQueryParamsToDB(query)
+    const dto = this._mapQueryParamsToDB(query)
 
-    return await this.blogsRepository.getPostsByBlogId(id, rest)
+    return await this.blogsRepository.getPostsByBlogId(id, dto)
   }
 
   public updateById = async (id: string, dto: UpdateBlogDto) => {

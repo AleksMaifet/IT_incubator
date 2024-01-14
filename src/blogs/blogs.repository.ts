@@ -55,15 +55,17 @@ class BlogsRepository {
     const { blogsResponse, findOptions } =
       await this.createdFindOptionsAndResponse({ ...rest, totalCount })
 
-    if (searchNameTerm === 'null') {
+    if (searchNameTerm === 'null' || !searchNameTerm) {
       blogsResponse.items = await this.blogModel
         .find({}, null, findOptions)
         .exec()
       return blogsResponse
     }
 
+    const regex = new RegExp(searchNameTerm, 'i')
+
     blogsResponse.items = await this.blogModel
-      .find({ name: searchNameTerm }, null, findOptions)
+      .find({ name: { $regex: regex } }, null, findOptions)
       .exec()
     return blogsResponse
   }
