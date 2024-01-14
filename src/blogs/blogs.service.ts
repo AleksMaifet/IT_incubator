@@ -55,17 +55,15 @@ class BlogsService {
 
     const numPageNumber = Number(pageNumber)
     const numPageSize = Number(pageSize)
-    const availablePageNumber =
-      numPageNumber < PAGE_NUMBER ? PAGE_NUMBER : numPageNumber
 
     return {
       searchNameTerm: searchNameTerm ?? 'null',
       sortBy: sortBy ?? SORT_BY,
       sortDirection: SORT_DIRECTION[sortDirection!] ?? SORT_DIRECTION.desc,
-      pageNumber: (isFinite(numPageNumber)
-        ? availablePageNumber
-        : PAGE_NUMBER) as number,
-      pageSize: (isFinite(numPageSize) ? numPageSize : PAGE_SIZE) as number,
+      pageNumber: isFinite(numPageNumber)
+        ? Math.max(numPageNumber, PAGE_NUMBER)
+        : PAGE_NUMBER,
+      pageSize: isFinite(numPageSize) ? numPageSize : PAGE_SIZE,
     }
   }
 }

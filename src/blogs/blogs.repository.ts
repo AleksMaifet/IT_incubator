@@ -108,8 +108,10 @@ class BlogsRepository {
       .find({ blogId: id })
       .countDocuments()
 
-    const { blogsResponse, findOptions } =
-      await this.createdFindOptionsAndResponse({ ...query, totalCount })
+    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+      ...query,
+      totalCount,
+    })
 
     blogsResponse.items = await this.postModel
       .find({ blogId: id }, null, findOptions)
