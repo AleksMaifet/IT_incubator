@@ -1,6 +1,6 @@
 import { BasePostDto } from './basePost'
 import { IsString, Validate } from 'class-validator'
-import { IsBlogExist } from '@src/middlewares/libs/customValidDecorators'
+import { IsBlogExist } from '../../../middlewares/libs/customValidDecorators'
 
 class UpdatePostDto extends BasePostDto {
   @IsString()

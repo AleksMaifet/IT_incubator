@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { DEFAULTS } from '@src/blogs/constants'
 import { BlogsRepository } from './blogs.repository'
 import { CreateBlogDto, UpdateBlogDto } from './dto/body'
 import { Blog } from './blog.entity'
 import { GetBlogsRequestQuery } from './interfaces'
+import { DEFAULTS } from './constants'
 import { TYPES } from '../types'
 
 const { SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } = DEFAULTS

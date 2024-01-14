@@ -4,7 +4,7 @@ import {
   MAX_BLOG_DESCRIPTION_LENGTH,
   MAX_BLOG_NAME_LENGTH,
   MAX_BLOG_WEBSITE_URL_LENGTH,
-} from '@src/blogs/constants'
+} from '../../constants'
 
 class BaseBlogDto {
   @IsString()

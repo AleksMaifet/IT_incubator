@@ -4,8 +4,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator'
-import { TYPES } from '@src/types'
-import { PostsRepository } from '@src/posts'
+import { TYPES } from '../../../types'
+import { PostsRepository } from '../../../posts'
 
 @ValidatorConstraint({ async: true })
 @injectable()

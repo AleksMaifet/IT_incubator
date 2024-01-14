@@ -1,18 +1,18 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { BasePostDto, PostsService } from '@src/posts'
 import { BaseController } from '../common/base.controller'
 import {
   AuthMiddlewareGuard,
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
+import { TYPES } from '../types'
+import { BasePostDto, PostsService } from '../posts'
 import { BlogExist } from './dto/params'
 import { CreateBlogDto, UpdateBlogDto } from './dto/body'
 import { BlogsService } from './blogs.service'
 import { GetBlogsRequestQuery } from './interfaces'
-import { TYPES } from '../types'
 
 @injectable()
 class BlogsController extends BaseController {

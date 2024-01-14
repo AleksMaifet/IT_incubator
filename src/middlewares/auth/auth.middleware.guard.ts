@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { IMiddleware } from '@src/middlewares'
-import { ConfigService } from '@src/services'
-import { TYPES } from '@src/types'
+import { IMiddleware } from '../middleware.interface'
+import { TYPES } from '../../types'
+import { ConfigService } from '../../services'
 
 @injectable()
 class AuthMiddlewareGuard implements IMiddleware {

@@ -4,8 +4,8 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator'
-import { TYPES } from '@src/types'
-import { VideosRepository } from '@src/videos'
+import { VideosRepository } from '../../../videos'
+import { TYPES } from '../../../types'
 
 @ValidatorConstraint({ async: true })
 @injectable()

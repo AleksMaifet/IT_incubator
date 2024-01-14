@@ -4,7 +4,7 @@ import {
   MAX_POST_CONTENT_LENGTH,
   MAX_POST_SHORT_DESCRIPTION_LENGTH,
   MAX_POST_TITLE_LENGTH,
-} from '@src/posts/constants'
+} from '../../constants'
 
 class BasePostDto {
   @IsString()

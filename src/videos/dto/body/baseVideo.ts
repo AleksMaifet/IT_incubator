@@ -1,11 +1,11 @@
 import { ArrayMinSize, IsArray, IsIn, IsString, Length } from 'class-validator'
 import { Transform } from 'class-transformer'
-import { AvailableResolutionsType } from '@src/videos'
 import {
   AVAILABLE_RESOLUTIONS,
   MAX_AUTHOR_TITLE_LENGTH,
   MAX_TITLE_LENGTH,
-} from '@src/videos/constants'
+} from '../../constants'
+import { AvailableResolutionsType } from '../../video.model'
 
 class BaseVideoDto {
   @IsString()

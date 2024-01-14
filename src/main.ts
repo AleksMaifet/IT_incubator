@@ -1,6 +1,5 @@
 import { Container, ContainerModule, interfaces } from 'inversify'
 import { useContainer } from 'class-validator'
-import 'module-alias/register'
 import { App } from './app'
 import { MongoService } from './db'
 import { ConfigService, LoggerService } from './services'

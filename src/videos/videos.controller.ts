@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { VideoExist } from '@src/videos/dto/params'
 import { BaseController } from '../common/base.controller'
 import {
   ValidateBodyMiddleware,
@@ -10,6 +9,7 @@ import {
 import { TYPES } from '../types'
 import { CreateVideoDto, UpdateVideoDto } from './dto/body'
 import { VideosService } from './videos.service'
+import { VideoExist } from './dto/params'
 
 @injectable()
 class VideosController extends BaseController {

@@ -7,7 +7,7 @@ import {
   NotEquals,
   ValidateIf,
 } from 'class-validator'
-import { AGE_RESTRICTION } from '@src/videos/constants'
+import { AGE_RESTRICTION } from '../../constants'
 import { BaseVideoDto } from './baseVideo'
 
 class UpdateVideoDto extends BaseVideoDto {

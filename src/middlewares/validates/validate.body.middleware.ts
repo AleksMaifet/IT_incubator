@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { validate } from 'class-validator'
 import { ClassConstructor, plainToInstance } from 'class-transformer'
-import { IMiddleware } from '@src/middlewares'
+import { IMiddleware } from '../middleware.interface'
 import { createErrorResponse } from './helpers'
 
 class ValidateBodyMiddleware implements IMiddleware {
