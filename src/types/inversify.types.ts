@@ -1,5 +1,3 @@
-import { AuthMiddlewareGuard } from '@src/middlewares'
-
 const TYPES = {
   Application: Symbol.for('Application'),
   ILogger: Symbol.for('ILogger'),
