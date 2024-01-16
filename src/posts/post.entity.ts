@@ -1,3 +1,5 @@
+import { Types } from 'mongoose'
+
 class Post {
   public readonly id: string
   public readonly createdAt: Date
@@ -9,7 +11,7 @@ class Post {
     public readonly blogId: string,
     public readonly blogName: string
   ) {
-    this.id = new Date().getTime().toString()
+    this.id = new Types.ObjectId().toString()
     this.createdAt = new Date()
   }
 }

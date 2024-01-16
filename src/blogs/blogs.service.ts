@@ -7,7 +7,8 @@ import { GetBlogsRequestQuery } from './interfaces'
 import { DEFAULTS } from './constants'
 import { TYPES } from '../types'
 
-const { SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } = DEFAULTS
+const { SEARCH_NAME_TERM, SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } =
+  DEFAULTS
 
 @injectable()
 class BlogsService {
@@ -57,9 +58,9 @@ class BlogsService {
     const numPageSize = Number(pageSize)
 
     return {
-      searchNameTerm: searchNameTerm ?? 'null',
+      searchNameTerm: searchNameTerm ?? SEARCH_NAME_TERM,
       sortBy: sortBy ?? SORT_BY,
-      sortDirection: SORT_DIRECTION[sortDirection!] ?? SORT_DIRECTION.desc,
+      sortDirection: SORT_DIRECTION[sortDirection] ?? SORT_DIRECTION.desc,
       pageNumber: isFinite(numPageNumber)
         ? Math.max(numPageNumber, PAGE_NUMBER)
         : PAGE_NUMBER,

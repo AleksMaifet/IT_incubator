@@ -17,15 +17,15 @@ class PostsRepository {
 
     const totalCount = await this.postModel.countDocuments()
     const pagesCount = Math.ceil(totalCount / pageSize)
-    const skipBlogs = (pageNumber - 1) * pageSize
+    const skip = (pageNumber - 1) * pageSize
 
     const findOptions = {
       limit: pageSize,
-      skip: skipBlogs,
+      skip: skip,
       sort: { [sortBy]: sortDirection },
     }
 
-    const postsResponse: IPostsResponse = {
+    const response: IPostsResponse = {
       pagesCount,
       page: pageNumber,
       pageSize,
@@ -33,11 +33,9 @@ class PostsRepository {
       items: [],
     }
 
-    postsResponse.items = await this.postModel
-      .find({}, null, findOptions)
-      .exec()
+    response.items = await this.postModel.find({}, null, findOptions).exec()
 
-    return postsResponse
+    return response
   }
 
   public getById = async (id: string) => {

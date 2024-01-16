@@ -25,16 +25,16 @@ class BlogsRepository {
       .find({ name: { $regex: regex } })
       .countDocuments()
 
-    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+    const { response, findOptions } = this.createdFindOptionsAndResponse({
       ...rest,
       totalCount,
     })
 
-    blogsResponse.items = await this.blogModel
+    response.items = await this.blogModel
       .find({ name: { $regex: regex } }, null, findOptions)
       .exec()
 
-    return blogsResponse
+    return response
   }
 
   private getAllWithoutSearchNameTerm = async (
@@ -42,16 +42,14 @@ class BlogsRepository {
   ) => {
     const totalCount = await this.blogModel.countDocuments()
 
-    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+    const { response, findOptions } = this.createdFindOptionsAndResponse({
       ...dto,
       totalCount,
     })
 
-    blogsResponse.items = await this.blogModel
-      .find({}, null, findOptions)
-      .exec()
+    response.items = await this.blogModel.find({}, null, findOptions).exec()
 
-    return blogsResponse
+    return response
   }
 
   private createdFindOptionsAndResponse = <T>(
@@ -65,15 +63,15 @@ class BlogsRepository {
     const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
 
     const pagesCount = Math.ceil(totalCount / pageSize)
-    const skipBlogs = (pageNumber - 1) * pageSize
+    const skip = (pageNumber - 1) * pageSize
 
     const findOptions = {
       limit: pageSize,
-      skip: skipBlogs,
+      skip: skip,
       sort: { [sortBy]: sortDirection },
     }
 
-    const blogsResponse: IBlogsResponse & {
+    const response: IBlogsResponse & {
       items: T[]
     } = {
       pagesCount,
@@ -83,7 +81,7 @@ class BlogsRepository {
       items: [],
     }
 
-    return { blogsResponse, findOptions }
+    return { response, findOptions }
   }
 
   public getAll = async (dto: GetBlogsRequestQuery<number>) => {
@@ -108,16 +106,16 @@ class BlogsRepository {
       .find({ blogId: id })
       .countDocuments()
 
-    const { blogsResponse, findOptions } = this.createdFindOptionsAndResponse({
+    const { response, findOptions } = this.createdFindOptionsAndResponse({
       ...query,
       totalCount,
     })
 
-    blogsResponse.items = await this.postModel
+    response.items = await this.postModel
       .find({ blogId: id }, null, findOptions)
       .exec()
 
-    return blogsResponse
+    return response
   }
 
   public updateById = async (id: string, dto: UpdateBlogDto) => {

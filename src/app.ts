@@ -2,8 +2,10 @@ import express, { Express, json } from 'express'
 import { Server } from 'http'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { ILogger } from './services/logger/logger.interface'
+import { ILogger } from './services'
 import { TestingController } from './testing'
+import { AuthController } from './auth'
+import { UsersController } from './users'
 import { VideosController } from './videos'
 import { BlogsController } from './blogs'
 import { ConfigService } from './services'
@@ -24,6 +26,10 @@ class App {
     @inject(TYPES.MongoService) private readonly mongoService: MongoService,
     @inject(TYPES.TestingController)
     private readonly testingController: TestingController,
+    @inject(TYPES.AuthController)
+    private readonly authController: AuthController,
+    @inject(TYPES.UsersController)
+    private readonly usersController: UsersController,
     @inject(TYPES.VideosController)
     private readonly videosController: VideosController,
     @inject(TYPES.BlogsController)
@@ -51,8 +57,9 @@ class App {
     /**
      App routes
      */
-
     const primaryRoutes = [
+      { path: '/auth', controller: this.authController.router },
+      { path: '/users', controller: this.usersController.router },
       { path: '/videos', controller: this.videosController.router },
       { path: '/blogs', controller: this.blogsController.router },
       { path: '/posts', controller: this.postsController.router },
@@ -61,7 +68,6 @@ class App {
     /**
      Route for test
      */
-
     this.app.use('/testing', this.testingController.router)
 
     primaryRoutes.forEach((r) => {

@@ -22,8 +22,15 @@ import {
   PostsRepository,
   PostsService,
 } from './posts'
+import {
+  UserModel,
+  UsersController,
+  UsersRepository,
+  UsersService,
+} from './users'
+import { AuthController, AuthRepository, AuthService } from './auth'
 import { TYPES } from './types'
-import { ILogger } from './services/logger/logger.interface'
+import { ILogger } from './services'
 import { AuthMiddlewareGuard, IMiddleware } from './middlewares'
 
 const appBindings = new ContainerModule((bind: interfaces.Bind) => {
@@ -31,20 +38,27 @@ const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<ILogger>(TYPES.ILogger).to(LoggerService).inSingletonScope()
   bind<ConfigService>(TYPES.ConfigService).to(ConfigService).inSingletonScope()
   bind<MongoService>(TYPES.MongoService).to(MongoService).inSingletonScope()
+  bind<AuthController>(TYPES.AuthController).to(AuthController)
+  bind<UsersController>(TYPES.UsersController).to(UsersController)
   bind<VideosController>(TYPES.VideosController).to(VideosController)
   bind<BlogsController>(TYPES.BlogsController).to(BlogsController)
   bind<PostsController>(TYPES.PostsController).to(PostsController)
   bind<VideosService>(TYPES.VideosService).to(VideosService)
   bind<BlogsService>(TYPES.BlogsService).to(BlogsService)
   bind<PostsService>(TYPES.PostsService).to(PostsService)
+  bind<AuthService>(TYPES.AuthService).to(AuthService)
+  bind<UsersService>(TYPES.UsersService).to(UsersService)
   bind<VideosRepository>(TYPES.VideosRepository).to(VideosRepository)
   bind<BlogsRepository>(TYPES.BlogsRepository).to(BlogsRepository)
   bind<PostsRepository>(TYPES.PostsRepository).to(PostsRepository)
+  bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository)
+  bind<AuthRepository>(TYPES.AuthRepository).to(AuthRepository)
   bind<TestingController>(TYPES.TestingController).to(TestingController)
   bind<TestingRepository>(TYPES.TestingRepository).to(TestingRepository)
   bind<typeof BlogModel>(TYPES.BlogModel).toConstantValue(BlogModel)
   bind<typeof PostModel>(TYPES.PostModel).toConstantValue(PostModel)
   bind<typeof VideoModel>(TYPES.VideoModel).toConstantValue(VideoModel)
+  bind<typeof UserModel>(TYPES.UserModel).toConstantValue(UserModel)
   bind<IMiddleware>(TYPES.AuthMiddlewareGuard).to(AuthMiddlewareGuard)
 })
 

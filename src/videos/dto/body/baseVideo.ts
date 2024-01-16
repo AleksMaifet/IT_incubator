@@ -4,22 +4,23 @@ import {
   AVAILABLE_RESOLUTIONS,
   MAX_AUTHOR_TITLE_LENGTH,
   MAX_TITLE_LENGTH,
+  MIN_LENGTH,
 } from '../../constants'
 import { AvailableResolutionsType } from '../../video.model'
 
 class BaseVideoDto {
   @IsString()
   @Transform(({ value }) => value?.trim())
-  @Length(1, MAX_TITLE_LENGTH)
+  @Length(MIN_LENGTH, MAX_TITLE_LENGTH)
   readonly title: string
 
   @IsString()
   @Transform(({ value }) => value?.trim())
-  @Length(1, MAX_AUTHOR_TITLE_LENGTH)
+  @Length(MIN_LENGTH, MAX_AUTHOR_TITLE_LENGTH)
   readonly author: string
 
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(MIN_LENGTH)
   @IsIn(AVAILABLE_RESOLUTIONS, { each: true })
   readonly availableResolutions: AvailableResolutionsType
 }
