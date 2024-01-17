@@ -1,10 +1,10 @@
-import { Application } from 'express'
 import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
 import { BaseBlogDto } from '../src/blogs/dto/body'
 import { CreatePostDto } from '../src/posts'
+import { makeAuthRequest } from './index'
 
 let application: App
 const errorId = '00000000000000'
@@ -18,23 +18,6 @@ const updateCreateBlog: BaseBlogDto = {
   name: 'string',
   description: 'string',
   websiteUrl: 'https://google.com',
-}
-
-const makeAuthRequest = <T>(
-  app: Application,
-  method: 'post' | 'put' | 'delete',
-  url: string,
-  body?: T
-) => {
-  let req = request(app)
-    [method](url)
-    .set('authorization', 'Basic YWRtaW46cXdlcnR5')
-
-  if (body) {
-    req = req.send(body)
-  }
-
-  return req
 }
 
 beforeAll(async () => {

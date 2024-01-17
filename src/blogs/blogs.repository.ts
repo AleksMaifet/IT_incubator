@@ -87,7 +87,7 @@ class BlogsRepository {
   public getAll = async (dto: GetBlogsRequestQuery<number>) => {
     const { searchNameTerm, ...rest } = dto
 
-    if (searchNameTerm === 'null' || !searchNameTerm) {
+    if (searchNameTerm === 'null') {
       return await this.getAllWithoutSearchNameTerm(rest)
     }
 

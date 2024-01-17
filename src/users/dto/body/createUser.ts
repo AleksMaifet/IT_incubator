@@ -23,8 +23,6 @@ class CreateUserDto {
 
   @IsNotEmpty()
   @IsString()
-
-  // TODO fixed pattern, check tests result
   @Matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {
     message: 'email must be a valid',
   })
