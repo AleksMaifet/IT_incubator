@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
-import { UsersService } from '../users'
+import { UsersService, IUser } from '../users'
 import { BaseLoginDto } from './dto'
 import { AuthRepository } from './auth.repository'
 
@@ -25,7 +25,22 @@ class AuthService {
       user.passwordSalt
     )
 
-    return passwordHash === user.passwordHash
+    if (passwordHash !== user.passwordHash) {
+      return false
+    }
+
+    return this._mapGenerateUserResponse(user)
+  }
+
+  private _mapGenerateUserResponse = (user: IUser) => {
+    const { id, login, email, createdAt } = user
+
+    return {
+      id,
+      login,
+      email,
+      createdAt,
+    }
   }
 }
 

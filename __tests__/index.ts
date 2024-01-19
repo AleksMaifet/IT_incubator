@@ -1,7 +1,7 @@
 import { Application, Router } from 'express'
 import request from 'supertest'
 
-const makeAuthRequest = <T>(
+const makeAuthBasicRequest = <T>(
   app: Application,
   method: keyof Pick<Router, 'get' | 'post' | 'delete' | 'patch' | 'put'>,
   url: string,
@@ -11,11 +11,27 @@ const makeAuthRequest = <T>(
     [method](url)
     .set('authorization', 'Basic YWRtaW46cXdlcnR5')
 
-  if (body) {
-    req = req.send(body)
+  if (!body) {
+    return req
   }
 
-  return req
+  return req.send(body)
 }
 
-export { makeAuthRequest }
+const makeAuthBearerRequest = <T>(
+  app: Application,
+  method: keyof Pick<Router, 'get' | 'post' | 'delete' | 'patch' | 'put'>,
+  jwtToken: string,
+  url: string,
+  body?: T
+) => {
+  let req = request(app)[method](url).set('authorization', `Bearer ${jwtToken}`)
+
+  if (!body) {
+    return req
+  }
+
+  return req.send(body)
+}
+
+export { makeAuthBasicRequest, makeAuthBearerRequest }

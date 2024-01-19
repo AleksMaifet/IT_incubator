@@ -12,6 +12,7 @@ import { ConfigService } from './services'
 import { PostsController } from './posts'
 import { MongoService } from './db'
 import { TYPES } from './types'
+import { CommentsController } from './comments'
 
 @injectable()
 class App {
@@ -35,7 +36,9 @@ class App {
     @inject(TYPES.BlogsController)
     private readonly blogsController: BlogsController,
     @inject(TYPES.PostsController)
-    private readonly postsController: PostsController
+    private readonly postsController: PostsController,
+    @inject(TYPES.CommentsController)
+    private readonly commentsController: CommentsController
   ) {
     this.app = express()
     this.port = this.normalizePort(this.configService.get('PORT'))
@@ -63,6 +66,7 @@ class App {
       { path: '/videos', controller: this.videosController.router },
       { path: '/blogs', controller: this.blogsController.router },
       { path: '/posts', controller: this.postsController.router },
+      { path: '/comments', controller: this.commentsController.router },
     ]
 
     /**

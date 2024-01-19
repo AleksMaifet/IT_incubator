@@ -1,4 +1,8 @@
-import { sortDirectionType } from '../blogs/interfaces'
+import { DEFAULTS } from './constants'
+
+const { SORT_DIRECTION } = DEFAULTS
+
+type sortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
 
 interface IUser {
   id: string
@@ -23,6 +27,7 @@ interface IUsersResponse {
   page: number
   pageSize: number
   totalCount: number
+  items: Omit<IUser, 'passwordSalt' | 'passwordHash'>[]
 }
 
 export { IUser, GetUsersRequestQuery, IUsersResponse }

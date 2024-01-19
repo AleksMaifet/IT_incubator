@@ -1,3 +1,5 @@
+import { CommentsRepository, CommentsService } from '../comments'
+
 const TYPES = {
   Application: Symbol.for('Application'),
   ILogger: Symbol.for('ILogger'),
@@ -9,23 +11,29 @@ const TYPES = {
   PostsController: Symbol.for('PostsController'),
   AuthController: Symbol.for('AuthController'),
   UsersController: Symbol.for('UsersController'),
+  CommentsController: Symbol.for('CommentsController'),
   VideosService: Symbol.for('VideosService'),
   BlogsService: Symbol.for('BlogsService'),
   PostsService: Symbol.for('PostsService'),
   UsersService: Symbol.for('UsersService'),
   AuthService: Symbol.for('AuthService'),
+  JwtService: Symbol.for('JwtService'),
+  CommentsService: Symbol.for('CommentsService'),
   VideosRepository: Symbol.for('VideosRepository'),
   BlogsRepository: Symbol.for('BlogsRepository'),
   PostsRepository: Symbol.for('PostsRepository'),
   UsersRepository: Symbol.for('UsersRepository'),
-  AuthRepository: Symbol.for('AuthRepositor'),
+  CommentsRepository: Symbol.for('CommentsRepository'),
+  AuthRepository: Symbol.for('AuthRepository'),
   TestingController: Symbol.for('TestingController'),
   TestingRepository: Symbol.for('TestingRepository'),
   BlogModel: Symbol.for('BlogModel'),
   VideoModel: Symbol.for('VideoModel'),
   PostModel: Symbol.for('PostModel'),
   UserModel: Symbol.for('UserModel'),
-  AuthMiddlewareGuard: Symbol.for('AuthMiddlewareGuard'),
+  CommentModel: Symbol.for('CommentModel'),
+  AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
+  AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),
 }
 
 export { TYPES }

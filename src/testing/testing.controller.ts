@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { BaseController } from '../common/base.controller'
+import { BaseController } from '../common'
 import { TYPES } from '../types'
 import { TestingRepository } from './testing.repository'
 
@@ -19,7 +19,7 @@ class TestingController extends BaseController {
     })
   }
 
-  cleanDBs = async (_: Request, res: Response) => {
+  private cleanDBs = async (_: Request, res: Response) => {
     await this.testingRepository.deleteAll()
 
     res.sendStatus(204)

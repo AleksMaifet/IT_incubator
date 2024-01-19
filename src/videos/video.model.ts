@@ -1,24 +1,9 @@
 import { model, Schema } from 'mongoose'
-import { AVAILABLE_RESOLUTIONS } from './constants'
-
-type AvailableResolutionsType = Nullable<
-  (typeof AVAILABLE_RESOLUTIONS)[number][]
->
-
-interface IVideo {
-  id: number
-  title: string
-  author: string
-  canBeDownloaded: boolean
-  minAgeRestriction: Nullable<number>
-  createdAt: string
-  publicationDate: string
-  availableResolutions: AvailableResolutionsType
-}
+import { IVideo } from './interfaces'
 
 const VideoSchema = new Schema<IVideo>(
   {
-    id: { type: Number, required: true },
+    id: { type: Number, required: true, index: true },
     title: { type: String, required: true },
     author: { type: String, required: true },
     canBeDownloaded: { type: Boolean, required: true },
@@ -37,6 +22,6 @@ const VideoSchema = new Schema<IVideo>(
   }
 )
 
-const VideoModel = model<IVideo>('Video', VideoSchema)
+const VideoModel = model<IVideo>('Videos', VideoSchema)
 
-export { VideoModel, AvailableResolutionsType }
+export { VideoModel }

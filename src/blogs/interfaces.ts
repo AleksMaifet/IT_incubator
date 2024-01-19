@@ -21,11 +21,12 @@ interface IBlog {
   isMembership: boolean
 }
 
-interface IBlogsResponse {
+interface IBlogsResponse<T> {
   pagesCount: number
   page: number
   pageSize: number
   totalCount: number
+  items: T[]
 }
 
-export { GetBlogsRequestQuery, sortDirectionType, IBlog, IBlogsResponse }
+export { GetBlogsRequestQuery, IBlog, IBlogsResponse }

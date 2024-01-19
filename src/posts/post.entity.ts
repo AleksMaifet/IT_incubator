@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
+import { IPost } from './interfaces'
 
-class Post {
+class Post implements IPost {
   public readonly id: string
   public readonly createdAt: Date
 

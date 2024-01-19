@@ -4,7 +4,7 @@ import { boot } from '../src/main'
 import { App } from '../src/app'
 import { BaseBlogDto } from '../src/blogs/dto/body'
 import { CreatePostDto } from '../src/posts'
-import { makeAuthRequest } from './index'
+import { makeAuthBasicRequest } from './index'
 
 let application: App
 const errorId = '00000000000000'
@@ -36,7 +36,7 @@ describe('Blogs', () => {
   })
 
   it('GET blogs by id success', async () => {
-    const res = await makeAuthRequest(
+    const res = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
@@ -59,11 +59,11 @@ describe('Blogs', () => {
   })
 
   it('POST not created blog with error', async () => {
-    await makeAuthRequest(application.app, 'post', '/blogs').expect(400)
+    await makeAuthBasicRequest(application.app, 'post', '/blogs').expect(400)
   })
 
   it('POST created blog success', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
@@ -72,13 +72,13 @@ describe('Blogs', () => {
   })
 
   it('PUT update blog by id success', async () => {
-    const res = await makeAuthRequest(
+    const res = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'put',
       '/blogs' + `/${res.body.id}`,
@@ -87,7 +87,7 @@ describe('Blogs', () => {
   })
 
   it('PUT not update blog by id with error', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'put',
       '/blogs' + `/${errorId}`
@@ -95,14 +95,14 @@ describe('Blogs', () => {
   })
 
   it('DELETE delete blog by id success', async () => {
-    const res = await makeAuthRequest(
+    const res = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
 
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       '/blogs' + `/${res.body.id}`
@@ -110,7 +110,7 @@ describe('Blogs', () => {
   })
 
   it('DELETE not delete blog by id with error', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       '/blogs' + `/${errorId}`
@@ -126,14 +126,14 @@ describe('Posts', () => {
   })
 
   it('GET posts by id success', async () => {
-    const resBlog = await makeAuthRequest(
+    const resBlog = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
 
-    const res = await makeAuthRequest(application.app, 'post', '/posts', {
+    const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
       ...updateCreatePost,
       blogId: resBlog.body.id,
     })
@@ -154,36 +154,36 @@ describe('Posts', () => {
   })
 
   it('POST not created post with error', async () => {
-    await makeAuthRequest(application.app, 'post', '/posts').expect(400)
+    await makeAuthBasicRequest(application.app, 'post', '/posts').expect(400)
   })
 
   it('POST created post success', async () => {
-    const resBlog = await makeAuthRequest(
+    const resBlog = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
 
-    await makeAuthRequest(application.app, 'post', '/posts', {
+    await makeAuthBasicRequest(application.app, 'post', '/posts', {
       ...updateCreatePost,
       blogId: resBlog.body.id,
     }).expect(201)
   })
 
   it('PUT update post by id success', async () => {
-    const resBlog = await makeAuthRequest(
+    const resBlog = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
 
-    const res = await makeAuthRequest(application.app, 'post', '/posts', {
+    const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
       ...updateCreatePost,
       blogId: resBlog.body.id,
     })
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'put',
       '/posts' + `/${res.body.id}`,
@@ -195,7 +195,7 @@ describe('Posts', () => {
   })
 
   it('PUT not update video by id with error', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'put',
       '/posts' + `/${errorId}`
@@ -203,18 +203,18 @@ describe('Posts', () => {
   })
 
   it('DELETE delete video by id success', async () => {
-    const resBlog = await makeAuthRequest(
+    const resBlog = await makeAuthBasicRequest(
       application.app,
       'post',
       '/blogs',
       updateCreateBlog
     )
 
-    const res = await makeAuthRequest(application.app, 'post', '/posts', {
+    const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
       ...updateCreatePost,
       blogId: resBlog.body.id,
     })
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       '/posts' + `/${res.body.id}`
@@ -222,7 +222,7 @@ describe('Posts', () => {
   })
 
   it('DELETE not delete video by id with error', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       '/posts' + `/${errorId}`

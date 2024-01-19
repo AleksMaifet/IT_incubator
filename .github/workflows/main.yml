@@ -24,6 +24,7 @@ jobs:
       - name: test app
         run: yarn jest
         env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
           BASIC_LOGIN: ${{ secrets.BASIC_LOGIN }}
           BASIC_PASSWORD: ${{ secrets.BASIC_PASSWORD }}
           MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}

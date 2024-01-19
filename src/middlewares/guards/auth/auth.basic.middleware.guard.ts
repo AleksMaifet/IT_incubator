@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { IMiddleware } from '../middleware.interface'
-import { TYPES } from '../../types'
-import { ConfigService } from '../../services'
+import { IMiddleware } from '../../middleware.interface'
+import { TYPES } from '../../../types'
+import { ConfigService } from '../../../services'
 
 @injectable()
-class AuthMiddlewareGuard implements IMiddleware {
+class AuthBasicMiddlewareGuard implements IMiddleware {
   constructor(
     @inject(TYPES.ConfigService)
     private readonly configService: ConfigService
@@ -16,7 +16,7 @@ class AuthMiddlewareGuard implements IMiddleware {
     const { authorization } = req.headers
 
     const sendResponse = () => {
-      res.status(401).json({ message: 'Unauthorized' })
+      res.sendStatus(401)
     }
 
     if (!authorization) {
@@ -46,4 +46,4 @@ class AuthMiddlewareGuard implements IMiddleware {
   }
 }
 
-export { AuthMiddlewareGuard }
+export { AuthBasicMiddlewareGuard }

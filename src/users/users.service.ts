@@ -29,9 +29,9 @@ class UsersService {
 
     const passwordSalt = await genSalt(10)
     const passwordHash = await this.generateHash(password, passwordSalt)
-    const user = new User(login, email, passwordSalt, passwordHash)
+    const newUser = new User(login, email, passwordSalt, passwordHash)
 
-    return await this.usersRepository.create(user)
+    return await this.usersRepository.create(newUser)
   }
 
   public getAll = async (query: GetUsersRequestQuery<string>) => {

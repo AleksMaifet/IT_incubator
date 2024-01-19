@@ -6,7 +6,7 @@ import {
   MAX_TITLE_LENGTH,
   MIN_LENGTH,
 } from '../../constants'
-import { AvailableResolutionsType } from '../../video.model'
+import { AvailableResolutionsType } from '../../interfaces'
 
 class BaseVideoDto {
   @IsString()

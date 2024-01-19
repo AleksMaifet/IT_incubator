@@ -2,9 +2,10 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { CreateBlogDto, UpdateBlogDto } from './dto/body'
 import { BlogModel } from './blog.model'
-import { GetBlogsRequestQuery, IBlogsResponse } from './interfaces'
+import { GetBlogsRequestQuery, IBlog, IBlogsResponse } from './interfaces'
 import { PostModel } from '../posts'
 import { TYPES } from '../types'
+import { IPost } from '../posts/interfaces'
 
 @injectable()
 class BlogsRepository {
@@ -25,10 +26,12 @@ class BlogsRepository {
       .find({ name: { $regex: regex } })
       .countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse({
-      ...rest,
-      totalCount,
-    })
+    const { response, findOptions } = this.createdFindOptionsAndResponse<IBlog>(
+      {
+        ...rest,
+        totalCount,
+      }
+    )
 
     response.items = await this.blogModel
       .find({ name: { $regex: regex } }, null, findOptions)
@@ -42,10 +45,12 @@ class BlogsRepository {
   ) => {
     const totalCount = await this.blogModel.countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse({
-      ...dto,
-      totalCount,
-    })
+    const { response, findOptions } = this.createdFindOptionsAndResponse<IBlog>(
+      {
+        ...dto,
+        totalCount,
+      }
+    )
 
     response.items = await this.blogModel.find({}, null, findOptions).exec()
 
@@ -71,9 +76,7 @@ class BlogsRepository {
       sort: { [sortBy]: sortDirection },
     }
 
-    const response: IBlogsResponse & {
-      items: T[]
-    } = {
+    const response: IBlogsResponse<T> = {
       pagesCount,
       page: pageNumber,
       pageSize,
@@ -106,10 +109,12 @@ class BlogsRepository {
       .find({ blogId: id })
       .countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse({
-      ...query,
-      totalCount,
-    })
+    const { response, findOptions } = this.createdFindOptionsAndResponse<IPost>(
+      {
+        ...query,
+        totalCount,
+      }
+    )
 
     response.items = await this.postModel
       .find({ blogId: id }, null, findOptions)

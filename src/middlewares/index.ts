@@ -1,3 +1,3 @@
 export * from './validates'
-export * from './auth'
+export * from './guards'
 export * from './middleware.interface'

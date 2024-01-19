@@ -4,7 +4,7 @@ import { IBlog } from './interfaces'
 const BlogSchema = new Schema<IBlog>(
   {
     id: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     description: { type: String, required: true },
     websiteUrl: { type: String, required: true },
     createdAt: { type: Date, required: true },
@@ -20,6 +20,6 @@ const BlogSchema = new Schema<IBlog>(
   }
 )
 
-const BlogModel = model<IBlog>('Blog', BlogSchema)
+const BlogModel = model<IBlog>('Blogs', BlogSchema)
 
 export { BlogModel }

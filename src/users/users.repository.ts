@@ -121,7 +121,7 @@ class UsersRepository {
     return response
   }
 
-  private _createdFindOptionsAndResponse = <T>(
+  private _createdFindOptionsAndResponse = (
     dto: Omit<
       GetUsersRequestQuery<number> & {
         totalCount: number
@@ -140,9 +140,7 @@ class UsersRepository {
       sort: { [sortBy]: sortDirection },
     }
 
-    const response: IUsersResponse & {
-      items: T[]
-    } = {
+    const response: IUsersResponse = {
       pagesCount,
       page: pageNumber,
       pageSize,
@@ -175,7 +173,13 @@ class UsersRepository {
   }
 
   public getById = async (id: string) => {
-    return await this.userModel.findOne({ id }).exec()
+    const user = await this.userModel.findOne({ id }).exec()
+
+    if (!user) {
+      return null
+    }
+
+    return this._mapGenerateUserResponse(user)
   }
 
   public create = async (dto: IUser) => {

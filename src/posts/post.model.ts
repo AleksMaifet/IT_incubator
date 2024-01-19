@@ -3,11 +3,11 @@ import { IPost } from './interfaces'
 
 const PostSchema = new Schema<IPost>(
   {
-    id: { type: String, required: true },
+    id: { type: String, required: true, index: true },
     title: { type: String, required: true },
     shortDescription: { type: String, required: true },
     content: { type: String, required: true },
-    blogId: { type: String, required: true },
+    blogId: { type: String, required: true, index: true },
     blogName: { type: String, required: true },
     createdAt: { type: Date, required: true },
   },
@@ -21,6 +21,6 @@ const PostSchema = new Schema<IPost>(
   }
 )
 
-const PostModel = model<IPost>('Post', PostSchema)
+const PostModel = model<IPost>('Posts', PostSchema)
 
 export { PostModel }

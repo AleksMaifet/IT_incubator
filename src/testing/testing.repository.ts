@@ -5,6 +5,7 @@ import { PostModel } from '../posts'
 import { BlogModel } from '../blogs'
 import { UserModel } from '../users'
 import { TYPES } from '../types'
+import { CommentModel } from '../comments'
 
 @injectable()
 class TestingRepository {
@@ -16,7 +17,9 @@ class TestingRepository {
     @inject(TYPES.PostModel)
     private readonly postModel: typeof PostModel,
     @inject(TYPES.UserModel)
-    private readonly userModel: typeof UserModel
+    private readonly userModel: typeof UserModel,
+    @inject(TYPES.CommentModel)
+    private readonly commentModel: typeof CommentModel
   ) {}
 
   public deleteAll = async () => {
@@ -24,6 +27,7 @@ class TestingRepository {
     await this.blogModel.deleteMany()
     await this.postModel.deleteMany()
     await this.userModel.deleteMany()
+    await this.commentModel.deleteMany()
   }
 }
 

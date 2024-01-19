@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { CreateVideoDto, UpdateVideoDto } from './dto/body'
-import { VideoModel } from './video.model'
 import { TYPES } from '../types'
+import { CreateVideoDto, UpdateVideoDto } from './dto'
+import { VideoModel } from './video.model'
 
 @injectable()
 class VideosRepository {

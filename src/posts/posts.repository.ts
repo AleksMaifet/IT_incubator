@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
-import { CreatePostDto, UpdatePostDto } from './dto/body'
+import { CreatePostDto, UpdatePostDto } from './dto'
 import { PostModel } from './post.model'
 import { GetPostsRequestQuery, IPostsResponse } from './interfaces'
 

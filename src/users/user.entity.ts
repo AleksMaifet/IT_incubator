@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
+import { IUser } from './interfaces'
 
-class User {
+class User implements IUser {
   public readonly id: string
   public readonly createdAt: Date
 

@@ -2,7 +2,7 @@ import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthRequest } from './index'
+import { makeAuthBasicRequest } from './index'
 
 let application: App
 const invalidId = '00000000000000'
@@ -26,7 +26,7 @@ beforeAll(async () => {
 
 describe('Users', () => {
   it('POST -> "/users": should create a new user', async () => {
-    const response = await makeAuthRequest(
+    const response = await makeAuthBasicRequest(
       application.app,
       'post',
       '/users',
@@ -44,7 +44,7 @@ describe('Users', () => {
   })
 
   it('GET -> "/users": should return users array with pagination', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'get',
       `/users?pageNumber=${pageNumber}&pageSize=${pageSize}`
@@ -66,14 +66,14 @@ describe('Users', () => {
   })
 
   it('DELETE -> "/users/:id": should delete user by id', async () => {
-    const response = await makeAuthRequest(
+    const response = await makeAuthBasicRequest(
       application.app,
       'post',
       '/users',
       userData
     )
 
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       `/users/${response.body.id}`
@@ -81,7 +81,7 @@ describe('Users', () => {
   })
 
   it('DELETE -> "/users/:id": should return an error if :id is not found', async () => {
-    await makeAuthRequest(
+    await makeAuthBasicRequest(
       application.app,
       'delete',
       `/users/${invalidId}`
@@ -89,39 +89,11 @@ describe('Users', () => {
   })
 
   it('POST -> "/users": should return an error if passed body is incorrect', async () => {
-    await makeAuthRequest(application.app, 'post', '/users', {
+    await makeAuthBasicRequest(application.app, 'post', '/users', {
       ...userData,
       login: '1',
       password: userData.email,
     }).expect(400)
-  })
-})
-
-describe('Auth', () => {
-  it('POST -> "/users": should create a new user', async () => {
-    await makeAuthRequest(application.app, 'post', '/users', userData).expect(
-      201
-    )
-  })
-
-  it('POST -> "/auth/login": should sign in user', async () => {
-    await request(application.app)
-      .post('/auth/login')
-      .send({
-        loginOrEmail: userData.email,
-        password: userData.password,
-      })
-      .expect(204)
-  })
-
-  it('POST -> "/auth/login": should return an error if passed wrong login or password', async () => {
-    await request(application.app)
-      .post('/auth/login')
-      .send({
-        loginOrEmail: userData.login,
-        password: '1',
-      })
-      .expect(401)
   })
 })
 

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { BaseController } from '../common/base.controller'
+import { BaseController } from '../common'
 import { TYPES } from '../types'
 import {
-  AuthMiddlewareGuard,
+  AuthBasicMiddlewareGuard,
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
@@ -15,8 +15,8 @@ import { GetUsersRequestQuery } from './interfaces'
 @injectable()
 class UsersController extends BaseController {
   constructor(
-    @inject(TYPES.AuthMiddlewareGuard)
-    private readonly authMiddlewareGuard: AuthMiddlewareGuard,
+    @inject(TYPES.AuthBasicMiddlewareGuard)
+    private readonly authBasicMiddlewareGuard: AuthBasicMiddlewareGuard,
     @inject(TYPES.UsersService)
     private readonly usersService: UsersService
   ) {
@@ -25,14 +25,14 @@ class UsersController extends BaseController {
       path: '/',
       method: 'get',
       func: this.getAll,
-      middlewares: [this.authMiddlewareGuard],
+      middlewares: [this.authBasicMiddlewareGuard],
     })
     this.bindRoutes({
       path: '/',
       method: 'post',
       func: this.create,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateBodyMiddleware(CreateUserDto),
       ],
     })
@@ -41,13 +41,13 @@ class UsersController extends BaseController {
       method: 'delete',
       func: this.deleteById,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateParamsMiddleware(UserExist),
       ],
     })
   }
 
-  public getAll = async (
+  private getAll = async (
     req: Request<{}, {}, {}, GetUsersRequestQuery<string>>,
     res: Response
   ) => {
@@ -57,7 +57,7 @@ class UsersController extends BaseController {
 
     res.status(200).json(result)
   }
-  public create = async (
+  private create = async (
     req: Request<{}, {}, CreateUserDto>,
     res: Response
   ) => {
@@ -67,7 +67,10 @@ class UsersController extends BaseController {
 
     res.status(201).json(result)
   }
-  public deleteById = async ({ params }: Request<UserExist>, res: Response) => {
+  private deleteById = async (
+    { params }: Request<UserExist>,
+    res: Response
+  ) => {
     const { id } = params
 
     await this.usersService.deleteById(id)

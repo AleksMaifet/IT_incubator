@@ -10,10 +10,12 @@ const UserSchema = new Schema<IUser>(
     login: {
       type: String,
       required: true,
+      index: true,
     },
     email: {
       type: String,
       required: true,
+      index: true,
     },
     passwordSalt: {
       type: String,
@@ -38,6 +40,6 @@ const UserSchema = new Schema<IUser>(
   }
 )
 
-const UserModel = model<IUser>('User', UserSchema)
+const UserModel = model<IUser>('Users', UserSchema)
 
 export { UserModel }

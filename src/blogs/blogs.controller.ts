@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { BaseController } from '../common/base.controller'
+import { BaseController } from '../common'
 import {
-  AuthMiddlewareGuard,
+  AuthBasicMiddlewareGuard,
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
@@ -19,8 +19,8 @@ class BlogsController extends BaseController {
   constructor(
     @inject(TYPES.BlogsService) private readonly blogsService: BlogsService,
     @inject(TYPES.PostsService) private readonly postsService: PostsService,
-    @inject(TYPES.AuthMiddlewareGuard)
-    private readonly authMiddlewareGuard: AuthMiddlewareGuard
+    @inject(TYPES.AuthBasicMiddlewareGuard)
+    private readonly authBasicMiddlewareGuard: AuthBasicMiddlewareGuard
   ) {
     super()
     this.bindRoutes({
@@ -33,7 +33,7 @@ class BlogsController extends BaseController {
       method: 'post',
       func: this.create,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateBodyMiddleware(CreateBlogDto),
       ],
     })
@@ -54,7 +54,7 @@ class BlogsController extends BaseController {
       method: 'post',
       func: this.createPostByBlogId,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateParamsMiddleware(BlogExist),
         new ValidateBodyMiddleware(BasePostDto),
       ],
@@ -64,7 +64,7 @@ class BlogsController extends BaseController {
       method: 'put',
       func: this.updateById,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateParamsMiddleware(BlogExist),
         new ValidateBodyMiddleware(UpdateBlogDto),
       ],
@@ -74,13 +74,13 @@ class BlogsController extends BaseController {
       method: 'delete',
       func: this.deleteById,
       middlewares: [
-        this.authMiddlewareGuard,
+        this.authBasicMiddlewareGuard,
         new ValidateParamsMiddleware(BlogExist),
       ],
     })
   }
 
-  public getAll = async (
+  private getAll = async (
     req: Request<{}, {}, {}, GetBlogsRequestQuery<string>>,
     res: Response
   ) => {
@@ -90,7 +90,7 @@ class BlogsController extends BaseController {
 
     res.status(200).json(result)
   }
-  public getById = async ({ params }: Request<BlogExist>, res: Response) => {
+  private getById = async ({ params }: Request<BlogExist>, res: Response) => {
     const { id } = params
 
     const result = await this.blogsService.getById(id)
@@ -98,7 +98,7 @@ class BlogsController extends BaseController {
     res.status(200).json(result)
   }
 
-  public getPostsByBlogId = async (
+  private getPostsByBlogId = async (
     {
       params,
       query,
@@ -117,7 +117,7 @@ class BlogsController extends BaseController {
     res.status(200).json(result)
   }
 
-  public createPostByBlogId = async (
+  private createPostByBlogId = async (
     { body, params }: Request<BlogExist, {}, BasePostDto>,
     res: Response
   ) => {
@@ -128,7 +128,7 @@ class BlogsController extends BaseController {
     res.status(201).json(result)
   }
 
-  public create = async (
+  private create = async (
     { body }: Request<{}, {}, CreateBlogDto>,
     res: Response
   ) => {
@@ -136,7 +136,7 @@ class BlogsController extends BaseController {
 
     res.status(201).json(result)
   }
-  public updateById = async (
+  private updateById = async (
     { params, body }: Request<BlogExist, {}, UpdateBlogDto>,
     res: Response
   ) => {
@@ -146,7 +146,10 @@ class BlogsController extends BaseController {
 
     res.sendStatus(204)
   }
-  public deleteById = async ({ params }: Request<BlogExist>, res: Response) => {
+  private deleteById = async (
+    { params }: Request<BlogExist>,
+    res: Response
+  ) => {
     const { id } = params
 
     await this.blogsService.deleteById(id)

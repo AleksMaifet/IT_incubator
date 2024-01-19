@@ -1,6 +1,6 @@
-import { AvailableResolutionsType } from './video.model'
+import { AvailableResolutionsType, IVideo } from './interfaces'
 
-class Video {
+class Video implements IVideo {
   public readonly id: number
   public readonly createdAt: string
   public readonly publicationDate: string

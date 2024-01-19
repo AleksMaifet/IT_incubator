@@ -1,6 +1,7 @@
 import { Types } from 'mongoose'
+import { IBlog } from './interfaces'
 
-class Blog {
+class Blog implements IBlog {
   public readonly id: string
   public readonly createdAt: Date
   public readonly isMembership: boolean

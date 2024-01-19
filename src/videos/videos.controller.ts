@@ -1,15 +1,14 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { BaseController } from '../common/base.controller'
+import { BaseController } from '../common'
 import {
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
-import { CreateVideoDto, UpdateVideoDto } from './dto/body'
+import { CreateVideoDto, UpdateVideoDto, VideoExist } from './dto'
 import { VideosService } from './videos.service'
-import { VideoExist } from './dto/params'
 
 @injectable()
 class VideosController extends BaseController {
@@ -47,12 +46,12 @@ class VideosController extends BaseController {
     })
   }
 
-  getAll = async (_: Request, res: Response) => {
+  private getAll = async (_: Request, res: Response) => {
     const result = await this.videosService.getAll()
 
     res.status(200).json(result)
   }
-  getById = async ({ params }: Request<VideoExist>, res: Response) => {
+  private getById = async ({ params }: Request<VideoExist>, res: Response) => {
     const { id } = params
 
     const result = await this.videosService.getById(+id)
@@ -60,12 +59,15 @@ class VideosController extends BaseController {
     res.status(200).json(result)
   }
 
-  create = async ({ body }: Request<{}, {}, CreateVideoDto>, res: Response) => {
+  private create = async (
+    { body }: Request<{}, {}, CreateVideoDto>,
+    res: Response
+  ) => {
     const result = await this.videosService.create(body)
 
     res.status(201).json(result)
   }
-  updateById = async (
+  private updateById = async (
     { params, body }: Request<VideoExist, {}, UpdateVideoDto>,
     res: Response
   ) => {
@@ -75,7 +77,10 @@ class VideosController extends BaseController {
 
     res.sendStatus(204)
   }
-  deleteById = async ({ params }: Request<VideoExist>, res: Response) => {
+  private deleteById = async (
+    { params }: Request<VideoExist>,
+    res: Response
+  ) => {
     const { id } = params
 
     await this.videosService.deleteById(+id)
