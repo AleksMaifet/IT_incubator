@@ -3,16 +3,13 @@ import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthBasicRequest, makeAuthBearerRequest } from './index'
+import { makeAuthBasicRequest, makeAuthBearerRequest } from './auths'
+import { DEFAULT_TEST_DATA } from './data'
+
+const { USER_DATA } = DEFAULT_TEST_DATA
 
 let application: App
-const userData = {
-  login: '37ukNrWNgG',
-  password: 'string',
-  email:
-    '_mrkPmUcMJP2tlbPWUk6BCrgMnOi4mDQoaAU26biSxkYwNFnvlm2OfQvoUEt4axNefIaUmSiRgyC@3gTGCstAJzDfaqSuVgo4TAv4ysYRp' +
-    '.SnIrhf7Cc1Pz4PofoT2get_zNk3tNwWbM_jFKUcY.ygD',
-}
+
 beforeAll(async () => {
   const { app } = boot
 
@@ -27,7 +24,7 @@ describe('Auth', () => {
       application.app,
       'post',
       '/users',
-      userData
+      USER_DATA
     ).expect(201)
   })
 
@@ -35,8 +32,8 @@ describe('Auth', () => {
     const res = await request(application.app)
       .post('/auth/login')
       .send({
-        loginOrEmail: userData.email,
-        password: userData.password,
+        loginOrEmail: USER_DATA.email,
+        password: USER_DATA.password,
       })
       .expect(200)
 
@@ -47,7 +44,7 @@ describe('Auth', () => {
     await request(application.app)
       .post('/auth/login')
       .send({
-        loginOrEmail: userData.login,
+        loginOrEmail: USER_DATA.login,
         password: '1',
       })
       .expect(401)
@@ -55,8 +52,8 @@ describe('Auth', () => {
 
   it('GET -> "/auth/me": should return user info', async () => {
     const resLogin = await request(application.app).post('/auth/login').send({
-      loginOrEmail: userData.login,
-      password: userData.password,
+      loginOrEmail: USER_DATA.login,
+      password: USER_DATA.password,
     })
 
     const resMe = await makeAuthBearerRequest(

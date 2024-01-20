@@ -2,23 +2,13 @@ import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { BaseBlogDto } from '../src/blogs/dto/body'
-import { CreatePostDto } from '../src/posts'
-import { makeAuthBasicRequest } from './index'
+import { makeAuthBasicRequest } from './auths'
+import { DEFAULT_TEST_DATA } from './data'
+
+const { BLOG_DATA, POST_DATA } = DEFAULT_TEST_DATA
 
 let application: App
 const errorId = '00000000000000'
-const updateCreatePost: CreatePostDto = {
-  title: 'string',
-  content: 'string',
-  shortDescription: 'string',
-  blogId: 'string',
-}
-const updateCreateBlog: BaseBlogDto = {
-  name: 'string',
-  description: 'string',
-  websiteUrl: 'https://google.com',
-}
 
 beforeAll(async () => {
   const { app } = boot
@@ -40,7 +30,7 @@ describe('Blogs', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     await request(application.app)
@@ -67,7 +57,7 @@ describe('Blogs', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     ).expect(201)
   })
 
@@ -76,13 +66,13 @@ describe('Blogs', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
     await makeAuthBasicRequest(
       application.app,
       'put',
       '/blogs' + `/${res.body.id}`,
-      updateCreateBlog
+      BLOG_DATA
     ).expect(204)
   })
 
@@ -99,7 +89,7 @@ describe('Blogs', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     await makeAuthBasicRequest(
@@ -130,11 +120,11 @@ describe('Posts', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
-      ...updateCreatePost,
+      ...POST_DATA,
       blogId: resBlog.body.id,
     })
 
@@ -162,11 +152,11 @@ describe('Posts', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     await makeAuthBasicRequest(application.app, 'post', '/posts', {
-      ...updateCreatePost,
+      ...POST_DATA,
       blogId: resBlog.body.id,
     }).expect(201)
   })
@@ -176,11 +166,11 @@ describe('Posts', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
-      ...updateCreatePost,
+      ...POST_DATA,
       blogId: resBlog.body.id,
     })
     await makeAuthBasicRequest(
@@ -188,7 +178,7 @@ describe('Posts', () => {
       'put',
       '/posts' + `/${res.body.id}`,
       {
-        ...updateCreatePost,
+        ...POST_DATA,
         blogId: resBlog.body.id,
       }
     ).expect(204)
@@ -207,11 +197,11 @@ describe('Posts', () => {
       application.app,
       'post',
       '/blogs',
-      updateCreateBlog
+      BLOG_DATA
     )
 
     const res = await makeAuthBasicRequest(application.app, 'post', '/posts', {
-      ...updateCreatePost,
+      ...POST_DATA,
       blogId: resBlog.body.id,
     })
     await makeAuthBasicRequest(

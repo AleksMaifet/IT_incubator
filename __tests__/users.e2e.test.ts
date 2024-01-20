@@ -2,19 +2,15 @@ import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthBasicRequest } from './index'
+import { makeAuthBasicRequest } from './auths'
+import { DEFAULT_TEST_DATA } from './data'
+
+const { USER_DATA } = DEFAULT_TEST_DATA
 
 let application: App
 const invalidId = '00000000000000'
 const pageNumber = 1
 const pageSize = 10
-const userData = {
-  login: '37ukNrWNgG',
-  password: 'string',
-  email:
-    '_mrkPmUcMJP2tlbPWUk6BCrgMnOi4mDQoaAU26biSxkYwNFnvlm2OfQvoUEt4axNefIaUmSiRgyC@3gTGCstAJzDfaqSuVgo4TAv4ysYRp' +
-    '.SnIrhf7Cc1Pz4PofoT2get_zNk3tNwWbM_jFKUcY.ygD',
-}
 
 beforeAll(async () => {
   const { app } = boot
@@ -30,7 +26,7 @@ describe('Users', () => {
       application.app,
       'post',
       '/users',
-      userData
+      USER_DATA
     ).expect(201)
 
     expect(response.body).toHaveProperty('id')
@@ -62,7 +58,7 @@ describe('Users', () => {
   })
 
   it('POST-> "/users": should return an error if auth credentials are incorrect', async () => {
-    await request(application.app).post('/users').send(userData).expect(401)
+    await request(application.app).post('/users').send(USER_DATA).expect(401)
   })
 
   it('DELETE -> "/users/:id": should delete user by id', async () => {
@@ -70,7 +66,7 @@ describe('Users', () => {
       application.app,
       'post',
       '/users',
-      userData
+      USER_DATA
     )
 
     await makeAuthBasicRequest(
@@ -90,9 +86,9 @@ describe('Users', () => {
 
   it('POST -> "/users": should return an error if passed body is incorrect', async () => {
     await makeAuthBasicRequest(application.app, 'post', '/users', {
-      ...userData,
+      ...USER_DATA,
       login: '1',
-      password: userData.email,
+      password: USER_DATA.email,
     }).expect(400)
   })
 })

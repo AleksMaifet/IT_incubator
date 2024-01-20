@@ -28,4 +28,4 @@ jobs:
           BASIC_LOGIN: ${{ secrets.BASIC_LOGIN }}
           BASIC_PASSWORD: ${{ secrets.BASIC_PASSWORD }}
           MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
-          MONGO_DB_NAME: ${{ secrets.MONGO_DB_NAME }}
+          MONGO_DB_NAME_TEST: ${{ secrets.MONGO_DB_NAME_TEST }}

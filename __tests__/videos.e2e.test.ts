@@ -2,15 +2,12 @@ import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { CreateVideoDto } from '../src/videos'
+import { DEFAULT_TEST_DATA } from './data'
+
+const { VIDEO_DATA } = DEFAULT_TEST_DATA
 
 let application: App
 const errorVideoId = '00000000000000'
-const createdVideo: CreateVideoDto = {
-  title: 'string',
-  author: 'string',
-  availableResolutions: ['P144'],
-}
 
 beforeAll(async () => {
   const { app } = boot
@@ -26,9 +23,7 @@ describe('Videos', () => {
   })
 
   it('GET video by id success', async () => {
-    const res = await request(application.app)
-      .post('/videos')
-      .send(createdVideo)
+    const res = await request(application.app).post('/videos').send(VIDEO_DATA)
 
     await request(application.app).get(`/videos/${res.body.id}`).expect(200)
   })
@@ -38,10 +33,7 @@ describe('Videos', () => {
   })
 
   it('POST created video success', async () => {
-    await request(application.app)
-      .post('/videos')
-      .send(createdVideo)
-      .expect(201)
+    await request(application.app).post('/videos').send(VIDEO_DATA).expect(201)
   })
 
   it('POST not created video with error', async () => {
@@ -49,9 +41,7 @@ describe('Videos', () => {
   })
 
   it('PUT update video by id success', async () => {
-    const res = await request(application.app)
-      .post('/videos')
-      .send(createdVideo)
+    const res = await request(application.app).post('/videos').send(VIDEO_DATA)
 
     await request(application.app)
       .put(`/videos/${res.body.id}`)
@@ -71,9 +61,7 @@ describe('Videos', () => {
   })
 
   it('DELETE delete video by id success', async () => {
-    const res = await request(application.app)
-      .post('/videos')
-      .send(createdVideo)
+    const res = await request(application.app).post('/videos').send(VIDEO_DATA)
 
     await request(application.app).delete(`/videos/${res.body.id}`).expect(204)
   })
