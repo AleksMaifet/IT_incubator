@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { TYPES } from '../../../types'
-import { JwtService } from '../../../services'
-import { UsersRepository } from '../../../users'
+import { TYPES } from '@src/types'
+import { JwtService } from '@src/services'
+import { UsersRepository } from '@src/users'
 
 @injectable()
 class AuthBearerMiddlewareGuard {

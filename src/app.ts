@@ -1,4 +1,5 @@
 import express, { Express, json } from 'express'
+import 'module-alias/register'
 import { Server } from 'http'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'

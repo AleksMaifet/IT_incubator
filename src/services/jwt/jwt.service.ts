@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { sign, verify } from 'jsonwebtoken'
-import { TYPES } from '../../types'
+import { TYPES } from '@src/types'
 import { ConfigService } from '../config'
 import { LoggerService } from '../logger'
 
