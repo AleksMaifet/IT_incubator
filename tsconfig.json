@@ -31,12 +31,8 @@
     /* Specify what module code is generated. */
     /* Specify the root folder within your source files. */
     // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
-    "baseUrl": "./",
-    "paths": {
-      "@src/*": [
-        "src/*"
-      ]
-    },
+    // "baseUrl": "",
+    // "paths": {},
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
     // "types": [],                                      /* Specify type package names to be included without being referenced in a source file. */
@@ -122,7 +118,6 @@
     /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "api/*.ts",
     "src/**/*"
   ],
   "exclude": [

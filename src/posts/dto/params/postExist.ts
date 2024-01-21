@@ -1,5 +1,5 @@
 import { Validate } from 'class-validator'
-import { IsPostExist } from '@src/middlewares/libs/customValidDecorators'
+import { IsPostExist } from '../../../middlewares/libs/customValidDecorators'
 
 class PostExist {
   @Validate(IsPostExist, {
