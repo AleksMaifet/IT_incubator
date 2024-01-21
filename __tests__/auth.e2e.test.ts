@@ -29,14 +29,12 @@ describe('Auth', () => {
   })
 
   it('POST -> "/auth/login": should sign in user', async () => {
-    const res = await request(application.app)
-      .post('/auth/login')
-      .send({
-        loginOrEmail: USER_DATA.email,
-        password: USER_DATA.password,
-      })
-      .expect(200)
+    const res = await request(application.app).post('/auth/login').send({
+      loginOrEmail: USER_DATA.email,
+      password: USER_DATA.password,
+    })
 
+    expect(res.status).toBe(200)
     expect(res.body).toHaveProperty('accessToken')
   })
 
@@ -61,8 +59,9 @@ describe('Auth', () => {
       'get',
       resLogin.body.accessToken,
       '/auth/me'
-    ).expect(200)
+    )
 
+    expect(resMe.status).toBe(200)
     expect(resMe.body).toHaveProperty('email')
     expect(resMe.body).toHaveProperty('login')
     expect(resMe.body).toHaveProperty('userId')

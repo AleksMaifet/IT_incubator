@@ -43,7 +43,7 @@ class MongoService {
 
   public disconnect = async () => {
     await disconnect()
-    this.loggerService.log('Disconnect to MongoDB')
+    this.loggerService.log('Disconnect from MongoDB')
   }
 }
 

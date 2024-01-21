@@ -5,6 +5,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "vercel-build": "echo Hello vercel",
     "build": "tsc",
     "start": "node ./dist/main.js",
     "dev": "concurrently \"tsc -w\" \"yarn nodemon --inspect dist/main.js\"",
