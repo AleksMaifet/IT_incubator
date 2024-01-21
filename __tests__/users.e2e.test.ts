@@ -27,9 +27,8 @@ describe('Users', () => {
       'post',
       '/users',
       USER_DATA
-    )
+    ).expect(201)
 
-    expect(response.status).toBe(201)
     expect(response.body).toHaveProperty('id')
     expect(response.body).toHaveProperty('login')
     expect(response.body).toHaveProperty('createdAt')
@@ -41,20 +40,21 @@ describe('Users', () => {
   })
 
   it('GET -> "/users": should return users array with pagination', async () => {
-    const response = await makeAuthBasicRequest(
+    await makeAuthBasicRequest(
       application.app,
       'get',
       `/users?pageNumber=${pageNumber}&pageSize=${pageSize}`
     )
-
-    expect(response.status).toBe(200)
-    expect(response.body).toMatchObject({
-      pagesCount: 0,
-      page: pageNumber,
-      pageSize: pageSize,
-      totalCount: 0,
-      items: [],
-    })
+      .expect(200)
+      .expect((response) => {
+        expect(response.body).toMatchObject({
+          pagesCount: 0,
+          page: pageNumber,
+          pageSize: pageSize,
+          totalCount: 0,
+          items: [],
+        })
+      })
   })
 
   it('POST-> "/users": should return an error if auth credentials are incorrect', async () => {
