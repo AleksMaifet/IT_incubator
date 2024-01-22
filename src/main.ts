@@ -42,6 +42,8 @@ import {
   AuthBearerMiddlewareGuard,
   IMiddleware,
 } from './middlewares'
+import { AdapterEmail } from './adapters'
+import { ManagerEmail } from './managers'
 
 const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App)
@@ -78,6 +80,8 @@ const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<IMiddleware>(TYPES.AuthBearerMiddlewareGuard).to(
     AuthBearerMiddlewareGuard
   )
+  bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail)
+  bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)
 })
 
 const bootstrap = () => {

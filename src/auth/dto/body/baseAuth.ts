@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from 'class-validator'
 
-class BaseLoginDto {
+class BaseAuthDto {
   @IsNotEmpty()
   @IsString()
   readonly loginOrEmail: string
@@ -10,4 +10,4 @@ class BaseLoginDto {
   readonly password: string
 }
 
-export { BaseLoginDto }
+export { BaseAuthDto }

@@ -1,7 +1,8 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
-import { UsersService, IUser } from '../users'
-import { BaseLoginDto } from './dto'
+import { CreateUserDto, IUser, UsersService } from '../users'
+import { ManagerEmail } from '../managers'
+import { BaseAuthDto } from './dto'
 import { AuthRepository } from './auth.repository'
 
 @injectable()
@@ -10,10 +11,12 @@ class AuthService {
     @inject(TYPES.UsersService)
     private readonly usersService: UsersService,
     @inject(TYPES.AuthRepository)
-    private readonly authRepository: AuthRepository
+    private readonly authRepository: AuthRepository,
+    @inject(TYPES.ManagerEmail)
+    private readonly managerEmail: ManagerEmail
   ) {}
 
-  public login = async (dto: BaseLoginDto) => {
+  public login = async (dto: BaseAuthDto) => {
     const { loginOrEmail, password } = dto
 
     const user = await this.authRepository.getByLoginOrEmail(loginOrEmail)
@@ -30,6 +33,12 @@ class AuthService {
     }
 
     return this._mapGenerateUserResponse(user)
+  }
+
+  public registration = (dto: CreateUserDto) => {
+    const { login, email } = dto
+
+    this.managerEmail.sendUserConfirmationCode({ login, email })
   }
 
   private _mapGenerateUserResponse = (user: IUser) => {

@@ -1,5 +1,3 @@
-import { CommentsRepository, CommentsService } from '../comments'
-
 const TYPES = {
   Application: Symbol.for('Application'),
   ILogger: Symbol.for('ILogger'),
@@ -34,6 +32,8 @@ const TYPES = {
   CommentModel: Symbol.for('CommentModel'),
   AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
   AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),
+  AdapterEmail: Symbol.for('AdapterEmail'),
+  ManagerEmail: Symbol.for('ManagerEmail'),
 }
 
 export { TYPES }

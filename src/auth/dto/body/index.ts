@@ -1,1 +1,2 @@
-export * from './baseLogin'
+export * from './baseAuth'
+export * from './regConfirmAuth'

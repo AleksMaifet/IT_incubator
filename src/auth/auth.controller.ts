@@ -7,8 +7,9 @@ import {
   ValidateBodyMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
+import { CreateUserDto } from '../users'
 import { JwtService } from '../services'
-import { BaseLoginDto } from './dto'
+import { BaseAuthDto, RegConfirmAuthDto } from './dto'
 import { AuthService } from './auth.service'
 
 @injectable()
@@ -26,7 +27,7 @@ class AuthController extends BaseController {
       path: '/login',
       method: 'post',
       func: this.login,
-      middlewares: [new ValidateBodyMiddleware(BaseLoginDto)],
+      middlewares: [new ValidateBodyMiddleware(BaseAuthDto)],
     })
     this.bindRoutes({
       path: '/me',
@@ -34,9 +35,21 @@ class AuthController extends BaseController {
       func: this.getMe,
       middlewares: [this.authBearerMiddlewareGuard],
     })
+    this.bindRoutes({
+      path: '/registration',
+      method: 'post',
+      func: this.registration,
+      middlewares: [new ValidateBodyMiddleware(CreateUserDto)],
+    })
+    this.bindRoutes({
+      path: '/registration-confirmation',
+      method: 'post',
+      func: this.registrationConfirmation,
+      middlewares: [new ValidateBodyMiddleware(RegConfirmAuthDto)],
+    })
   }
 
-  private login = async (req: Request<{}, {}, BaseLoginDto>, res: Response) => {
+  private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
     const { body } = req
 
     const result = await this.authService.login(body)
@@ -63,6 +76,26 @@ class AuthController extends BaseController {
       login,
       userId: id,
     })
+  }
+
+  private registration = (
+    req: Request<{}, {}, CreateUserDto>,
+    res: Response
+  ) => {
+    const { body } = req
+
+    this.authService.registration(body)
+
+    res.sendStatus(204)
+  }
+
+  private registrationConfirmation = (
+    req: Request<{}, {}, RegConfirmAuthDto>,
+    res: Response
+  ) => {
+    const { body } = req
+
+    res.sendStatus(204)
   }
 }
 
