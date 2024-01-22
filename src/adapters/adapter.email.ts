@@ -54,26 +54,13 @@ class AdapterEmail {
         '</div>',
     }
 
-    // this._email.sendMail(mailOptions, (error, info) => {
-    //   if (error) {
-    //     this.loggerService.error(`NodeMailer ${error}`)
-    //     return
-    //   }
-    //
-    //   this.loggerService.log('Message sent ' + info.response)
-    // })
+    try {
+      const info = await this._email.sendMail(mailOptions)
 
-    await new Promise((resolve, reject) => {
-      this._email.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          this.loggerService.error(`NodeMailer ${error}`)
-          reject(error)
-        }
-
-        resolve(true)
-        this.loggerService.log('Message sent ' + info.response)
-      })
-    })
+      this.loggerService.log('Message sent ' + info.response)
+    } catch (error) {
+      this.loggerService.error(`NodeMailer ${error}`)
+    }
   }
 }
 
