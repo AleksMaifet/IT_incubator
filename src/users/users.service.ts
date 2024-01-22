@@ -15,6 +15,7 @@ const {
   PAGE_NUMBER,
   PAGE_SIZE,
   SORT_BY,
+  SALT_ROUNDS,
 } = DEFAULTS
 
 @injectable()
@@ -27,7 +28,7 @@ class UsersService {
   public create = async (dto: CreateUserDto) => {
     const { login, email, password } = dto
 
-    const passwordSalt = await genSalt(10)
+    const passwordSalt = await this.generateSalt()
     const passwordHash = await this.generateHash(password, passwordSalt)
     const newUser = new User(login, email, passwordSalt, passwordHash)
 
@@ -46,6 +47,10 @@ class UsersService {
 
   public generateHash = async (password: string, passwordSalt: string) => {
     return await hash(password, passwordSalt)
+  }
+
+  public generateSalt = async () => {
+    return await genSalt(SALT_ROUNDS)
   }
 
   private _mapQueryParamsToDB = (query: GetUsersRequestQuery<string>) => {

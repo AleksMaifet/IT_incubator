@@ -3,7 +3,7 @@ import Mail from 'nodemailer/lib/mailer'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
-import { ConfigService, LoggerService } from '../services'
+import { ConfigService } from '../services'
 import { CreateUserDto } from '../users'
 
 @injectable()
@@ -12,9 +12,7 @@ class AdapterEmail {
 
   constructor(
     @inject(TYPES.ConfigService)
-    private readonly configService: ConfigService,
-    @inject(TYPES.ILogger)
-    private readonly loggerService: LoggerService
+    private readonly configService: ConfigService
   ) {
     const service = this.configService.get('EMAIL_SERVICE').toString()
     const user = this.configService.get('EMAIL_USER').toString()
@@ -30,37 +28,29 @@ class AdapterEmail {
   }
 
   public sendConfirmationCode = async (
-    dto: Pick<CreateUserDto, 'login' | 'email'>
+    dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
   ) => {
-    const { login, email } = dto
-
-    //TODO added login/email and code
+    const { login, email, code } = dto
 
     const user = this.configService.get('EMAIL_USER').toString()
     const mailOptions = {
       // Sender address
       from: `"It_Incubator 👻" <${user}>`,
       // list of receivers
-      to: 'aleksmaifet@gmail.com',
+      to: email,
       // Subject line
       subject: 'Confirm Account',
       // Html body
       html:
-        '<h1>Thanks for your registration</h1> ' +
+        `<h1>Thanks for your registration ${login}</h1> ` +
         '<div>' +
         '<p>To finish registration please follow the link below: ' +
-        '<a href="https://localhost:3000?code=blablalba">complete registration</a>' +
+        `<a href="https://localhost:3000?code=${code}">complete registration</a>` +
         '</p>' +
         '</div>',
     }
 
-    try {
-      const info = await this._email.sendMail(mailOptions)
-
-      this.loggerService.log('Message sent ' + info.response)
-    } catch (error) {
-      this.loggerService.error(`NodeMailer ${error}`)
-    }
+    return await this._email.sendMail(mailOptions)
   }
 }
 

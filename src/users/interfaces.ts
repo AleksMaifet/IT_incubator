@@ -27,7 +27,7 @@ interface IUsersResponse {
   page: number
   pageSize: number
   totalCount: number
-  items: Omit<IUser, 'passwordSalt' | 'passwordHash'>[]
+  items: Pick<IUser, 'id' | 'login' | 'email' | 'createdAt'>[]
 }
 
 export { IUser, GetUsersRequestQuery, IUsersResponse }

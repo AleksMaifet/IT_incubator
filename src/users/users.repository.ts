@@ -188,6 +188,14 @@ class UsersRepository {
     return this._mapGenerateUserResponse(user)
   }
 
+  public getByLoginOrEmail = async (loginOrEmail: string) => {
+    return await this.userModel
+      .findOne({
+        $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+      })
+      .exec()
+  }
+
   private _mapGenerateUserResponse = (user: IUser) => {
     const { id, login, email, createdAt } = user
 

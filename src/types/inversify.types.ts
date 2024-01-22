@@ -30,6 +30,7 @@ const TYPES = {
   PostModel: Symbol.for('PostModel'),
   UserModel: Symbol.for('UserModel'),
   CommentModel: Symbol.for('CommentModel'),
+  EmailConfirmationModel: Symbol.for('EmailConfirmationModel'),
   AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
   AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),
   AdapterEmail: Symbol.for('AdapterEmail'),

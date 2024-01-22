@@ -29,3 +29,6 @@ jobs:
           BASIC_PASSWORD: ${{ secrets.BASIC_PASSWORD }}
           MONGO_DB_URL: ${{ secrets.MONGO_DB_URL }}
           MONGO_DB_NAME_TEST: ${{ secrets.MONGO_DB_NAME_TEST }}
+          EMAIL_SERVICE: ${{ secrets.EMAIL_SERVICE }}
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}

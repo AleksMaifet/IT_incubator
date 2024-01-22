@@ -1,13 +1,14 @@
-import { IsNotEmpty, IsString, Length, Matches } from 'class-validator'
+import { IsString, Length, Matches } from 'class-validator'
 import { Transform } from 'class-transformer'
 import {
-  MIN_LOGIN_LENGTH,
   MAX_LOGIN_LENGTH,
-  MIN_PASSWORD_LENGTH,
   MAX_PASSWORD_LENGTH,
+  MIN_LOGIN_LENGTH,
+  MIN_PASSWORD_LENGTH,
 } from '../../constants'
+import { BaseUserDto } from './baseUser'
 
-class CreateUserDto {
+class CreateUserDto extends BaseUserDto {
   @IsString()
   @Transform(({ value }) => value?.trim())
   @Length(MIN_LOGIN_LENGTH, MAX_LOGIN_LENGTH)
@@ -20,13 +21,6 @@ class CreateUserDto {
   @Transform(({ value }) => value?.trim())
   @Length(MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH)
   readonly password: string
-
-  @IsNotEmpty()
-  @IsString()
-  @Matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {
-    message: 'email must be a valid',
-  })
-  readonly email: string
 }
 
 export { CreateUserDto }

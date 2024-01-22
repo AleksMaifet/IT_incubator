@@ -1,9 +1,11 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
-import { CreateUserDto, IUser, UsersService } from '../users'
+import { CreateUserDto, IUser, UsersRepository, UsersService } from '../users'
 import { ManagerEmail } from '../managers'
+import { EmailConfirmation } from './emailConfirmation.entity'
 import { BaseAuthDto } from './dto'
 import { AuthRepository } from './auth.repository'
+import { LoggerService } from '../services'
 
 @injectable()
 class AuthService {
@@ -12,14 +14,18 @@ class AuthService {
     private readonly usersService: UsersService,
     @inject(TYPES.AuthRepository)
     private readonly authRepository: AuthRepository,
+    @inject(TYPES.UsersRepository)
+    private readonly usersRepository: UsersRepository,
     @inject(TYPES.ManagerEmail)
-    private readonly managerEmail: ManagerEmail
+    private readonly managerEmail: ManagerEmail,
+    @inject(TYPES.ILogger)
+    private readonly loggerService: LoggerService
   ) {}
 
   public login = async (dto: BaseAuthDto) => {
     const { loginOrEmail, password } = dto
 
-    const user = await this.authRepository.getByLoginOrEmail(loginOrEmail)
+    const user = await this.usersRepository.getByLoginOrEmail(loginOrEmail)
 
     if (!user) return false
 
@@ -32,23 +38,75 @@ class AuthService {
       return false
     }
 
-    return this._mapGenerateUserResponse(user)
+    return user.id
   }
 
   public registration = async (dto: CreateUserDto) => {
-    const { login, email } = dto
+    const user = await this.usersService.create(dto)
+    const { id } = user
 
-    await this.managerEmail.sendUserConfirmationCode({ login, email })
+    const newEmailConfirmation = new EmailConfirmation(id)
+    const { code } = newEmailConfirmation
+
+    await this.authRepository.createEmailConfirmation(newEmailConfirmation)
+
+    return await this._sendEmailConfirmationCode(user, code)
   }
 
-  private _mapGenerateUserResponse = (user: IUser) => {
-    const { id, login, email, createdAt } = user
+  public confirmEmail = async (code: string) => {
+    const result = await this.authRepository.getConfirmationByCodeOrUserId(code)
 
-    return {
-      id,
-      login,
-      email,
-      createdAt,
+    switch (true) {
+      case !result:
+        return false
+      case result!.expiresIn < new Date():
+        return false
+      case result!.isConfirmed:
+        return false
+      default:
+        return await this.authRepository.updateConfirmationByCode(code)
+    }
+  }
+
+  public registrationEmailResending = async (email: string) => {
+    const user = await this.usersRepository.getByLoginOrEmail(email)
+
+    if (!user) return false
+
+    const { id } = user
+
+    const result = await this.authRepository.getConfirmationByCodeOrUserId(id)
+
+    if (!result) return false
+
+    const { code, isConfirmed } = result
+
+    if (isConfirmed) return false
+
+    return await this._sendEmailConfirmationCode(user, code)
+  }
+
+  private _sendEmailConfirmationCode = async (
+    user: Omit<IUser, 'passwordSalt' | 'passwordHash'>,
+    code: string
+  ) => {
+    const { id, login, email } = user
+
+    try {
+      const info = await this.managerEmail.sendUserConfirmationCode({
+        login,
+        email,
+        code,
+      })
+
+      this.loggerService.log('Message sent ' + info.response)
+      return true
+    } catch (error) {
+      this.loggerService.error(`NodeMailer ${error}`)
+
+      await this.usersService.deleteById(id)
+      await this.authRepository.deleteEmailConfirmation(id)
+      return null
     }
   }
 }

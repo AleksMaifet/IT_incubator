@@ -1,0 +1,6 @@
+const DEFAULTS = {
+  EMAIL_CONFIRMATION_EXPIRES: 10,
+  SALT_ROUNDS: 10,
+}
+
+export { DEFAULTS }

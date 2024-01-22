@@ -34,7 +34,12 @@ import {
   CommentsRepository,
   CommentsService,
 } from './comments'
-import { AuthController, AuthRepository, AuthService } from './auth'
+import {
+  AuthController,
+  AuthRepository,
+  AuthService,
+  EmailConfirmationModel,
+} from './auth'
 import { TYPES } from './types'
 import { ILogger } from './services'
 import {
@@ -76,11 +81,14 @@ const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<typeof VideoModel>(TYPES.VideoModel).toConstantValue(VideoModel)
   bind<typeof UserModel>(TYPES.UserModel).toConstantValue(UserModel)
   bind<typeof CommentModel>(TYPES.CommentModel).toConstantValue(CommentModel)
+  bind<typeof EmailConfirmationModel>(
+    TYPES.EmailConfirmationModel
+  ).toConstantValue(EmailConfirmationModel)
   bind<IMiddleware>(TYPES.AuthBasicMiddlewareGuard).to(AuthBasicMiddlewareGuard)
   bind<IMiddleware>(TYPES.AuthBearerMiddlewareGuard).to(
     AuthBearerMiddlewareGuard
   )
-  bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail)
+  bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail).inSingletonScope()
   bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)
 })
 

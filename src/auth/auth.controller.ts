@@ -7,7 +7,7 @@ import {
   ValidateBodyMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
-import { CreateUserDto } from '../users'
+import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
 import { BaseAuthDto, RegConfirmAuthDto } from './dto'
 import { AuthService } from './auth.service'
@@ -47,19 +47,25 @@ class AuthController extends BaseController {
       func: this.registrationConfirmation,
       middlewares: [new ValidateBodyMiddleware(RegConfirmAuthDto)],
     })
+    this.bindRoutes({
+      path: '/registration-email-resending',
+      method: 'post',
+      func: this.registrationEmailResending,
+      middlewares: [new ValidateBodyMiddleware(BaseUserDto)],
+    })
   }
 
   private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
     const { body } = req
 
-    const result = await this.authService.login(body)
+    const userId = await this.authService.login(body)
 
-    if (!result) {
+    if (!userId) {
       res.sendStatus(401)
       return
     }
 
-    const jwtDate = this.jwtService.generate(result.id)
+    const jwtDate = this.jwtService.generate(userId)
 
     res.status(200).json(jwtDate)
   }
@@ -84,16 +90,48 @@ class AuthController extends BaseController {
   ) => {
     const { body } = req
 
-    await this.authService.registration(body)
+    const result = await this.authService.registration(body)
+
+    if (!result) {
+      res.sendStatus(400)
+      return
+    }
 
     res.sendStatus(204)
   }
 
-  private registrationConfirmation = (
+  private registrationConfirmation = async (
     req: Request<{}, {}, RegConfirmAuthDto>,
     res: Response
   ) => {
-    const { body } = req
+    const {
+      body: { code },
+    } = req
+
+    const result = await this.authService.confirmEmail(code)
+
+    if (!result) {
+      res.sendStatus(400)
+      return
+    }
+
+    res.sendStatus(204)
+  }
+
+  private registrationEmailResending = async (
+    req: Request<{}, {}, BaseUserDto>,
+    res: Response
+  ) => {
+    const {
+      body: { email },
+    } = req
+
+    const result = await this.authService.registrationEmailResending(email)
+
+    if (!result) {
+      res.sendStatus(400)
+      return
+    }
 
     res.sendStatus(204)
   }

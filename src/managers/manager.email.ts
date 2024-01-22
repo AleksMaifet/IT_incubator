@@ -12,9 +12,9 @@ class ManagerEmail {
   ) {}
 
   public sendUserConfirmationCode = async (
-    dto: Pick<CreateUserDto, 'login' | 'email'>
+    dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
   ) => {
-    await this.adapterEmail.sendConfirmationCode(dto)
+    return await this.adapterEmail.sendConfirmationCode(dto)
   }
 }
 
