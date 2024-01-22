@@ -78,13 +78,13 @@ class AuthController extends BaseController {
     })
   }
 
-  private registration = (
+  private registration = async (
     req: Request<{}, {}, CreateUserDto>,
     res: Response
   ) => {
     const { body } = req
 
-    this.authService.registration(body)
+    await this.authService.registration(body)
 
     res.sendStatus(204)
   }

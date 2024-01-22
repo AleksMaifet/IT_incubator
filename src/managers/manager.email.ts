@@ -11,10 +11,10 @@ class ManagerEmail {
     private readonly adapterEmail: AdapterEmail
   ) {}
 
-  public sendUserConfirmationCode = (
+  public sendUserConfirmationCode = async (
     dto: Pick<CreateUserDto, 'login' | 'email'>
   ) => {
-    return this.adapterEmail.sendConfirmationCode(dto)
+    await this.adapterEmail.sendConfirmationCode(dto)
   }
 }
 

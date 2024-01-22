@@ -35,10 +35,10 @@ class AuthService {
     return this._mapGenerateUserResponse(user)
   }
 
-  public registration = (dto: CreateUserDto) => {
+  public registration = async (dto: CreateUserDto) => {
     const { login, email } = dto
 
-    this.managerEmail.sendUserConfirmationCode({ login, email })
+    await this.managerEmail.sendUserConfirmationCode({ login, email })
   }
 
   private _mapGenerateUserResponse = (user: IUser) => {
