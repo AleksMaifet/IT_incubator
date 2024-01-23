@@ -62,20 +62,9 @@ class AuthService {
 
     const { id, login, email: userEmail } = user!
 
-    const confirmation =
-      await this.authRepository.getConfirmationByCodeOrUserId(id)
-
-    if (!confirmation) return false
-
-    const { isConfirmed } = confirmation
-
-    if (isConfirmed) return false
-
     const newConfirmation = await this.authRepository.updateConfirmationCode(id)
 
-    if (!newConfirmation) return false
-
-    const { code } = newConfirmation
+    const { code } = newConfirmation!
 
     return await this._sendEmailConfirmationCode({
       id,

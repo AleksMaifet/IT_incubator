@@ -172,10 +172,10 @@ class UsersRepository {
     }
   }
 
-  public getByIdOrEmail = async (idOrEmail: string) => {
+  public getById = async (id: string) => {
     const user = await this.userModel
       .findOne({
-        $or: [{ id: idOrEmail }, { email: idOrEmail }],
+        id,
       })
       .exec()
 

@@ -16,7 +16,7 @@ class IsUserExist implements ValidatorConstraintInterface {
   ) {}
 
   async validate(id: string) {
-    const user = await this.usersRepository.getByIdOrEmail(id)
+    const user = await this.usersRepository.getById(id)
 
     return !!user
   }

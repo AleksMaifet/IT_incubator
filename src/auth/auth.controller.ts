@@ -121,12 +121,7 @@ class AuthController extends BaseController {
       body: { email },
     } = req
 
-    const result = await this.authService.registrationEmailResending(email)
-
-    if (!result) {
-      res.sendStatus(400)
-      return
-    }
+    await this.authService.registrationEmailResending(email)
 
     res.sendStatus(204)
   }

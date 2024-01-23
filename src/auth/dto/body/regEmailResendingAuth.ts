@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Matches, Validate } from 'class-validator'
-import { IsUserExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsRegEmailResendingValid } from '../../../middlewares/libs/customValidDecorators'
 
 class RegEmailResendingAuthDto {
   @IsNotEmpty()
@@ -7,7 +7,7 @@ class RegEmailResendingAuthDto {
   @Matches(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {
     message: 'email must be a valid',
   })
-  @Validate(IsUserExist, {
+  @Validate(IsRegEmailResendingValid, {
     message: 'email is not exists',
   })
   readonly email: string
