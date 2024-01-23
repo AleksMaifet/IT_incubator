@@ -43,54 +43,52 @@ class AuthService {
 
   public registration = async (dto: CreateUserDto) => {
     const user = await this.usersService.create(dto)
-    const { id } = user
+    const { id, email, login } = user
 
     const newEmailConfirmation = new EmailConfirmation(id)
     const { code } = newEmailConfirmation
 
     await this.authRepository.createEmailConfirmation(newEmailConfirmation)
 
-    return await this._sendEmailConfirmationCode(user, code)
+    return await this._sendEmailConfirmationCode({ id, email, login, code })
   }
 
   public confirmEmail = async (code: string) => {
-    const result = await this.authRepository.getConfirmationByCodeOrUserId(code)
-
-    switch (true) {
-      case !result:
-        return false
-      case result!.expiresIn < new Date():
-        return false
-      case result!.isConfirmed:
-        return false
-      default:
-        return await this.authRepository.updateConfirmationByCode(code)
-    }
+    return await this.authRepository.updateConfirmationByCode(code)
   }
 
   public registrationEmailResending = async (email: string) => {
     const user = await this.usersRepository.getByLoginOrEmail(email)
 
-    if (!user) return false
+    const { id, login, email: userEmail } = user!
 
-    const { id } = user
+    const confirmation =
+      await this.authRepository.getConfirmationByCodeOrUserId(id)
 
-    const result = await this.authRepository.getConfirmationByCodeOrUserId(id)
+    if (!confirmation) return false
 
-    if (!result) return false
-
-    const { code, isConfirmed } = result
+    const { isConfirmed } = confirmation
 
     if (isConfirmed) return false
 
-    return await this._sendEmailConfirmationCode(user, code)
+    const newConfirmation = await this.authRepository.updateConfirmationCode(id)
+
+    if (!newConfirmation) return false
+
+    const { code } = newConfirmation
+
+    return await this._sendEmailConfirmationCode({
+      id,
+      email: userEmail,
+      login,
+      code,
+    })
   }
 
   private _sendEmailConfirmationCode = async (
-    user: Omit<IUser, 'passwordSalt' | 'passwordHash'>,
-    code: string
+    user: Pick<IUser, 'id' | 'login' | 'email'> & { code: string }
   ) => {
-    const { id, login, email } = user
+    const { id, login, email, code } = user
 
     try {
       const info = await this.managerEmail.sendUserConfirmationCode({

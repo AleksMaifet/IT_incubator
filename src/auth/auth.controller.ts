@@ -9,7 +9,7 @@ import {
 import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
-import { BaseAuthDto, RegConfirmAuthDto } from './dto'
+import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
 import { AuthService } from './auth.service'
 
 @injectable()
@@ -51,7 +51,7 @@ class AuthController extends BaseController {
       path: '/registration-email-resending',
       method: 'post',
       func: this.registrationEmailResending,
-      middlewares: [new ValidateBodyMiddleware(BaseUserDto)],
+      middlewares: [new ValidateBodyMiddleware(RegEmailResendingAuthDto)],
     })
   }
 
@@ -108,12 +108,7 @@ class AuthController extends BaseController {
       body: { code },
     } = req
 
-    const result = await this.authService.confirmEmail(code)
-
-    if (!result) {
-      res.sendStatus(400)
-      return
-    }
+    await this.authService.confirmEmail(code)
 
     res.sendStatus(204)
   }

@@ -172,8 +172,12 @@ class UsersRepository {
     }
   }
 
-  public getById = async (id: string) => {
-    const user = await this.userModel.findOne({ id }).exec()
+  public getByIdOrEmail = async (idOrEmail: string) => {
+    const user = await this.userModel
+      .findOne({
+        $or: [{ id: idOrEmail }, { email: idOrEmail }],
+      })
+      .exec()
 
     if (!user) {
       return null

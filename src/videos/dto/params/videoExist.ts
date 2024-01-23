@@ -3,7 +3,7 @@ import { IsVideoExist } from '../../../middlewares/libs/customValidDecorators'
 
 class VideoExist {
   @Validate(IsVideoExist, {
-    message: 'Video is not exists',
+    message: 'video is not exists',
   })
   readonly id: string
 }

@@ -4,7 +4,6 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
 import { ConfigService } from '../services'
-import { CreateUserDto } from '../users'
 
 @injectable()
 class AdapterEmail {
@@ -27,10 +26,12 @@ class AdapterEmail {
     })
   }
 
-  public sendConfirmationCode = async (
-    dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
-  ) => {
-    const { login, email, code } = dto
+  public sendConfirmationCode = async (dto: {
+    email: string
+    subject: string
+    html: string
+  }) => {
+    const { email, subject, html } = dto
 
     const user = this.configService.get('EMAIL_USER').toString()
     const mailOptions = {
@@ -39,15 +40,9 @@ class AdapterEmail {
       // list of receivers
       to: email,
       // Subject line
-      subject: 'Confirm Account',
+      subject,
       // Html body
-      html:
-        `<h1>Thanks for your registration ${login}</h1> ` +
-        '<div>' +
-        '<p>To finish registration please follow the link below: ' +
-        `<a href="https://localhost:3000?code=${code}">complete registration</a>` +
-        '</p>' +
-        '</div>',
+      html,
     }
 
     return await this._email.sendMail(mailOptions)

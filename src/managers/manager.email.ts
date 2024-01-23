@@ -14,7 +14,22 @@ class ManagerEmail {
   public sendUserConfirmationCode = async (
     dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
   ) => {
-    return await this.adapterEmail.sendConfirmationCode(dto)
+    const { login, email, code } = dto
+
+    const subject = 'Confirm Account'
+    const html =
+      `<h1>Thanks for your registration ${login}</h1> ` +
+      '<div>' +
+      '<p>To finish registration please follow the link below: ' +
+      `<a href="https://localhost:3000/confirm-email?code=${code}">complete registration</a>` +
+      '</p>' +
+      '</div>'
+
+    return await this.adapterEmail.sendConfirmationCode({
+      email,
+      subject,
+      html,
+    })
   }
 }
 

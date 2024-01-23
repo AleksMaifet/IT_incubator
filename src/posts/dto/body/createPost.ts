@@ -5,7 +5,7 @@ import { IsBlogExist } from '../../../middlewares/libs/customValidDecorators'
 class CreatePostDto extends BasePostDto {
   @IsString()
   @Validate(IsBlogExist, {
-    message: 'Blog is not exists',
+    message: 'blog is not exists',
   })
   readonly blogId: string
 }

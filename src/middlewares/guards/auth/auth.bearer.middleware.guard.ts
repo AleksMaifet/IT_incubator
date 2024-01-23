@@ -33,7 +33,7 @@ class AuthBearerMiddlewareGuard {
     }
 
     const id = this.jwtService.getUserIdByToken(token)
-    const user = await this.usersRepository.getById(id)
+    const user = await this.usersRepository.getByIdOrEmail(id)
 
     if (!user) {
       sendResponse()

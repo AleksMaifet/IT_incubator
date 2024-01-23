@@ -1,4 +1,4 @@
-import { IsString, Length, Matches } from 'class-validator'
+import { IsString, Length, Matches, Validate } from 'class-validator'
 import { Transform } from 'class-transformer'
 import {
   MAX_LOGIN_LENGTH,
@@ -7,6 +7,7 @@ import {
   MIN_PASSWORD_LENGTH,
 } from '../../constants'
 import { BaseUserDto } from './baseUser'
+import { IsUserNotExist } from '../../../middlewares/libs/customValidDecorators'
 
 class CreateUserDto extends BaseUserDto {
   @IsString()
@@ -14,6 +15,9 @@ class CreateUserDto extends BaseUserDto {
   @Length(MIN_LOGIN_LENGTH, MAX_LOGIN_LENGTH)
   @Matches(/^[a-zA-Z0-9_-]*$/, {
     message: 'login must be a valid',
+  })
+  @Validate(IsUserNotExist, {
+    message: 'user with this login exists',
   })
   readonly login: string
 

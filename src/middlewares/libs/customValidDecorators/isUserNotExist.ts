@@ -9,17 +9,17 @@ import { UsersRepository } from '../../../users'
 
 @ValidatorConstraint({ async: true })
 @injectable()
-class IsUserExist implements ValidatorConstraintInterface {
+class IsUserNotExist implements ValidatorConstraintInterface {
   constructor(
     @inject(TYPES.UsersRepository)
     private readonly usersRepository: UsersRepository
   ) {}
 
-  async validate(id: string) {
-    const user = await this.usersRepository.getByIdOrEmail(id)
+  async validate(loginOrEmail: string) {
+    const user = await this.usersRepository.getByLoginOrEmail(loginOrEmail)
 
-    return !!user
+    return !user
   }
 }
 
-export { IsUserExist }
+export { IsUserNotExist }

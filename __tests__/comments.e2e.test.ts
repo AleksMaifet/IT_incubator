@@ -160,15 +160,14 @@ describe('Comments for posts with auth', () => {
 
   it('PUT -> "/comments/:id": should return error if access denied', async () => {
     // Created user
-    const userRes = await makeAuthBasicRequest(
-      application.app,
-      'post',
-      '/users',
-      { ...USER_DATA, login: 'TEST_LOGIN' }
-    )
+    await makeAuthBasicRequest(application.app, 'post', '/users', {
+      login: 'TEST_LOGIN',
+      password: USER_DATA.password,
+      email: 'test@mail.ru',
+    })
 
     const loginRes = await request(application.app).post('/auth/login').send({
-      loginOrEmail: userRes.body.login,
+      loginOrEmail: 'TEST_LOGIN',
       password: USER_DATA.password,
     })
 

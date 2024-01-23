@@ -3,7 +3,7 @@ import { IsCommentExist } from '../../../middlewares/libs/customValidDecorators'
 
 class CommentExist {
   @Validate(IsCommentExist, {
-    message: 'Comment is not exists',
+    message: 'comment is not exists',
   })
   readonly id: string
 }

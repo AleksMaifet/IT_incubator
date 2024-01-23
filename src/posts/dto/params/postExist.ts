@@ -3,7 +3,7 @@ import { IsPostExist } from '../../../middlewares/libs/customValidDecorators'
 
 class PostExist {
   @Validate(IsPostExist, {
-    message: 'Post is not exists',
+    message: 'post is not exists',
   })
   readonly id: string
 }

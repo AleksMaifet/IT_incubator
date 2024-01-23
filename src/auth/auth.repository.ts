@@ -3,6 +3,7 @@ import 'reflect-metadata'
 import { TYPES } from '../types'
 import { IEmailConfirmation } from './interfaces'
 import { EmailConfirmationModel } from './emailConfirmation.model'
+import { v4 as uuidv4 } from 'uuid'
 
 @injectable()
 class AuthRepository {
@@ -30,6 +31,12 @@ class AuthRepository {
   public updateConfirmationByCode = async (code: string) => {
     return await this.emailConfirmationModel
       .findOneAndUpdate({ code }, { isConfirmed: true })
+      .exec()
+  }
+
+  public updateConfirmationCode = async (userId: string) => {
+    return await this.emailConfirmationModel
+      .findOneAndUpdate({ userId }, { code: uuidv4() }, { new: true })
       .exec()
   }
 }

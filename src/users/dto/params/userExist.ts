@@ -3,7 +3,7 @@ import { IsUserExist } from '../../../middlewares/libs/customValidDecorators'
 
 class UserExist {
   @Validate(IsUserExist, {
-    message: 'User is not exists',
+    message: 'user is not exists',
   })
   readonly id: string
 }
