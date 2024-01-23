@@ -2,6 +2,7 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { genSalt, hash } from 'bcrypt'
 import { TYPES } from '../types'
+import { AuthRepository } from '../auth'
 import { UsersRepository } from './users.repository'
 import { CreateUserDto } from './dto'
 import { User } from './user.entity'
@@ -22,7 +23,9 @@ const {
 class UsersService {
   constructor(
     @inject(TYPES.UsersRepository)
-    private readonly usersRepository: UsersRepository
+    private readonly usersRepository: UsersRepository,
+    @inject(TYPES.AuthRepository)
+    private readonly authRepository: AuthRepository
   ) {}
 
   public create = async (dto: CreateUserDto) => {
@@ -42,6 +45,7 @@ class UsersService {
   }
 
   public deleteById = async (id: string) => {
+    await this.authRepository.deleteEmailConfirmation(id)
     return await this.usersRepository.deleteById(id)
   }
 

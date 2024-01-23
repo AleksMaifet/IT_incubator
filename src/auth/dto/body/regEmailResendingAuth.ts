@@ -8,7 +8,7 @@ class RegEmailResendingAuthDto {
     message: 'email must be a valid',
   })
   @Validate(IsRegEmailResendingValid, {
-    message: 'email is not exists',
+    message: 'email already confirmed or user email doesnt exist',
   })
   readonly email: string
 }
