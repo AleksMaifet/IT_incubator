@@ -16,7 +16,7 @@ class JwtService {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
     const accessToken = sign({ userId }, secretOrPrivateKey, {
-      expiresIn: 30,
+      expiresIn: 10,
     })
 
     return {
@@ -28,7 +28,7 @@ class JwtService {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
     return sign({ userId }, secretOrPrivateKey, {
-      expiresIn: 60,
+      expiresIn: 20,
     })
   }
 
