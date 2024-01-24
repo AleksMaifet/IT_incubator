@@ -56,8 +56,8 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.logout,
       middlewares: [
-        // this.authInvalidRefreshedTokenMiddlewareGuard,
         this.authCredentialTokenMiddlewareGuard,
+        this.authInvalidRefreshedTokenMiddlewareGuard,
       ],
     })
     this.bindRoutes({
