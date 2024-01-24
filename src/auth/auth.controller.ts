@@ -5,12 +5,13 @@ import { BaseController } from '../common'
 import {
   AuthBearerMiddlewareGuard,
   AuthCredentialTokenMiddlewareGuard,
+  AuthInvalidRefreshedTokenMiddlewareGuard,
   ValidateBodyMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
-import { BlackListRefreshTokenRepository } from '../repositories'
+import { BlackListTokenRepository } from '../repositories'
 import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
 import { AuthService } from './auth.service'
 import { REFRESH_TOKEN_COOKIE_NAME } from './constants'
@@ -26,8 +27,10 @@ class AuthController extends BaseController {
     private readonly authBearerMiddlewareGuard: AuthBearerMiddlewareGuard,
     @inject(TYPES.AuthCredentialTokenMiddlewareGuard)
     private readonly authCredentialTokenMiddlewareGuard: AuthCredentialTokenMiddlewareGuard,
-    @inject(TYPES.BlackListRefreshTokenRepository)
-    private readonly blackListRefreshTokenRepository: BlackListRefreshTokenRepository
+    @inject(TYPES.AuthInvalidRefreshedTokenMiddlewareGuard)
+    private readonly authInvalidRefreshedTokenMiddlewareGuard: AuthInvalidRefreshedTokenMiddlewareGuard,
+    @inject(TYPES.BlackListTokenRepository)
+    private readonly blackListTokenRepository: BlackListTokenRepository
   ) {
     super()
     this.bindRoutes({
@@ -52,7 +55,10 @@ class AuthController extends BaseController {
       path: '/logout',
       method: 'post',
       func: this.logout,
-      middlewares: [this.authCredentialTokenMiddlewareGuard],
+      middlewares: [
+        this.authInvalidRefreshedTokenMiddlewareGuard,
+        this.authCredentialTokenMiddlewareGuard,
+      ],
     })
     this.bindRoutes({
       path: '/registration',
@@ -113,6 +119,8 @@ class AuthController extends BaseController {
 
     const { accessJwtData, refreshJwtData } = this._generatePairAuthTokens(id)
 
+    await this.blackListTokenRepository.createRefreshedToken(refreshJwtData)
+
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtData, {
       httpOnly: true,
       secure: true,
@@ -125,9 +133,8 @@ class AuthController extends BaseController {
 
     const refreshToken = cookies[REFRESH_TOKEN_COOKIE_NAME]
 
-    await this.blackListRefreshTokenRepository.createExpiredRefreshToken(
-      refreshToken
-    )
+    await this.blackListTokenRepository.createRefreshedToken(refreshToken)
+    await this.blackListTokenRepository.createExpiredToken(refreshToken)
 
     res.clearCookie(REFRESH_TOKEN_COOKIE_NAME)
     res.sendStatus(204)

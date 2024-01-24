@@ -15,34 +15,21 @@ class JwtService {
   public generateAccessToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
-    try {
-      const accessToken = sign({ userId }, secretOrPrivateKey, {
-        expiresIn: 10,
-      })
+    const accessToken = sign({ userId }, secretOrPrivateKey, {
+      expiresIn: 30,
+    })
 
-      return {
-        accessToken,
-      }
-    } catch (error) {
-      this.loggerService.error(error)
-      return {
-        accessToken: null,
-      }
+    return {
+      accessToken,
     }
   }
 
   public generateRefreshToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
-    try {
-      return sign({ userId }, secretOrPrivateKey, {
-        expiresIn: 20,
-      })
-    } catch (error) {
-      this.loggerService.error(error)
-
-      return null
-    }
+    return sign({ userId }, secretOrPrivateKey, {
+      expiresIn: 60,
+    })
   }
 
   public getUserIdByToken = (token: string) => {

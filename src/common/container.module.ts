@@ -44,14 +44,12 @@ import {
   AuthBasicMiddlewareGuard,
   AuthBearerMiddlewareGuard,
   AuthCredentialTokenMiddlewareGuard,
+  AuthInvalidRefreshedTokenMiddlewareGuard,
   IMiddleware,
 } from '../middlewares'
 import { AdapterEmail } from '../adapters'
 import { ManagerEmail } from '../managers'
-import {
-  BlackListRefreshTokenModel,
-  BlackListRefreshTokenRepository,
-} from '../repositories'
+import { BlackListTokenModel, BlackListTokenRepository } from '../repositories'
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App)
@@ -77,9 +75,9 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository)
   bind<AuthRepository>(TYPES.AuthRepository).to(AuthRepository)
   bind<CommentsRepository>(TYPES.CommentsRepository).to(CommentsRepository)
-  bind<BlackListRefreshTokenRepository>(
-    TYPES.BlackListRefreshTokenRepository
-  ).to(BlackListRefreshTokenRepository)
+  bind<BlackListTokenRepository>(TYPES.BlackListTokenRepository).to(
+    BlackListTokenRepository
+  )
   bind<TestingController>(TYPES.TestingController).to(TestingController)
   bind<TestingRepository>(TYPES.TestingRepository).to(TestingRepository)
   bind<typeof BlogModel>(TYPES.BlogModel).toConstantValue(BlogModel)
@@ -90,15 +88,18 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<typeof EmailConfirmationModel>(
     TYPES.EmailConfirmationModel
   ).toConstantValue(EmailConfirmationModel)
-  bind<typeof BlackListRefreshTokenModel>(
-    TYPES.BlackListRefreshTokenModel
-  ).toConstantValue(BlackListRefreshTokenModel)
+  bind<typeof BlackListTokenModel>(TYPES.BlackListTokenModel).toConstantValue(
+    BlackListTokenModel
+  )
   bind<IMiddleware>(TYPES.AuthBasicMiddlewareGuard).to(AuthBasicMiddlewareGuard)
   bind<IMiddleware>(TYPES.AuthBearerMiddlewareGuard).to(
     AuthBearerMiddlewareGuard
   )
   bind<IMiddleware>(TYPES.AuthCredentialTokenMiddlewareGuard).to(
     AuthCredentialTokenMiddlewareGuard
+  )
+  bind<IMiddleware>(TYPES.AuthInvalidRefreshedTokenMiddlewareGuard).to(
+    AuthInvalidRefreshedTokenMiddlewareGuard
   )
   bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail).inSingletonScope()
   bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)

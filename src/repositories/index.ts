@@ -1,1 +1,1 @@
-export * from './blackListRefreshToken'
+export * from './blackListToken'

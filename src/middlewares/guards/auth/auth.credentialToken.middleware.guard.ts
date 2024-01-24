@@ -6,7 +6,7 @@ import { TYPES } from '../../../types'
 import { JwtService } from '../../../services'
 import { REFRESH_TOKEN_COOKIE_NAME } from '../../../auth'
 import { UsersRepository } from '../../../users'
-import { BlackListRefreshTokenRepository } from '../../../repositories'
+import { BlackListTokenRepository } from '../../../repositories'
 
 @injectable()
 class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
@@ -14,8 +14,8 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
     @inject(TYPES.JwtService) private readonly jwtService: JwtService,
     @inject(TYPES.UsersRepository)
     private readonly usersRepository: UsersRepository,
-    @inject(TYPES.BlackListRefreshTokenRepository)
-    private readonly blackListRefreshTokenRepository: BlackListRefreshTokenRepository
+    @inject(TYPES.BlackListTokenRepository)
+    private readonly blackListTokenRepository: BlackListTokenRepository
   ) {}
 
   execute = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,12 +32,10 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
       return
     }
 
-    const expiredRefreshToken =
-      await this.blackListRefreshTokenRepository.getExpiredRefreshToken(
-        refreshToken
-      )
+    const expiredToken =
+      await this.blackListTokenRepository.getExpiredToken(refreshToken)
 
-    if (expiredRefreshToken) {
+    if (expiredToken) {
       sendResponse()
       return
     }
@@ -45,9 +43,7 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
     const id = this.jwtService.getUserIdByToken(refreshToken)
 
     if (!id) {
-      await this.blackListRefreshTokenRepository.createExpiredRefreshToken(
-        refreshToken
-      )
+      await this.blackListTokenRepository.createExpiredToken(refreshToken)
 
       sendResponse()
       return
