@@ -32,8 +32,7 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
       return
     }
 
-    const expiredToken =
-      await this.blackListTokenRepository.getExpiredToken(refreshToken)
+    const expiredToken = await this.blackListTokenRepository.get(refreshToken)
 
     if (expiredToken) {
       sendResponse()
@@ -43,8 +42,6 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
     const id = this.jwtService.getUserIdByToken(refreshToken)
 
     if (!id) {
-      await this.blackListTokenRepository.createExpiredToken(refreshToken)
-
       sendResponse()
       return
     }
@@ -55,6 +52,8 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
       sendResponse()
       return
     }
+
+    await this.blackListTokenRepository.create(refreshToken)
 
     req.context = {
       user,

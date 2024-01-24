@@ -1,17 +1,12 @@
 import { model, Schema } from 'mongoose'
 
 type TokenType = {
-  refreshed: string
-  expired: string
+  token: string
 }
 
 const BlackListToken = new Schema<TokenType>(
   {
-    refreshed: {
-      type: String,
-      index: true,
-    },
-    expired: {
+    token: {
       type: String,
       index: true,
     },

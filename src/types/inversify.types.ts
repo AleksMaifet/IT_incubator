@@ -38,9 +38,6 @@ const TYPES = {
   AuthCredentialTokenMiddlewareGuard: Symbol.for(
     'AuthCredentialTokenMiddlewareGuard'
   ),
-  AuthInvalidRefreshedTokenMiddlewareGuard: Symbol.for(
-    'AuthInvalidRefreshedTokenMiddlewareGuard'
-  ),
   AdapterEmail: Symbol.for('AdapterEmail'),
   ManagerEmail: Symbol.for('ManagerEmail'),
 }
