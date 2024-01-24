@@ -3,4 +3,6 @@ const DEFAULTS = {
   SALT_ROUNDS: 10,
 }
 
-export { DEFAULTS }
+const REFRESH_TOKEN_COOKIE_NAME = 'access_cookie'
+
+export { DEFAULTS, REFRESH_TOKEN_COOKIE_NAME }

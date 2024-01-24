@@ -2,6 +2,7 @@ import express, { Express, json } from 'express'
 import { Server } from 'http'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
+import cookieParser from 'cookie-parser'
 import { ILogger } from './services'
 import { TestingController } from './testing'
 import { AuthController } from './auth'
@@ -54,6 +55,7 @@ class App {
 
   private useMiddleware = () => {
     this.app.use(json())
+    this.app.use(cookieParser())
   }
 
   private useRoutes = () => {

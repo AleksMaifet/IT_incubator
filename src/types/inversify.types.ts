@@ -23,6 +23,9 @@ const TYPES = {
   UsersRepository: Symbol.for('UsersRepository'),
   CommentsRepository: Symbol.for('CommentsRepository'),
   AuthRepository: Symbol.for('AuthRepository'),
+  BlackListRefreshTokenRepository: Symbol.for(
+    'BlackListRefreshTokenRepository'
+  ),
   TestingController: Symbol.for('TestingController'),
   TestingRepository: Symbol.for('TestingRepository'),
   BlogModel: Symbol.for('BlogModel'),
@@ -31,8 +34,12 @@ const TYPES = {
   UserModel: Symbol.for('UserModel'),
   CommentModel: Symbol.for('CommentModel'),
   EmailConfirmationModel: Symbol.for('EmailConfirmationModel'),
+  BlackListRefreshTokenModel: Symbol.for('BlackListRefreshTokenModel'),
   AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
   AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),
+  AuthCredentialTokenMiddlewareGuard: Symbol.for(
+    'AuthCredentialTokenMiddlewareGuard'
+  ),
   AdapterEmail: Symbol.for('AdapterEmail'),
   ManagerEmail: Symbol.for('ManagerEmail'),
 }

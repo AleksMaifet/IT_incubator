@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
 import { IEmailConfirmation } from './interfaces'
-import { EmailConfirmationModel } from './emailConfirmation.model'
 import { v4 as uuidv4 } from 'uuid'
+import { EmailConfirmationModel } from './emailConfirmation.model'
 
 @injectable()
 class AuthRepository {

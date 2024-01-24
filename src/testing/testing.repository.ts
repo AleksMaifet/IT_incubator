@@ -7,6 +7,7 @@ import { UserModel } from '../users'
 import { TYPES } from '../types'
 import { CommentModel } from '../comments'
 import { EmailConfirmationModel } from '../auth'
+import { BlackListRefreshTokenModel } from '../repositories'
 
 @injectable()
 class TestingRepository {
@@ -22,7 +23,9 @@ class TestingRepository {
     @inject(TYPES.CommentModel)
     private readonly commentModel: typeof CommentModel,
     @inject(TYPES.EmailConfirmationModel)
-    private readonly emailConfirmationModel: typeof EmailConfirmationModel
+    private readonly emailConfirmationModel: typeof EmailConfirmationModel,
+    @inject(TYPES.BlackListRefreshTokenModel)
+    private readonly blackListRefreshTokenModel: typeof BlackListRefreshTokenModel
   ) {}
 
   public deleteAll = async () => {
@@ -32,6 +35,7 @@ class TestingRepository {
     await this.userModel.deleteMany()
     await this.commentModel.deleteMany()
     await this.emailConfirmationModel.deleteMany()
+    await this.blackListRefreshTokenModel.deleteMany()
   }
 }
 

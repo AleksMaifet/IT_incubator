@@ -12,7 +12,7 @@ const email = 'test@mail.com'
 const login = 'ulogin45'
 let code: string
 
-const getCode = (html: string) => {
+const parsedHtmlAndGetCode = (html: string) => {
   const $ = load(html)
   const link = $('a').attr('href')
   const url = new URL(link!)
@@ -42,7 +42,7 @@ describe('Registration', () => {
 
     const sentEmails = mock.getSentMail()
     const html = sentEmails[0].html as string
-    code = getCode(html)
+    code = parsedHtmlAndGetCode(html)
 
     expect(sentEmails.length).toBe(1)
     expect(res.status).toBe(204)
@@ -62,17 +62,16 @@ describe('Registration', () => {
   })
 
   it('POST -> "/auth/registration-email-resending": should send email with new code if user exists but not confirmed yet; status 204', async () => {
-    const res = await request(application.app)
+    await request(application.app)
       .post('/auth/registration-email-resending')
       .send({
         email,
       })
+      .expect(204)
 
     const sentEmails = mock.getSentMail()
     const html = sentEmails[0].html as string
-    code = getCode(html)
-
-    expect(res.status).toBe(204)
+    code = parsedHtmlAndGetCode(html)
   })
 
   it('POST -> "/auth/registration-confirmation": should confirm registration by email; status 204', async () => {

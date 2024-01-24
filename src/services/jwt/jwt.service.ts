@@ -12,12 +12,12 @@ class JwtService {
     @inject(TYPES.ILogger) private readonly loggerService: LoggerService
   ) {}
 
-  public generate = (userId: string) => {
+  public generateAccessToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
     try {
       const accessToken = sign({ userId }, secretOrPrivateKey, {
-        expiresIn: '1h',
+        expiresIn: 10,
       })
 
       return {
@@ -28,6 +28,20 @@ class JwtService {
       return {
         accessToken: null,
       }
+    }
+  }
+
+  public generateRefreshToken = (userId: string) => {
+    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
+
+    try {
+      return sign({ userId }, secretOrPrivateKey, {
+        expiresIn: 20,
+      })
+    } catch (error) {
+      this.loggerService.error(error)
+
+      return null
     }
   }
 
