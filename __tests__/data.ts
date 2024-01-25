@@ -10,6 +10,7 @@ interface IDefaultTestData {
   BLOG_DATA: BaseBlogDto
   VIDEO_DATA: CreateVideoDto
   COMMENT_DATA: BaseCommentDto
+  REGISTRATION: CreateUserDto
 }
 
 const DEFAULT_TEST_DATA: IDefaultTestData = {
@@ -38,6 +39,11 @@ const DEFAULT_TEST_DATA: IDefaultTestData = {
   },
   COMMENT_DATA: {
     content: 'stringstringstringst',
+  },
+  REGISTRATION: {
+    email: 'test@mail.com',
+    login: 'ulogin45',
+    password: 'ulogin45',
   },
 }
 

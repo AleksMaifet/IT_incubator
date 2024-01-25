@@ -27,7 +27,7 @@ class AuthBearerMiddlewareGuard {
 
     const [bearer, token] = authorization.split(' ')
 
-    if (bearer !== 'Bearer') {
+    if (bearer !== 'Bearer' || !token) {
       sendResponse()
       return
     }

@@ -10,7 +10,6 @@ import {
 import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
-import { BlackListTokenRepository } from '../repositories'
 import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
 import { AuthService } from './auth.service'
 import { REFRESH_TOKEN_COOKIE_NAME } from './constants'
@@ -25,9 +24,7 @@ class AuthController extends BaseController {
     @inject(TYPES.AuthBearerMiddlewareGuard)
     private readonly authBearerMiddlewareGuard: AuthBearerMiddlewareGuard,
     @inject(TYPES.AuthCredentialTokenMiddlewareGuard)
-    private readonly authCredentialTokenMiddlewareGuard: AuthCredentialTokenMiddlewareGuard,
-    @inject(TYPES.BlackListTokenRepository)
-    private readonly blackListTokenRepository: BlackListTokenRepository
+    private readonly authCredentialTokenMiddlewareGuard: AuthCredentialTokenMiddlewareGuard
   ) {
     super()
     this.bindRoutes({
@@ -76,11 +73,13 @@ class AuthController extends BaseController {
 
   private _generatePairAuthTokens = (id: string) => {
     const accessJwtData = this.jwtService.generateAccessToken(id)
-    const refreshJwtData = this.jwtService.generateRefreshToken(id)
+    const refreshJwtToken = this.jwtService.generateRefreshToken(id)
+
+    console.log(refreshJwtToken, '@@')
 
     return {
       accessJwtData,
-      refreshJwtData,
+      refreshJwtToken,
     }
   }
 
@@ -94,10 +93,10 @@ class AuthController extends BaseController {
       return
     }
 
-    const { accessJwtData, refreshJwtData } =
+    const { accessJwtData, refreshJwtToken } =
       this._generatePairAuthTokens(userId)
 
-    res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtData, {
+    res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
       secure: true,
     })
@@ -111,22 +110,16 @@ class AuthController extends BaseController {
       },
     } = req
 
-    const { accessJwtData, refreshJwtData } = this._generatePairAuthTokens(id)
+    const { accessJwtData, refreshJwtToken } = this._generatePairAuthTokens(id)
 
-    res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtData, {
+    res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
       secure: true,
     })
     res.status(200).json(accessJwtData)
   }
 
-  private logout = async (req: Request, res: Response) => {
-    const { cookies } = req
-
-    const refreshToken = cookies[REFRESH_TOKEN_COOKIE_NAME]
-
-    await this.blackListTokenRepository.create(refreshToken)
-
+  private logout = async (_: Request, res: Response) => {
     res.clearCookie(REFRESH_TOKEN_COOKIE_NAME)
     res.sendStatus(204)
   }

@@ -5,11 +5,14 @@ import { NodemailerMock } from 'nodemailer-mock'
 import { load } from 'cheerio'
 import { boot } from '../src/main'
 import { App } from '../src/app'
+import { DEFAULT_TEST_DATA } from './data'
 
 const { mock } = nodemailer as unknown as NodemailerMock
+
+const {
+  REGISTRATION: { email, login, password },
+} = DEFAULT_TEST_DATA
 let application: App
-const email = 'test@mail.com'
-const login = 'ulogin45'
 let code: string
 
 const parsedHtmlAndGetCode = (html: string) => {
@@ -37,7 +40,7 @@ describe('Registration', () => {
     const res = await request(application.app).post('/auth/registration').send({
       email,
       login,
-      password: 'ulogin45',
+      password,
     })
 
     const sentEmails = mock.getSentMail()
@@ -56,7 +59,7 @@ describe('Registration', () => {
       .send({
         email,
         login,
-        password: 'password123',
+        password,
       })
       .expect(400)
   })
