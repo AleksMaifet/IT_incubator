@@ -7,6 +7,7 @@ import { SecurityDevicesService } from './securityDevices.service'
 import {
   AuthRefreshTokenMiddlewareGuard,
   OwnerDeviceMiddlewareGuard,
+  ValidateParamsMiddleware,
 } from '../middlewares'
 import { BaseDevice } from './dto'
 
@@ -38,6 +39,7 @@ class SecurityDevicesController extends BaseController {
       middlewares: [
         this.authRefreshTokenMiddlewareGuard,
         new OwnerDeviceMiddlewareGuard(this.securityDevicesService),
+        new ValidateParamsMiddleware(BaseDevice),
       ],
     })
   }

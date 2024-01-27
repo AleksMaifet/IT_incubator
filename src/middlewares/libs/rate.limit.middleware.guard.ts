@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { IMiddleware } from '../middleware.interface'
+import { clearTimeout } from 'timers'
 
 interface IStorageOptions {
   totalHits: number
@@ -9,6 +10,7 @@ interface IStorageOptions {
 class RateLimitMiddleware implements IMiddleware {
   private _storage: Record<string, IStorageOptions> = {}
   private timeoutIds: NodeJS.Timeout[] = []
+  private _timeoutId: NodeJS.Timeout
 
   constructor(
     private readonly limit: number,
@@ -75,16 +77,17 @@ class RateLimitMiddleware implements IMiddleware {
 
     const { totalHits, timeToExpire } = await this.increment(ip, this.ttl)
 
-    if (timeToExpire === this.ttl / 1000) {
-      this._cleanupExpiredAttempts(ip)
-      this._onApplicationShutdown()
-    }
-
     if (totalHits > this.limit) {
       res.sendStatus(429)
       this._onApplicationShutdown()
       return
     }
+
+    clearTimeout(this._timeoutId)
+
+    this._timeoutId = setTimeout(() => {
+      this._cleanupExpiredAttempts(ip)
+    }, timeToExpire * 1000)
 
     next()
   }

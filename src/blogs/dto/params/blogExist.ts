@@ -1,5 +1,5 @@
 import { Validate } from 'class-validator'
-import { IsBlogExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsBlogExist } from '../../../middlewares'
 
 class BlogExist {
   @Validate(IsBlogExist, {
