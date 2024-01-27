@@ -3,17 +3,17 @@ import { Server } from 'http'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import cookieParser from 'cookie-parser'
-import { ILogger } from './services'
+import { ConfigService, ILogger } from './services'
 import { TestingController } from './testing'
 import { AuthController } from './auth'
 import { UsersController } from './users'
 import { VideosController } from './videos'
 import { BlogsController } from './blogs'
-import { ConfigService } from './services'
 import { PostsController } from './posts'
 import { MongoService } from './db'
 import { TYPES } from './types'
 import { CommentsController } from './comments'
+import { SecurityDevicesController } from './securityDevices'
 
 @injectable()
 class App {
@@ -39,7 +39,9 @@ class App {
     @inject(TYPES.PostsController)
     private readonly postsController: PostsController,
     @inject(TYPES.CommentsController)
-    private readonly commentsController: CommentsController
+    private readonly commentsController: CommentsController,
+    @inject(TYPES.SecurityDevicesController)
+    private readonly securityDevicesController: SecurityDevicesController
   ) {
     this.app = express()
     this.port = this.normalizePort(this.configService.get('PORT'))
@@ -54,6 +56,7 @@ class App {
   }
 
   private useMiddleware = () => {
+    this.app.set('trust proxy', true)
     this.app.use(json())
     this.app.use(cookieParser())
   }
@@ -69,6 +72,7 @@ class App {
       { path: '/blogs', controller: this.blogsController.router },
       { path: '/posts', controller: this.postsController.router },
       { path: '/comments', controller: this.commentsController.router },
+      { path: '/security', controller: this.securityDevicesController.router },
     ]
 
     /**

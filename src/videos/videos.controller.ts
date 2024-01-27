@@ -46,7 +46,7 @@ class VideosController extends BaseController {
     })
   }
 
-  private getAll = async (_: Request, res: Response) => {
+  private getAll = async (req: Request, res: Response) => {
     const result = await this.videosService.getAll()
 
     res.status(200).json(result)

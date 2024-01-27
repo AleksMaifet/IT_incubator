@@ -1,21 +1,18 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
-import { IMiddleware } from '../../middleware.interface'
 import { TYPES } from '../../../types'
 import { JwtService } from '../../../services'
-import { REFRESH_TOKEN_COOKIE_NAME } from '../../../auth'
 import { UsersRepository } from '../../../users'
-import { BlackListTokenRepository } from '../../../repositories'
+import { REFRESH_TOKEN_COOKIE_NAME } from '../../../auth'
+import { IMiddleware } from '../../middleware.interface'
 
 @injectable()
-class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
+class AuthRefreshTokenMiddlewareGuard implements IMiddleware {
   constructor(
     @inject(TYPES.JwtService) private readonly jwtService: JwtService,
     @inject(TYPES.UsersRepository)
-    private readonly usersRepository: UsersRepository,
-    @inject(TYPES.BlackListTokenRepository)
-    private readonly blackListTokenRepository: BlackListTokenRepository
+    private readonly usersRepository: UsersRepository
   ) {}
 
   execute = async (req: Request, res: Response, next: NextFunction) => {
@@ -32,28 +29,19 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
       return
     }
 
-    const expiredToken = await this.blackListTokenRepository.get(refreshToken)
+    const payload = this.jwtService.getJwtDataByToken(refreshToken)
 
-    if (expiredToken) {
+    if (!payload?.userId) {
       sendResponse()
       return
     }
 
-    const id = this.jwtService.getUserIdByToken(refreshToken)
-
-    if (!id) {
-      sendResponse()
-      return
-    }
-
-    const user = await this.usersRepository.getById(id)
+    const user = await this.usersRepository.getById(payload.userId)
 
     if (!user) {
       sendResponse()
       return
     }
-
-    await this.blackListTokenRepository.create(refreshToken)
 
     req.context = {
       user,
@@ -63,4 +51,4 @@ class AuthCredentialTokenMiddlewareGuard implements IMiddleware {
   }
 }
 
-export { AuthCredentialTokenMiddlewareGuard }
+export { AuthRefreshTokenMiddlewareGuard }

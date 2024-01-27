@@ -43,12 +43,19 @@ import { TestingController, TestingRepository } from '../testing'
 import {
   AuthBasicMiddlewareGuard,
   AuthBearerMiddlewareGuard,
-  AuthCredentialTokenMiddlewareGuard,
+  AuthCredentialRefreshTokenMiddlewareGuard,
+  AuthRefreshTokenMiddlewareGuard,
   IMiddleware,
 } from '../middlewares'
 import { AdapterEmail } from '../adapters'
 import { ManagerEmail } from '../managers'
-import { BlackListTokenModel, BlackListTokenRepository } from '../repositories'
+
+import {
+  RefreshTokenMetaModel,
+  SecurityDevicesController,
+  SecurityDevicesRepository,
+  SecurityDevicesService,
+} from '../securityDevices'
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App)
@@ -62,20 +69,26 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<BlogsController>(TYPES.BlogsController).to(BlogsController)
   bind<PostsController>(TYPES.PostsController).to(PostsController)
   bind<CommentsController>(TYPES.CommentsController).to(CommentsController)
+  bind<SecurityDevicesController>(TYPES.SecurityDevicesController).to(
+    SecurityDevicesController
+  )
   bind<VideosService>(TYPES.VideosService).to(VideosService)
   bind<BlogsService>(TYPES.BlogsService).to(BlogsService)
   bind<PostsService>(TYPES.PostsService).to(PostsService)
   bind<AuthService>(TYPES.AuthService).to(AuthService)
   bind<UsersService>(TYPES.UsersService).to(UsersService)
   bind<CommentsService>(TYPES.CommentsService).to(CommentsService)
+  bind<SecurityDevicesService>(TYPES.SecurityDevicesService).to(
+    SecurityDevicesService
+  )
   bind<VideosRepository>(TYPES.VideosRepository).to(VideosRepository)
   bind<BlogsRepository>(TYPES.BlogsRepository).to(BlogsRepository)
   bind<PostsRepository>(TYPES.PostsRepository).to(PostsRepository)
   bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository)
   bind<AuthRepository>(TYPES.AuthRepository).to(AuthRepository)
   bind<CommentsRepository>(TYPES.CommentsRepository).to(CommentsRepository)
-  bind<BlackListTokenRepository>(TYPES.BlackListTokenRepository).to(
-    BlackListTokenRepository
+  bind<SecurityDevicesRepository>(TYPES.SecurityDevicesRepository).to(
+    SecurityDevicesRepository
   )
   bind<TestingController>(TYPES.TestingController).to(TestingController)
   bind<TestingRepository>(TYPES.TestingRepository).to(TestingRepository)
@@ -87,15 +100,18 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<typeof EmailConfirmationModel>(
     TYPES.EmailConfirmationModel
   ).toConstantValue(EmailConfirmationModel)
-  bind<typeof BlackListTokenModel>(TYPES.BlackListTokenModel).toConstantValue(
-    BlackListTokenModel
-  )
+  bind<typeof RefreshTokenMetaModel>(
+    TYPES.RefreshTokenMetaModel
+  ).toConstantValue(RefreshTokenMetaModel)
   bind<IMiddleware>(TYPES.AuthBasicMiddlewareGuard).to(AuthBasicMiddlewareGuard)
   bind<IMiddleware>(TYPES.AuthBearerMiddlewareGuard).to(
     AuthBearerMiddlewareGuard
   )
-  bind<IMiddleware>(TYPES.AuthCredentialTokenMiddlewareGuard).to(
-    AuthCredentialTokenMiddlewareGuard
+  bind<IMiddleware>(TYPES.AuthCredentialRefreshTokenMiddlewareGuard).to(
+    AuthCredentialRefreshTokenMiddlewareGuard
+  )
+  bind<IMiddleware>(TYPES.AuthRefreshTokenMiddlewareGuard).to(
+    AuthRefreshTokenMiddlewareGuard
   )
   bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail).inSingletonScope()
   bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)

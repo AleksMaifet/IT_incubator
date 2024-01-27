@@ -6,7 +6,7 @@ import { makeAuthBasicRequest, makeAuthBearerRequest } from './auths'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA } = DEFAULT_TEST_DATA
-
+const REFRESH_TOKEN_NAME = 'refreshToken'
 let application: App
 let refreshToken_1: string
 let refreshToken_2: string
@@ -14,11 +14,11 @@ let accessToken: string
 
 const getRefreshToken = (arr: string[]) => {
   return arr.reduce((acc, c) => {
-    if (!c.includes('refreshToken')) {
+    if (!c.includes(REFRESH_TOKEN_NAME)) {
       return acc
     }
 
-    return c.split('refreshToken=')[1]
+    return c.split(`${REFRESH_TOKEN_NAME}=`)[1]
   }, '' as string)
 }
 
@@ -71,7 +71,7 @@ describe('RefreshToken', () => {
   })
 
   it('POST -> "/auth/refresh-token": should return new "refresh" and "access" tokens; status 200; content: new JWT "access" token, new JWT "refresh" token in cookie (http only, secure);', async () => {
-    await new Promise((r) => setTimeout(r, 1000))
+    await new Promise((_) => setTimeout(_, 1000))
 
     const response = await request(application.app)
       .post('/auth/refresh-token')

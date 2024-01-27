@@ -32,14 +32,14 @@ class AuthBearerMiddlewareGuard {
       return
     }
 
-    const id = this.jwtService.getUserIdByToken(token)
+    const payload = this.jwtService.getJwtDataByToken(token)
 
-    if (!id) {
+    if (!payload?.userId) {
       sendResponse()
       return
     }
 
-    const user = await this.usersRepository.getById(id)
+    const user = await this.usersRepository.getById(payload?.userId)
 
     if (!user) {
       sendResponse()

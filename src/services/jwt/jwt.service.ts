@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { sign, verify } from 'jsonwebtoken'
+import { v4 as uuidv4 } from 'uuid'
 import { TYPES } from '../../types'
 import { ConfigService } from '../config'
 import { LoggerService } from '../logger'
@@ -27,18 +28,16 @@ class JwtService {
   public generateRefreshToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
-    return sign({ userId }, secretOrPrivateKey, {
+    return sign({ userId, deviceId: uuidv4() }, secretOrPrivateKey, {
       expiresIn: 20,
     })
   }
 
-  public getUserIdByToken = (token: string) => {
+  public getJwtDataByToken = (token: string): Nullable<any> => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
     try {
-      const { userId }: any = verify(token, secretOrPrivateKey)
-
-      return userId
+      return verify(token, secretOrPrivateKey)
     } catch (error) {
       this.loggerService.error(`${error} ${token}`)
       return null

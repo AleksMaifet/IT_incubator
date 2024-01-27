@@ -1,15 +1,19 @@
 import { Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
+import { parse } from 'useragent'
 import { BaseController } from '../common'
 import {
   AuthBearerMiddlewareGuard,
-  AuthCredentialTokenMiddlewareGuard,
+  AuthCredentialRefreshTokenMiddlewareGuard,
+  AuthRefreshTokenMiddlewareGuard,
+  RateLimitMiddleware,
   ValidateBodyMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
+import { IRefreshTokenMeta, SecurityDevicesService } from '../securityDevices'
 import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
 import { AuthService } from './auth.service'
 import { REFRESH_TOKEN_COOKIE_NAME } from './constants'
@@ -21,17 +25,24 @@ class AuthController extends BaseController {
     private readonly authService: AuthService,
     @inject(TYPES.JwtService)
     private readonly jwtService: JwtService,
+    @inject(TYPES.SecurityDevicesService)
+    private readonly securityDevicesService: SecurityDevicesService,
     @inject(TYPES.AuthBearerMiddlewareGuard)
     private readonly authBearerMiddlewareGuard: AuthBearerMiddlewareGuard,
-    @inject(TYPES.AuthCredentialTokenMiddlewareGuard)
-    private readonly authCredentialTokenMiddlewareGuard: AuthCredentialTokenMiddlewareGuard
+    @inject(TYPES.AuthRefreshTokenMiddlewareGuard)
+    private readonly authRefreshTokenMiddlewareGuard: AuthRefreshTokenMiddlewareGuard,
+    @inject(TYPES.AuthCredentialRefreshTokenMiddlewareGuard)
+    private readonly authCredentialRefreshTokenMiddlewareGuard: AuthCredentialRefreshTokenMiddlewareGuard
   ) {
     super()
     this.bindRoutes({
       path: '/login',
       method: 'post',
       func: this.login,
-      middlewares: [new ValidateBodyMiddleware(BaseAuthDto)],
+      middlewares: [
+        new RateLimitMiddleware(5, 10000),
+        new ValidateBodyMiddleware(BaseAuthDto),
+      ],
     })
     this.bindRoutes({
       path: '/me',
@@ -43,39 +54,70 @@ class AuthController extends BaseController {
       path: '/refresh-token',
       method: 'post',
       func: this.getNewPairAuthTokens,
-      middlewares: [this.authCredentialTokenMiddlewareGuard],
+      middlewares: [
+        this.authRefreshTokenMiddlewareGuard,
+        this.authCredentialRefreshTokenMiddlewareGuard,
+      ],
     })
     this.bindRoutes({
       path: '/logout',
       method: 'post',
       func: this.logout,
-      middlewares: [this.authCredentialTokenMiddlewareGuard],
+      middlewares: [
+        this.authRefreshTokenMiddlewareGuard,
+        this.authCredentialRefreshTokenMiddlewareGuard,
+      ],
     })
     this.bindRoutes({
       path: '/registration',
       method: 'post',
       func: this.registration,
-      middlewares: [new ValidateBodyMiddleware(CreateUserDto)],
+      middlewares: [
+        new RateLimitMiddleware(5, 10000),
+        new ValidateBodyMiddleware(CreateUserDto),
+      ],
     })
     this.bindRoutes({
       path: '/registration-confirmation',
       method: 'post',
       func: this.registrationConfirmation,
-      middlewares: [new ValidateBodyMiddleware(RegConfirmAuthDto)],
+      middlewares: [
+        new RateLimitMiddleware(5, 10000),
+        new ValidateBodyMiddleware(RegConfirmAuthDto),
+      ],
     })
     this.bindRoutes({
       path: '/registration-email-resending',
       method: 'post',
       func: this.registrationEmailResending,
-      middlewares: [new ValidateBodyMiddleware(RegEmailResendingAuthDto)],
+      middlewares: [
+        new RateLimitMiddleware(5, 10000),
+        new ValidateBodyMiddleware(RegEmailResendingAuthDto),
+      ],
     })
   }
 
-  private _generatePairAuthTokens = (id: string) => {
-    const accessJwtData = this.jwtService.generateAccessToken(id)
-    const refreshJwtToken = this.jwtService.generateRefreshToken(id)
+  private _generatePairAuthTokens = async (
+    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceName' | 'clientIp'>
+  ) => {
+    const { userId, deviceName, clientIp } = dto
 
-    console.log(refreshJwtToken, '@@')
+    const deviceNameFamily = parse(deviceName).family
+
+    const accessJwtData = this.jwtService.generateAccessToken(userId)
+    const refreshJwtToken = this.jwtService.generateRefreshToken(userId)
+    const payload = this.jwtService.getJwtDataByToken(refreshJwtToken)
+
+    const { deviceId, iat, exp } = payload
+
+    await this.securityDevicesService.createRefreshTokenMeta({
+      userId,
+      deviceId,
+      issuedAt: iat,
+      expirationAt: exp,
+      deviceName: deviceNameFamily,
+      clientIp: clientIp,
+    })
 
     return {
       accessJwtData,
@@ -84,7 +126,9 @@ class AuthController extends BaseController {
   }
 
   private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
-    const { body } = req
+    const { body, headers, ip } = req
+
+    await this.securityDevicesService.deleteExpiredRefreshToken()
 
     const userId = await this.authService.login(body)
 
@@ -94,7 +138,11 @@ class AuthController extends BaseController {
     }
 
     const { accessJwtData, refreshJwtToken } =
-      this._generatePairAuthTokens(userId)
+      await this._generatePairAuthTokens({
+        userId,
+        deviceName: headers['user-agent']!,
+        clientIp: ip!,
+      })
 
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
@@ -108,9 +156,16 @@ class AuthController extends BaseController {
       context: {
         user: { id },
       },
+      headers,
+      ip,
     } = req
 
-    const { accessJwtData, refreshJwtToken } = this._generatePairAuthTokens(id)
+    const { accessJwtData, refreshJwtToken } =
+      await this._generatePairAuthTokens({
+        userId: id,
+        deviceName: headers['user-agent']!,
+        clientIp: ip!,
+      })
 
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
