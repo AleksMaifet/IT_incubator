@@ -40,7 +40,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.login,
       middlewares: [
-        new RateLimitMiddleware(5, 10000),
+        new RateLimitMiddleware(5, 10),
         new ValidateBodyMiddleware(BaseAuthDto),
       ],
     })
@@ -73,7 +73,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registration,
       middlewares: [
-        new RateLimitMiddleware(5, 10000),
+        new RateLimitMiddleware(5, 10),
         new ValidateBodyMiddleware(CreateUserDto),
       ],
     })
@@ -82,7 +82,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationConfirmation,
       middlewares: [
-        new RateLimitMiddleware(5, 10000),
+        new RateLimitMiddleware(5, 10),
         new ValidateBodyMiddleware(RegConfirmAuthDto),
       ],
     })
@@ -91,7 +91,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationEmailResending,
       middlewares: [
-        new RateLimitMiddleware(5, 10000),
+        new RateLimitMiddleware(5, 10),
         new ValidateBodyMiddleware(RegEmailResendingAuthDto),
       ],
     })
