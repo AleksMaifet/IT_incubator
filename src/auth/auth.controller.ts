@@ -73,7 +73,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registration,
       middlewares: [
-        new RateLimitMiddlewareGuard(5, 13),
+        new RateLimitMiddlewareGuard(5, 14),
         new ValidateBodyMiddleware(CreateUserDto),
       ],
     })
