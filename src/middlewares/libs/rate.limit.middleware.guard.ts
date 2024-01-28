@@ -83,11 +83,11 @@ class RateLimitMiddleware implements IMiddleware {
       return
     }
 
-    clearTimeout(this._timeoutId)
-
-    this._timeoutId = setTimeout(() => {
-      this._cleanupExpiredAttempts(ip)
-    }, this.ttl)
+    // clearTimeout(this._timeoutId)
+    //
+    // this._timeoutId = setTimeout(() => {
+    //   this._cleanupExpiredAttempts(ip)
+    // }, this.ttl)
 
     next()
   }
