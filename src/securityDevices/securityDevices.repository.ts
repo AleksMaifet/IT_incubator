@@ -36,10 +36,10 @@ class SecurityDevicesRepository {
   }
 
   public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
-    const { userId, deviceName } = dto
+    const { userId, clientIp } = dto
 
     const result = await this.refreshTokenMetaModel.findOneAndUpdate(
-      { userId, deviceName },
+      { userId, clientIp },
       dto
     )
 
