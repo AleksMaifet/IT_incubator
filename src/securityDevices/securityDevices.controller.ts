@@ -60,10 +60,14 @@ class SecurityDevicesController extends BaseController {
     const {
       context: {
         user: { id },
+        token: { deviceId },
       },
     } = req
 
-    await this.securityDevicesService.deleteAllDevices(id)
+    await this.securityDevicesService.deleteAllDevices({
+      userId: id,
+      deviceId,
+    })
 
     res.sendStatus(204)
   }

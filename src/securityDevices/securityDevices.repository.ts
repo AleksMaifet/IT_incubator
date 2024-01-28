@@ -37,19 +37,6 @@ class SecurityDevicesRepository {
 
   public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
     return await this.refreshTokenMetaModel.create(dto)
-
-    // const { userId, clientIp } = dto
-    //
-    // const result = await this.refreshTokenMetaModel.findOneAndUpdate(
-    //   { userId, clientIp },
-    //   dto
-    // )
-    //
-    // if (!result) {
-    //   return await this.refreshTokenMetaModel.create(dto)
-    // }
-    //
-    // return result
   }
 
   public getRefreshTokenMeta = async (
@@ -95,12 +82,18 @@ class SecurityDevicesRepository {
     return await this.refreshTokenMetaModel.findOne({ deviceId }).exec()
   }
 
-  public deleteAllDevices = async (userId: string) => {
-    return await this.refreshTokenMetaModel.deleteMany({ userId }).exec()
+  public deleteAllDevices = async (
+    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
+  ) => {
+    const { userId, deviceId } = dto
+
+    return await this.refreshTokenMetaModel
+      .deleteMany({ userId, deviceId: { $ne: deviceId } })
+      .exec()
   }
 
-  public deleteDeviceByDeviceId = async (deviceId: string) => {
-    return await this.refreshTokenMetaModel.deleteOne({ deviceId }).exec()
+  public deleteDeviceByDeviceId = async (id: string) => {
+    return await this.refreshTokenMetaModel.deleteOne({ deviceId: id }).exec()
   }
 }
 

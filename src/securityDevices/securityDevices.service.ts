@@ -111,8 +111,10 @@ class SecurityDevicesService {
     return await this.securityDevicesRepository.getDeviceByDeviceId(id)
   }
 
-  public deleteAllDevices = async (id: string) => {
-    return await this.securityDevicesRepository.deleteAllDevices(id)
+  public deleteAllDevices = async (
+    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
+  ) => {
+    return await this.securityDevicesRepository.deleteAllDevices(dto)
   }
 
   public deleteDeviceByDeviceId = async (id: string) => {

@@ -13,30 +13,27 @@ const userLogins = [
     userAgent:
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0',
     refreshToken: '',
-    ip: '127.0.0.1',
-    deviceId: '',
+    ip: '127.0.0.0',
   },
   {
     userAgent:
       'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103',
     refreshToken: '',
     ip: '127.0.0.1',
-    deviceId: '',
   },
   {
     userAgent:
       'Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 ' +
       '(KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1',
     refreshToken: '',
-    ip: '127.0.0.1',
-    deviceId: '',
+    ip: '127.0.0.2',
   },
   {
     userAgent:
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
-      'Chrome/91.0.4472.124',
+      'Mozilla/5.0 (Windows NT 10.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 ' +
+      'Safari/537.36 Edge/12.10136',
     refreshToken: '',
-    ip: '127.0.0.1',
+    ip: '127.0.0.3',
   },
 ]
 
@@ -88,10 +85,6 @@ describe('Devices', () => {
     async () => {
       // Login user 4 times from different browsers
       for (let i = 0; i < 4; i++) {
-        if (i > 0) {
-          await delay(1000)
-        }
-
         const res = await request(application.app)
           .post('/auth/login')
           .send({
@@ -107,10 +100,6 @@ describe('Devices', () => {
       const res = await request(application.app)
         .get('/security/devices')
         .set('Cookie', `refreshToken=${userLogins[0].refreshToken}`)
-
-      res.body.forEach((d: any, i: number) => {
-        userLogins[i].deviceId = d.deviceId
-      })
 
       expect(res.status).toBe(200)
       expect(res.body.length).toBe(4)
@@ -180,6 +169,7 @@ describe('Devices', () => {
           password: newUserData.password,
         })
         .set('User-Agent', userLogins[0].userAgent)
+        .set('x-forwarded-for', userLogins[0].ip)
         .expect(200)
 
       const user2RefreshToken = getRefreshToken(resUser2.get('Set-Cookie'))
@@ -277,126 +267,99 @@ describe('Devices', () => {
     }
   )
 
-  // it(
-  //   'GET -> "/security/devices": Log out device. Should return device list without a device logged out;' +
-  //     ' status 204; used additional methods: POST => /auth/logout',
-  //   async () => {
-  //     const deviceListResBefore = await request(application.app)
-  //       .get('/security/devices')
-  //       .set('Cookie', `refreshToken=${userLogins[0].refreshToken}`)
-  //       .expect(200)
-  //
-  //     const deviceListBefore = deviceListResBefore.body
-  //
-  //     await request(application.app)
-  //       .post('/auth/logout')
-  //       .set('Cookie', `refreshToken=${userLogins[0].refreshToken}`)
-  //       .expect(204)
-  //
-  //     const deviceListResAfter = await request(application.app)
-  //       .get('/security/devices')
-  //       .set('Cookie', `refreshToken=${userLogins[1].refreshToken}`)
-  //       .expect(200)
-  //
-  //     const deviceListAfter = deviceListResAfter.body
-  //
-  //     expect(deviceListAfter.length).toBe(deviceListBefore.length - 1)
-  //
-  //     console.log(deviceListAfter)
-  //   }
-  // )
+  it(
+    'DELETE -> "/security/devices": should delete all other ' +
+      'devices from device list; status 204; used additional methods: GET => /security/devices',
+    async () => {
+      await request(application.app)
+        .get('/security/devices')
+        .set('Cookie', `refreshToken=${userLogins[1].refreshToken}`)
+        .expect(200)
 
-  // it('DELETE -> "/security/devices": should delete all other devices from device list; status 204; used additional methods: GET => /security/devices', async () => {
-  //   const deviceListResBefore = await request(application.app).get(
-  //     '/security/devices'
-  //   )
-  //   const deviceListBefore = deviceListResBefore.body.devices
-  //
-  //   const deleteRes = await request(application.app).delete('/security/devices')
-  //   expect(deleteRes.status).toBe(204)
-  //
-  //   const deviceListResAfter = await request(application.app).get(
-  //     '/security/devices'
-  //   )
-  //   const deviceListAfter = deviceListResAfter.body.devices
-  //
-  //   expect(deviceListAfter.length).toBe(0)
-  // })
+      await request(application.app)
+        .delete(`/security/devices`)
+        .set('Cookie', `refreshToken=${userLogins[1].refreshToken}`)
+        .expect(204)
+
+      const deviceListResAfter = await request(application.app)
+        .get('/security/devices')
+        .set('Cookie', `refreshToken=${userLogins[1].refreshToken}`)
+        .expect(200)
+
+      const deviceListAfter = deviceListResAfter.body
+
+      expect(deviceListAfter.length).toBe(1)
+    }
+  )
 })
 
-// describe('Ip restriction', () => {
-//   it('DELETE -> "/testing/all-data": should remove all data; status 204', async () => {
-//     const res = await request(application.app).delete('/testing/all-data')
-//     expect(res.status).toBe(204)
-//   })
-//
-//   it('POST -> "/auth/registration": should return status code 429 if more than 5 requests were sent within 10 seconds, and 204 after waiting; status 429, 204', async () => {
-//     // Send more than 5 requests within 10 seconds
-//     for (let i = 0; i < 6; i++) {
-//       await request(application.app).post('/auth/registration')
-//     }
-//
-//     // Wait for 10 seconds
-//     await new Promise((resolve) => setTimeout(resolve, 10000))
-//
-//     // Send another request
-//     const res = await request(application.app).post('/auth/registration')
-//     expect(res.status).toBe(204)
-//   })
-//
-//   it('POST -> "/auth/login": for a non-existent user, it should return status code 429 if more than 5 requests were sent within 10 seconds, and 401 after waiting; status 429, 401', async () => {
-//     const loginData = {
-//       username: 'nonexistentuser',
-//       password: 'testpassword',
-//     }
-//
-//     // Send more than 5 requests within 10 seconds
-//     for (let i = 0; i < 6; i++) {
-//       await request(application.app).post('/auth/login').send(loginData)
-//     }
-//
-//     // Wait for 10 seconds
-//     await new Promise((resolve) => setTimeout(resolve, 10000))
-//
-//     // Send another request
-//     const res = await request(application.app)
-//       .post('/auth/login')
-//       .send(loginData)
-//     expect(res.status).toBe(401)
-//   })
-//
-//   it('POST -> "/auth/registration-email-resending": should return status code 429 if more than 5 requests were sent within 10 seconds, and 204 after waiting; status 429, 204', async () => {
-//     // Send more than 5 requests within 10 seconds
-//     for (let i = 0; i < 6; i++) {
-//       await request(application.app).post('/auth/registration-email-resending')
-//     }
-//
-//     // Wait for 10 seconds
-//     await new Promise((resolve) => setTimeout(resolve, 10000))
-//
-//     // Send another request
-//     const res = await request(application.app).post(
-//       '/auth/registration-email-resending'
-//     )
-//     expect(res.status).toBe(204)
-//   })
-//
-//   it('POST -> "/auth/registration-confirmation": should return status code 429 if more than 5 requests were sent within 10 seconds, and 400 after waiting; status 429, 400', async () => {
-//     // Send more than 5 requests within 10 seconds
-//     for (let i = 0; i < 6; i++) {
-//       await request(application.app).post('/auth/registration-confirmation')
-//     }
-//
-//     // Wait for 10 seconds
-//     await new Promise((resolve) => setTimeout(resolve, 10000))
-//
-//     // Send another request
-//     const res = await request(application.app).post(
-//       '/auth/registration-confirmation'
-//     )
-//     expect(res.status).toBe(400)
-//   })
-// })
+describe('Ip restriction', () => {
+  it('DELETE -> "/testing/all-data": should remove all data; status 204', async () => {
+    await request(application.app).delete('/testing/all-data').expect(204)
+  })
+
+  it(
+    'POST -> "/auth/registration": should return status code 429 if more than 5 requests were sent ' +
+      'within 10 seconds, and 204 after waiting; status 429, 204',
+    async () => {
+      // Send more than 5 requests within 10 seconds
+      for (let i = 0; i < 6; i++) {
+        const res = await request(application.app)
+          .post('/auth/registration')
+          .send(USER_DATA)
+
+        if (i === 5) {
+          expect(res.status).toBe(429)
+        }
+      }
+
+      // Wait for 10 seconds
+      await delay(10000)
+
+      // Send another request
+      const newUserData = {
+        login: 'testuser2',
+        password: 'testpassword2',
+        email: 'testuser2@mail.ru',
+      }
+
+      await request(application.app)
+        .post('/auth/registration')
+        .send(newUserData)
+        .expect(204)
+    }
+  )
+
+  it(
+    'POST -> "/auth/login": for a non-existent user, it should return status code 429 if more than ' +
+      '5 requests were sent within 10 seconds, and 401 after waiting; status 429, 401',
+    async () => {
+      // Send more than 5 requests within 10 seconds
+      for (let i = 0; i < 6; i++) {
+        const res = await request(application.app).post('/auth/login').send({
+          loginOrEmail: USER_DATA.login,
+          password: USER_DATA.password,
+        })
+
+        if (i === 5) {
+          expect(res.status).toBe(429)
+        }
+      }
+
+      // Wait for 10 seconds
+      await delay(10000)
+
+      // Send another request
+      await request(application.app)
+        .post('/auth/login')
+        .send({
+          loginOrEmail: `${USER_DATA.login}a`,
+          password: USER_DATA.password,
+        })
+        .expect(401)
+    }
+  )
+})
 
 afterAll(async () => {
   await request(application.app).delete('/testing/all-data').expect(204)

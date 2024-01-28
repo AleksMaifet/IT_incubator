@@ -45,8 +45,7 @@ const getRefreshToken = (arr: string[]) => {
   }, '' as string)
 }
 
-const delay = async (ttl: number) => {
-  await new Promise((_) => setTimeout(_, ttl))
-}
+const delay = (ttl: number) =>
+  new Promise((resolve) => setTimeout(resolve, ttl))
 
 export { makeAuthBasicRequest, makeAuthBearerRequest, getRefreshToken, delay }
