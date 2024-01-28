@@ -2,7 +2,7 @@ import { disconnect } from 'mongoose'
 import request from 'supertest'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthBasicRequest } from './auths'
+import { makeAuthBasicRequest } from './helpers'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { BLOG_DATA, POST_DATA } = DEFAULT_TEST_DATA

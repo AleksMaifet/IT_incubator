@@ -47,4 +47,6 @@ const DEFAULT_TEST_DATA: IDefaultTestData = {
   },
 }
 
-export { DEFAULT_TEST_DATA }
+const REFRESH_TOKEN_NAME = 'refreshToken'
+
+export { DEFAULT_TEST_DATA, REFRESH_TOKEN_NAME }

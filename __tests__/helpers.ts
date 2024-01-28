@@ -1,5 +1,6 @@
 import { Application, Router } from 'express'
 import request from 'supertest'
+import { REFRESH_TOKEN_NAME } from './data'
 
 const makeAuthBasicRequest = <T>(
   app: Application,
@@ -34,4 +35,18 @@ const makeAuthBearerRequest = <T>(
   return req.send(body)
 }
 
-export { makeAuthBasicRequest, makeAuthBearerRequest }
+const getRefreshToken = (arr: string[]) => {
+  return arr.reduce((acc, c) => {
+    if (!c.includes(REFRESH_TOKEN_NAME)) {
+      return acc
+    }
+
+    return c.split(`${REFRESH_TOKEN_NAME}=`)[1]
+  }, '' as string)
+}
+
+const delay = async (ttl: number) => {
+  await new Promise((_) => setTimeout(_, ttl))
+}
+
+export { makeAuthBasicRequest, makeAuthBearerRequest, getRefreshToken, delay }

@@ -2,7 +2,7 @@ import request from 'supertest'
 import { disconnect } from 'mongoose'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthBasicRequest, makeAuthBearerRequest } from './auths'
+import { makeAuthBasicRequest, makeAuthBearerRequest } from './helpers'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA, BLOG_DATA, POST_DATA, COMMENT_DATA } = DEFAULT_TEST_DATA

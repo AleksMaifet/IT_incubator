@@ -53,10 +53,44 @@ class SecurityDevicesService {
     })
   }
 
-  public getRefreshTokenMeta = async (
-    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
+  public updateRefreshTokenMeta = async (
+    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'> & {
+      issuedAt: number
+      expirationAt: number
+    }
   ) => {
-    return await this.securityDevicesRepository.getRefreshTokenMeta(dto)
+    const { userId, deviceId, issuedAt, expirationAt } = dto
+
+    const timeSteps = this._mapTimeStampsToDB({ issuedAt, expirationAt })
+
+    const { iat, exp } = timeSteps
+
+    return await this.securityDevicesRepository.updateRefreshTokenMeta({
+      userId,
+      deviceId,
+      issuedAt: iat,
+      expirationAt: exp,
+    })
+  }
+
+  public getRefreshTokenMeta = async (
+    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'> & {
+      issuedAt: number
+      expirationAt: number
+    }
+  ) => {
+    const { userId, deviceId, issuedAt, expirationAt } = dto
+
+    const timeSteps = this._mapTimeStampsToDB({ issuedAt, expirationAt })
+
+    const { iat, exp } = timeSteps
+
+    return await this.securityDevicesRepository.getRefreshTokenMeta({
+      userId,
+      deviceId,
+      issuedAt: iat,
+      expirationAt: exp,
+    })
   }
 
   public deleteRefreshTokenMeta = async (

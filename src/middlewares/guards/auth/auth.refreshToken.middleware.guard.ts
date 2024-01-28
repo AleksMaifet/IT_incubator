@@ -36,7 +36,9 @@ class AuthRefreshTokenMiddlewareGuard implements IMiddleware {
       return
     }
 
-    const user = await this.usersRepository.getById(payload.userId)
+    const { userId, deviceId, iat, exp } = payload
+
+    const user = await this.usersRepository.getById(userId)
 
     if (!user) {
       sendResponse()
@@ -45,6 +47,11 @@ class AuthRefreshTokenMiddlewareGuard implements IMiddleware {
 
     req.context = {
       user,
+      token: {
+        deviceId,
+        iat,
+        exp,
+      },
     }
 
     next()

@@ -22,16 +22,45 @@ class SecurityDevicesRepository {
     }
   }
 
-  public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
-    return await this.refreshTokenMetaModel.create(dto)
-  }
-
-  public getRefreshTokenMeta = async (
-    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
+  public updateRefreshTokenMeta = async (
+    dto: Pick<
+      IRefreshTokenMeta,
+      'userId' | 'deviceId' | 'expirationAt' | 'issuedAt'
+    >
   ) => {
     const { userId, deviceId } = dto
 
-    return await this.refreshTokenMetaModel.findOne({ userId, deviceId }).exec()
+    return await this.refreshTokenMetaModel
+      .findOneAndUpdate({ userId, deviceId }, dto)
+      .exec()
+  }
+
+  public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
+    const { userId, deviceName } = dto
+
+    const result = await this.refreshTokenMetaModel.findOneAndUpdate(
+      { userId, deviceName },
+      dto
+    )
+
+    if (!result) {
+      return await this.refreshTokenMetaModel.create(dto)
+    }
+
+    return result
+  }
+
+  public getRefreshTokenMeta = async (
+    dto: Pick<
+      IRefreshTokenMeta,
+      'userId' | 'deviceId' | 'issuedAt' | 'expirationAt'
+    >
+  ) => {
+    const { userId, deviceId, issuedAt, expirationAt } = dto
+
+    return await this.refreshTokenMetaModel
+      .findOne({ userId, deviceId, issuedAt, expirationAt })
+      .exec()
   }
 
   public deleteRefreshTokenMeta = async (
@@ -61,7 +90,6 @@ class SecurityDevicesRepository {
   }
 
   public getDeviceByDeviceId = async (deviceId: string) => {
-    console.log(deviceId)
     return await this.refreshTokenMetaModel.findOne({ deviceId }).exec()
   }
 

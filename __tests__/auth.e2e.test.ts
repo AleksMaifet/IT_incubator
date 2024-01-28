@@ -3,7 +3,7 @@ import request from 'supertest'
 import { sign } from 'jsonwebtoken'
 import { boot } from '../src/main'
 import { App } from '../src/app'
-import { makeAuthBasicRequest, makeAuthBearerRequest } from './auths'
+import { makeAuthBasicRequest, makeAuthBearerRequest } from './helpers'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA } = DEFAULT_TEST_DATA

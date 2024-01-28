@@ -37,9 +37,9 @@ class SecurityDevicesController extends BaseController {
       method: 'delete',
       func: this.deleteDeviceByDeviceId,
       middlewares: [
+        new ValidateParamsMiddleware(BaseDevice),
         this.authRefreshTokenMiddlewareGuard,
         new OwnerDeviceMiddlewareGuard(this.securityDevicesService),
-        new ValidateParamsMiddleware(BaseDevice),
       ],
     })
   }

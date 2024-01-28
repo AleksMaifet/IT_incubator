@@ -16,19 +16,23 @@ class JwtService {
   public generateAccessToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
-    const accessToken = sign({ userId }, secretOrPrivateKey, {
+    return sign({ userId }, secretOrPrivateKey, {
       expiresIn: 10,
     })
-
-    return {
-      accessToken,
-    }
   }
 
   public generateRefreshToken = (userId: string) => {
     const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
 
     return sign({ userId, deviceId: uuidv4() }, secretOrPrivateKey, {
+      expiresIn: 20,
+    })
+  }
+
+  public updateRefreshToken = (userId: string, deviceId: string) => {
+    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
+
+    return sign({ userId, deviceId }, secretOrPrivateKey, {
       expiresIn: 20,
     })
   }

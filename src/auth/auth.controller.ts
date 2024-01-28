@@ -13,7 +13,7 @@ import {
 import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
-import { IRefreshTokenMeta, SecurityDevicesService } from '../securityDevices'
+import { SecurityDevicesService } from '../securityDevices'
 import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
 import { AuthService } from './auth.service'
 import { REFRESH_TOKEN_COOKIE_NAME } from './constants'
@@ -97,14 +97,19 @@ class AuthController extends BaseController {
     })
   }
 
-  private _generatePairAuthTokens = async (
-    dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceName' | 'clientIp'>
-  ) => {
-    const { userId, deviceName, clientIp } = dto
+  private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
+    const { body, headers, ip } = req
 
-    const deviceNameFamily = parse(deviceName).family
+    // await this.securityDevicesService.deleteExpiredRefreshToken()
 
-    const accessJwtData = this.jwtService.generateAccessToken(userId)
+    const userId = await this.authService.login(body)
+
+    if (!userId) {
+      res.sendStatus(401)
+      return
+    }
+
+    const accessJwtToken = this.jwtService.generateAccessToken(userId)
     const refreshJwtToken = this.jwtService.generateRefreshToken(userId)
     const payload = this.jwtService.getJwtDataByToken(refreshJwtToken)
 
@@ -115,66 +120,62 @@ class AuthController extends BaseController {
       deviceId,
       issuedAt: iat,
       expirationAt: exp,
-      deviceName: deviceNameFamily,
-      clientIp: clientIp,
+      deviceName: parse(headers['user-agent']!).family,
+      clientIp: ip!,
     })
-
-    return {
-      accessJwtData,
-      refreshJwtToken,
-    }
-  }
-
-  private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
-    const { body, headers, ip } = req
-
-    await this.securityDevicesService.deleteExpiredRefreshToken()
-
-    const userId = await this.authService.login(body)
-
-    if (!userId) {
-      res.sendStatus(401)
-      return
-    }
-
-    const { accessJwtData, refreshJwtToken } =
-      await this._generatePairAuthTokens({
-        userId,
-        deviceName: headers['user-agent']!,
-        clientIp: ip!,
-      })
 
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
       secure: true,
     })
-    res.status(200).json(accessJwtData)
+    res.status(200).json({
+      accessToken: accessJwtToken,
+    })
   }
 
   private getNewPairAuthTokens = async (req: Request, res: Response) => {
     const {
       context: {
         user: { id },
+        token: { deviceId },
       },
-      headers,
-      ip,
     } = req
 
-    const { accessJwtData, refreshJwtToken } =
-      await this._generatePairAuthTokens({
-        userId: id,
-        deviceName: headers['user-agent']!,
-        clientIp: ip!,
-      })
+    const accessJwtToken = this.jwtService.generateAccessToken(id)
+    const refreshJwtToken = this.jwtService.updateRefreshToken(id, deviceId)
+    const payload = this.jwtService.getJwtDataByToken(refreshJwtToken)
+
+    const { userId, iat, exp } = payload
+
+    await this.securityDevicesService.updateRefreshTokenMeta({
+      userId,
+      deviceId,
+      issuedAt: iat,
+      expirationAt: exp,
+    })
 
     res.cookie(REFRESH_TOKEN_COOKIE_NAME, refreshJwtToken, {
       httpOnly: true,
       secure: true,
     })
-    res.status(200).json(accessJwtData)
+    res.status(200).json({
+      accessToken: accessJwtToken,
+    })
   }
 
-  private logout = async (_: Request, res: Response) => {
+  private logout = async (req: Request, res: Response) => {
+    const {
+      context: {
+        user: { id },
+        token: { deviceId },
+      },
+    } = req
+
+    await this.securityDevicesService.deleteRefreshTokenMeta({
+      userId: id,
+      deviceId,
+    })
+
     res.clearCookie(REFRESH_TOKEN_COOKIE_NAME)
     res.sendStatus(204)
   }
