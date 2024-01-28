@@ -36,18 +36,20 @@ class SecurityDevicesRepository {
   }
 
   public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
-    const { userId, clientIp } = dto
+    return await this.refreshTokenMetaModel.create(dto)
 
-    const result = await this.refreshTokenMetaModel.findOneAndUpdate(
-      { userId, clientIp },
-      dto
-    )
-
-    if (!result) {
-      return await this.refreshTokenMetaModel.create(dto)
-    }
-
-    return result
+    // const { userId, clientIp } = dto
+    //
+    // const result = await this.refreshTokenMetaModel.findOneAndUpdate(
+    //   { userId, clientIp },
+    //   dto
+    // )
+    //
+    // if (!result) {
+    //   return await this.refreshTokenMetaModel.create(dto)
+    // }
+    //
+    // return result
   }
 
   public getRefreshTokenMeta = async (

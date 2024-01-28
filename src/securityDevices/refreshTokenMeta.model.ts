@@ -4,12 +4,12 @@ import { IRefreshTokenMeta } from './interface'
 const RefreshTokenMeta = new Schema<IRefreshTokenMeta>(
   {
     issuedAt: {
-      type: String,
+      type: Date,
       required: true,
       index: true,
     },
     expirationAt: {
-      type: String,
+      type: Date,
       required: true,
       index: true,
     },

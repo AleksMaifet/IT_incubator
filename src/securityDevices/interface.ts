@@ -1,6 +1,6 @@
 interface IRefreshTokenMeta {
-  issuedAt: string
-  expirationAt: string
+  issuedAt: Date
+  expirationAt: Date
   deviceId: string
   clientIp: string
   deviceName: string

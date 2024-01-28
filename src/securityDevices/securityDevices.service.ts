@@ -18,7 +18,7 @@ class SecurityDevicesService {
     expirationAt: number
   }) => {
     const generateLocale = (value: number) => {
-      return new Date(value * 1000).toLocaleString('ru-RU')
+      return new Date(value * 1000)
     }
 
     return {
