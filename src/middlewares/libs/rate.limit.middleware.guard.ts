@@ -17,13 +17,8 @@ class RateLimitMiddlewareGuard implements IMiddleware {
   }
 
   execute = async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.ip, '@')
-
     try {
       await this._rateLimiter.consume(req.ip!)
-      const result = await this._rateLimiter.get(req.ip!)
-
-      console.log(result?.remainingPoints)
 
       next()
     } catch (e) {

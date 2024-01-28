@@ -298,67 +298,67 @@ describe('Ip restriction', () => {
     await request(application.app).delete('/testing/all-data').expect(204)
   })
 
-  // it(
-  //   'POST -> "/auth/registration": should return status code 429 if more than 5 requests were sent ' +
-  //     'within 10 seconds, and 204 after waiting; status 429, 204',
-  //   async () => {
-  //     // Send more than 5 requests within 10 seconds
-  //     for (let i = 0; i < 6; i++) {
-  //       const res = await request(application.app)
-  //         .post('/auth/registration')
-  //         .send(USER_DATA)
-  //
-  //       if (i === 5) {
-  //         expect(res.status).toBe(429)
-  //       }
-  //     }
-  //
-  //     // Wait for 10 seconds
-  //     await delay(10000)
-  //
-  //     // Send another request
-  //     const newUserData = {
-  //       login: 'testuser2',
-  //       password: 'testpassword2',
-  //       email: 'testuser2@mail.ru',
-  //     }
-  //
-  //     await request(application.app)
-  //       .post('/auth/registration')
-  //       .send(newUserData)
-  //       .expect(204)
-  //   }
-  // )
+  it(
+    'POST -> "/auth/registration": should return status code 429 if more than 5 requests were sent ' +
+      'within 10 seconds, and 204 after waiting; status 429, 204',
+    async () => {
+      // Send more than 5 requests within 10 seconds
+      for (let i = 0; i < 6; i++) {
+        const res = await request(application.app)
+          .post('/auth/registration')
+          .send(USER_DATA)
 
-  // it(
-  //   'POST -> "/auth/login": for a non-existent user, it should return status code 429 if more than ' +
-  //     '5 requests were sent within 10 seconds, and 401 after waiting; status 429, 401',
-  //   async () => {
-  //     // Send more than 5 requests within 10 seconds
-  //     for (let i = 0; i < 6; i++) {
-  //       const res = await request(application.app).post('/auth/login').send({
-  //         loginOrEmail: USER_DATA.login,
-  //         password: USER_DATA.password,
-  //       })
-  //
-  //       if (i === 5) {
-  //         expect(res.status).toBe(429)
-  //       }
-  //     }
-  //
-  //     // Wait for 10 seconds
-  //     await delay(10000)
-  //
-  //     // Send another request
-  //     await request(application.app)
-  //       .post('/auth/login')
-  //       .send({
-  //         loginOrEmail: `${USER_DATA.login}a`,
-  //         password: USER_DATA.password,
-  //       })
-  //       .expect(401)
-  //   }
-  // )
+        if (i === 5) {
+          expect(res.status).toBe(429)
+        }
+      }
+
+      // Wait for 10 seconds
+      await delay(14000)
+
+      // Send another request
+      const newUserData = {
+        login: 'testuser2',
+        password: 'testpassword2',
+        email: 'testuser2@mail.ru',
+      }
+
+      await request(application.app)
+        .post('/auth/registration')
+        .send(newUserData)
+        .expect(204)
+    }
+  )
+
+  it(
+    'POST -> "/auth/login": for a non-existent user, it should return status code 429 if more than ' +
+      '5 requests were sent within 10 seconds, and 401 after waiting; status 429, 401',
+    async () => {
+      // Send more than 5 requests within 10 seconds
+      for (let i = 0; i < 6; i++) {
+        const res = await request(application.app).post('/auth/login').send({
+          loginOrEmail: USER_DATA.login,
+          password: USER_DATA.password,
+        })
+
+        if (i === 5) {
+          expect(res.status).toBe(429)
+        }
+      }
+
+      // Wait for 10 seconds
+      await delay(10000)
+
+      // Send another request
+      await request(application.app)
+        .post('/auth/login')
+        .send({
+          loginOrEmail: `${USER_DATA.login}a`,
+          password: USER_DATA.password,
+        })
+        .expect(401)
+    }
+  )
 })
 
 afterAll(async () => {
