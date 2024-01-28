@@ -39,7 +39,9 @@ class AuthBearerMiddlewareGuard {
       return
     }
 
-    const user = await this.usersRepository.getById(payload?.userId)
+    const { userId, deviceId, iat, exp } = payload
+
+    const user = await this.usersRepository.getById(userId)
 
     if (!user) {
       sendResponse()
@@ -48,6 +50,11 @@ class AuthBearerMiddlewareGuard {
 
     req.context = {
       user,
+      token: {
+        deviceId,
+        iat,
+        exp,
+      },
     }
 
     next()
