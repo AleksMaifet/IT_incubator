@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
-import { injectable } from 'inversify'
-import 'reflect-metadata'
 import { RateLimiterAbstract, RateLimiterMemory } from 'rate-limiter-flexible'
 import { IMiddleware } from '../middleware.interface'
 
-@injectable()
 class RateLimitMiddlewareGuard implements IMiddleware {
   private _rateLimiter: RateLimiterAbstract
 
