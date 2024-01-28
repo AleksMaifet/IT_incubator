@@ -7,7 +7,7 @@ import {
   AuthBearerMiddlewareGuard,
   AuthCredentialRefreshTokenMiddlewareGuard,
   AuthRefreshTokenMiddlewareGuard,
-  RateLimitMiddleware,
+  RateLimitMiddlewareGuard,
   ValidateBodyMiddleware,
 } from '../middlewares'
 import { TYPES } from '../types'
@@ -32,7 +32,9 @@ class AuthController extends BaseController {
     @inject(TYPES.AuthRefreshTokenMiddlewareGuard)
     private readonly authRefreshTokenMiddlewareGuard: AuthRefreshTokenMiddlewareGuard,
     @inject(TYPES.AuthCredentialRefreshTokenMiddlewareGuard)
-    private readonly authCredentialRefreshTokenMiddlewareGuard: AuthCredentialRefreshTokenMiddlewareGuard
+    private readonly authCredentialRefreshTokenMiddlewareGuard: AuthCredentialRefreshTokenMiddlewareGuard,
+    @inject(TYPES.RateLimitMiddlewareGuard)
+    private readonly rateLimitMiddlewareGuard: RateLimitMiddlewareGuard
   ) {
     super()
     this.bindRoutes({
@@ -40,7 +42,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.login,
       middlewares: [
-        new RateLimitMiddleware(5, 10),
+        this.rateLimitMiddlewareGuard,
         new ValidateBodyMiddleware(BaseAuthDto),
       ],
     })
@@ -73,7 +75,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registration,
       middlewares: [
-        new RateLimitMiddleware(5, 10),
+        this.rateLimitMiddlewareGuard,
         new ValidateBodyMiddleware(CreateUserDto),
       ],
     })
@@ -82,7 +84,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationConfirmation,
       middlewares: [
-        new RateLimitMiddleware(5, 10),
+        this.rateLimitMiddlewareGuard,
         new ValidateBodyMiddleware(RegConfirmAuthDto),
       ],
     })
@@ -91,7 +93,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationEmailResending,
       middlewares: [
-        new RateLimitMiddleware(5, 10),
+        this.rateLimitMiddlewareGuard,
         new ValidateBodyMiddleware(RegEmailResendingAuthDto),
       ],
     })
