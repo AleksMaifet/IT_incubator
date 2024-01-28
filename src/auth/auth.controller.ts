@@ -32,9 +32,7 @@ class AuthController extends BaseController {
     @inject(TYPES.AuthRefreshTokenMiddlewareGuard)
     private readonly authRefreshTokenMiddlewareGuard: AuthRefreshTokenMiddlewareGuard,
     @inject(TYPES.AuthCredentialRefreshTokenMiddlewareGuard)
-    private readonly authCredentialRefreshTokenMiddlewareGuard: AuthCredentialRefreshTokenMiddlewareGuard,
-    @inject(TYPES.RateLimitMiddlewareGuard)
-    private readonly rateLimitMiddlewareGuard: RateLimitMiddlewareGuard
+    private readonly authCredentialRefreshTokenMiddlewareGuard: AuthCredentialRefreshTokenMiddlewareGuard
   ) {
     super()
     this.bindRoutes({
@@ -42,7 +40,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.login,
       middlewares: [
-        this.rateLimitMiddlewareGuard,
+        new RateLimitMiddlewareGuard(5, 10),
         new ValidateBodyMiddleware(BaseAuthDto),
       ],
     })
@@ -75,7 +73,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registration,
       middlewares: [
-        this.rateLimitMiddlewareGuard,
+        new RateLimitMiddlewareGuard(5, 10),
         new ValidateBodyMiddleware(CreateUserDto),
       ],
     })
@@ -84,7 +82,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationConfirmation,
       middlewares: [
-        this.rateLimitMiddlewareGuard,
+        new RateLimitMiddlewareGuard(5, 10),
         new ValidateBodyMiddleware(RegConfirmAuthDto),
       ],
     })
@@ -93,7 +91,7 @@ class AuthController extends BaseController {
       method: 'post',
       func: this.registrationEmailResending,
       middlewares: [
-        this.rateLimitMiddlewareGuard,
+        new RateLimitMiddlewareGuard(5, 10),
         new ValidateBodyMiddleware(RegEmailResendingAuthDto),
       ],
     })
@@ -101,8 +99,6 @@ class AuthController extends BaseController {
 
   private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
     const { body, headers, ip } = req
-
-    // await this.securityDevicesService.deleteExpiredRefreshToken()
 
     const userId = await this.authService.login(body)
 

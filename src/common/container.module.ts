@@ -46,7 +46,6 @@ import {
   AuthCredentialRefreshTokenMiddlewareGuard,
   AuthRefreshTokenMiddlewareGuard,
   IMiddleware,
-  RateLimitMiddlewareGuard,
 } from '../middlewares'
 import { AdapterEmail } from '../adapters'
 import { ManagerEmail } from '../managers'
@@ -114,9 +113,6 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<IMiddleware>(TYPES.AuthRefreshTokenMiddlewareGuard).to(
     AuthRefreshTokenMiddlewareGuard
   )
-  bind<IMiddleware>(TYPES.RateLimitMiddlewareGuard)
-    .to(RateLimitMiddlewareGuard)
-    .inSingletonScope()
   bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail).inSingletonScope()
   bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)
 })
