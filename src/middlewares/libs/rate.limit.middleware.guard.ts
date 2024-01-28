@@ -75,7 +75,7 @@ class RateLimitMiddleware implements IMiddleware {
   execute = async (req: Request, res: Response, next: NextFunction) => {
     const ip = req.ip!
 
-    const { totalHits, timeToExpire } = await this.increment(ip, this.ttl)
+    const { totalHits } = await this.increment(ip, this.ttl)
 
     if (totalHits > this.limit) {
       res.sendStatus(429)
@@ -87,7 +87,7 @@ class RateLimitMiddleware implements IMiddleware {
 
     this._timeoutId = setTimeout(() => {
       this._cleanupExpiredAttempts(ip)
-    }, timeToExpire * 1000)
+    }, this.ttl)
 
     next()
   }
