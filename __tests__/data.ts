@@ -10,16 +10,13 @@ interface IDefaultTestData {
   BLOG_DATA: BaseBlogDto
   VIDEO_DATA: CreateVideoDto
   COMMENT_DATA: BaseCommentDto
-  REGISTRATION: CreateUserDto
 }
 
 const DEFAULT_TEST_DATA: IDefaultTestData = {
   USER_DATA: {
-    login: '37ukNrWNgG',
-    password: 'string',
-    email:
-      '_mrkPmUcMJP2tlbPWUk6BCrgMnOi4mDQoaAU26biSxkYwNFnvlm2OfQvoUEt4axNefIaUmSiRgyC@3gTGCstAJzDfaqSuVgo4TAv4' +
-      'ysYRp.SnIrhf7Cc1Pz4PofoT2get_zNk3tNwWbM_jFKUcY.ygD',
+    login: 'ulogin45',
+    password: 'ulogin45',
+    email: 'test@mail.com',
   },
   POST_DATA: {
     title: 'string',
@@ -39,11 +36,6 @@ const DEFAULT_TEST_DATA: IDefaultTestData = {
   },
   COMMENT_DATA: {
     content: 'stringstringstringst',
-  },
-  REGISTRATION: {
-    email: 'test@mail.com',
-    login: 'ulogin45',
-    password: 'ulogin45',
   },
 }
 

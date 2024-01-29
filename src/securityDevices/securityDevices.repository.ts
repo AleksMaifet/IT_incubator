@@ -31,7 +31,7 @@ class SecurityDevicesRepository {
     const { userId, deviceId } = dto
 
     return await this.refreshTokenMetaModel
-      .findOneAndUpdate({ userId, deviceId }, dto)
+      .updateOne({ userId, deviceId }, dto)
       .exec()
   }
 

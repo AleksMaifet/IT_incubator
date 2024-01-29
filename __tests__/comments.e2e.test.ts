@@ -1,21 +1,18 @@
 import request from 'supertest'
 import { disconnect } from 'mongoose'
-import { boot } from '../src/main'
-import { App } from '../src/app'
-import { makeAuthBasicRequest, makeAuthBearerRequest } from './helpers'
+import {
+  application,
+  makeAuthBasicRequest,
+  makeAuthBearerRequest,
+} from './helpers'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA, BLOG_DATA, POST_DATA, COMMENT_DATA } = DEFAULT_TEST_DATA
 
-let application: App
 let jwt_token: string
 let postId: string
 
 beforeAll(async () => {
-  const { app } = boot
-
-  application = app
-
   await request(application.app).delete('/testing/all-data').expect(204)
   /// Created blog
   const blogRes = await makeAuthBasicRequest(

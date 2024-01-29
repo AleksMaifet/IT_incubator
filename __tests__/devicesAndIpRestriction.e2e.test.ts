@@ -1,10 +1,13 @@
 import { disconnect } from 'mongoose'
 import request from 'supertest'
-import { boot } from '../src/main'
-import { App } from '../src/app'
-import { DEFAULT_TEST_DATA } from './data'
-import { delay, getRefreshToken, makeAuthBasicRequest } from './helpers'
 import { sign } from 'jsonwebtoken'
+import { DEFAULT_TEST_DATA } from './data'
+import {
+  application,
+  delay,
+  getRefreshToken,
+  makeAuthBasicRequest,
+} from './helpers'
 
 const { USER_DATA } = DEFAULT_TEST_DATA
 
@@ -37,12 +40,7 @@ const userLogins = [
   },
 ]
 
-let application: App
 beforeAll(async () => {
-  const { app } = boot
-
-  application = app
-
   await request(application.app).delete('/testing/all-data').expect(204)
 })
 

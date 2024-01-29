@@ -1,6 +1,15 @@
 import { Application, Router } from 'express'
 import request from 'supertest'
+import * as nodemailer from 'nodemailer'
+import { NodemailerMock } from 'nodemailer-mock'
+import { load } from 'cheerio'
+import { boot } from '../src/main'
+import { App } from '../src/app'
 import { REFRESH_TOKEN_NAME } from './data'
+
+const { mock } = nodemailer as unknown as NodemailerMock
+const { app } = boot
+let application: App = app
 
 const makeAuthBasicRequest = <T>(
   app: Application,
@@ -48,4 +57,20 @@ const getRefreshToken = (arr: string[]) => {
 const delay = (ttl: number) =>
   new Promise((resolve) => setTimeout(resolve, ttl))
 
-export { makeAuthBasicRequest, makeAuthBearerRequest, getRefreshToken, delay }
+const parsedHtmlAndGetCode = (html: string, query: string) => {
+  const $ = load(html)
+  const link = $('a').attr('href')
+  const url = new URL(link!)
+  const queryParams = new URLSearchParams(url.search)
+  return queryParams.get(query)!
+}
+
+export {
+  application,
+  mock,
+  makeAuthBasicRequest,
+  makeAuthBearerRequest,
+  getRefreshToken,
+  delay,
+  parsedHtmlAndGetCode,
+}

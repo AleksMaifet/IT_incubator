@@ -1,22 +1,15 @@
 import { disconnect } from 'mongoose'
 import request from 'supertest'
-import { boot } from '../src/main'
-import { App } from '../src/app'
-import { makeAuthBasicRequest } from './helpers'
+import { application, makeAuthBasicRequest } from './helpers'
 import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA } = DEFAULT_TEST_DATA
 
-let application: App
 const invalidId = '00000000000000'
 const pageNumber = 1
 const pageSize = 10
 
 beforeAll(async () => {
-  const { app } = boot
-
-  application = app
-
   await request(application.app).delete('/testing/all-data').expect(204)
 })
 

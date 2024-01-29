@@ -1,19 +1,13 @@
 import { disconnect } from 'mongoose'
 import request from 'supertest'
-import { boot } from '../src/main'
-import { App } from '../src/app'
 import { DEFAULT_TEST_DATA } from './data'
+import { application } from './helpers'
 
 const { VIDEO_DATA } = DEFAULT_TEST_DATA
 
-let application: App
 const errorVideoId = '00000000000000'
 
 beforeAll(async () => {
-  const { app } = boot
-
-  application = app
-
   await request(application.app).delete('/testing/all-data').expect(204)
 })
 

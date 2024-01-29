@@ -1,8 +1,7 @@
 import { disconnect } from 'mongoose'
 import request from 'supertest'
-import { boot } from '../src/main'
-import { App } from '../src/app'
 import {
+  application,
   delay,
   getRefreshToken,
   makeAuthBasicRequest,
@@ -12,16 +11,11 @@ import { DEFAULT_TEST_DATA } from './data'
 
 const { USER_DATA } = DEFAULT_TEST_DATA
 
-let application: App
 let refreshToken_1: string
 let refreshToken_2: string
 let accessToken: string
 
 beforeAll(async () => {
-  const { app } = boot
-
-  application = app
-
   await request(application.app).delete('/testing/all-data').expect(204)
 })
 
