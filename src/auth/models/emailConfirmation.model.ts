@@ -1,5 +1,5 @@
 import { model, Schema } from 'mongoose'
-import { IEmailConfirmation } from './interfaces'
+import { IEmailConfirmation } from '../interfaces'
 
 const EmailConfirmationSchema = new Schema<IEmailConfirmation>(
   {

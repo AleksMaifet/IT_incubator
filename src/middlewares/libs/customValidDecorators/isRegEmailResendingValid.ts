@@ -22,14 +22,12 @@ class IsRegEmailResendingValid implements ValidatorConstraintInterface {
 
     if (!user) return false
 
+    const { id } = user
+
     const confirmation =
-      await this.authRepository.getConfirmationByCodeOrUserId(user.id)
+      await this.authRepository.getEmailConfirmationByCodeOrUserId(id)
 
-    if (!confirmation) return false
-
-    const { isConfirmed } = confirmation
-
-    return !isConfirmed
+    return !!confirmation
   }
 }
 

@@ -6,7 +6,10 @@ import { BlogModel } from '../blogs'
 import { UserModel } from '../users'
 import { TYPES } from '../types'
 import { CommentModel } from '../comments'
-import { EmailConfirmationModel } from '../auth'
+import {
+  EmailConfirmationModel,
+  PasswordRecoveryConfirmationModel,
+} from '../auth'
 import { RefreshTokenMetaModel } from '../securityDevices'
 
 @injectable()
@@ -22,10 +25,12 @@ class TestingRepository {
     private readonly userModel: typeof UserModel,
     @inject(TYPES.CommentModel)
     private readonly commentModel: typeof CommentModel,
+    @inject(TYPES.RefreshTokenMetaModel)
+    private readonly refreshTokenMetaModel: typeof RefreshTokenMetaModel,
     @inject(TYPES.EmailConfirmationModel)
     private readonly emailConfirmationModel: typeof EmailConfirmationModel,
-    @inject(TYPES.RefreshTokenMetaModel)
-    private readonly refreshTokenMetaModel: typeof RefreshTokenMetaModel
+    @inject(TYPES.PasswordRecoveryConfirmationModel)
+    private readonly passwordRecoveryConfirmationModel: typeof PasswordRecoveryConfirmationModel
   ) {}
 
   public deleteAll = async () => {
@@ -34,8 +39,9 @@ class TestingRepository {
     await this.postModel.deleteMany()
     await this.userModel.deleteMany()
     await this.commentModel.deleteMany()
-    await this.emailConfirmationModel.deleteMany()
     await this.refreshTokenMetaModel.deleteMany()
+    await this.emailConfirmationModel.deleteMany()
+    await this.passwordRecoveryConfirmationModel.deleteMany()
   }
 }
 

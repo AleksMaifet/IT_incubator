@@ -7,7 +7,7 @@ import {
   MIN_PASSWORD_LENGTH,
 } from '../../constants'
 import { BaseUserDto } from './baseUser'
-import { IsUserNotExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsUserNotExist } from '../../../middlewares'
 
 class CreateUserDto extends BaseUserDto {
   @IsString()

@@ -1,3 +1,5 @@
 export * from './baseAuth'
 export * from './regConfirmAuth'
 export * from './regEmailResendingAuth'
+export * from './passRecovery'
+export * from './updatePass'

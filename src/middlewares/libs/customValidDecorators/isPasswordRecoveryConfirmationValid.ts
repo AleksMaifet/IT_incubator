@@ -8,7 +8,9 @@ import { AuthRepository } from '../../../auth'
 
 @ValidatorConstraint({ async: true })
 @injectable()
-class IsRegConfirmationValid implements ValidatorConstraintInterface {
+class IsPasswordRecoveryConfirmationValid
+  implements ValidatorConstraintInterface
+{
   constructor(
     @inject(TYPES.AuthRepository)
     private readonly authRepository: AuthRepository
@@ -16,7 +18,7 @@ class IsRegConfirmationValid implements ValidatorConstraintInterface {
 
   async validate(code: string) {
     const confirmation =
-      await this.authRepository.getEmailConfirmationByCodeOrUserId(code)
+      await this.authRepository.getPasswordRecoveryConfirmationByCode(code)
 
     switch (true) {
       case !confirmation:
@@ -31,4 +33,4 @@ class IsRegConfirmationValid implements ValidatorConstraintInterface {
   }
 }
 
-export { IsRegConfirmationValid }
+export { IsPasswordRecoveryConfirmationValid }

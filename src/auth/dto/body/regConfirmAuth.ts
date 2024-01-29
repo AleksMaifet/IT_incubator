@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Validate } from 'class-validator'
-import { IsRegConfirmationValid } from '../../../middlewares/libs/customValidDecorators'
+import { IsRegConfirmationValid } from '../../../middlewares'
 
 class RegConfirmAuthDto {
   @IsNotEmpty()

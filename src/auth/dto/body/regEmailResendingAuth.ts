@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Matches, Validate } from 'class-validator'
-import { IsRegEmailResendingValid } from '../../../middlewares/libs/customValidDecorators'
+import { IsRegEmailResendingValid } from '../../../middlewares'
 
 class RegEmailResendingAuthDto {
   @IsNotEmpty()

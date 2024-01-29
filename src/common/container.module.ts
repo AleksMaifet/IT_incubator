@@ -8,6 +8,7 @@ import {
   AuthRepository,
   AuthService,
   EmailConfirmationModel,
+  PasswordRecoveryConfirmationModel,
 } from '../auth'
 import {
   UserModel,
@@ -100,6 +101,9 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<typeof EmailConfirmationModel>(
     TYPES.EmailConfirmationModel
   ).toConstantValue(EmailConfirmationModel)
+  bind<typeof PasswordRecoveryConfirmationModel>(
+    TYPES.PasswordRecoveryConfirmationModel
+  ).toConstantValue(PasswordRecoveryConfirmationModel)
   bind<typeof RefreshTokenMetaModel>(
     TYPES.RefreshTokenMetaModel
   ).toConstantValue(RefreshTokenMetaModel)

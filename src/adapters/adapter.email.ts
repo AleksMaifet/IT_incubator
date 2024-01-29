@@ -26,7 +26,29 @@ class AdapterEmail {
     })
   }
 
-  public sendConfirmationCode = async (dto: {
+  public sendEmailConfirmationCode = async (dto: {
+    email: string
+    subject: string
+    html: string
+  }) => {
+    const { email, subject, html } = dto
+
+    const user = this.configService.get('EMAIL_USER').toString()
+    const mailOptions = {
+      // Sender address
+      from: `"It_Incubator 👻" <${user}>`,
+      // list of receivers
+      to: email,
+      // Subject line
+      subject,
+      // Html body
+      html,
+    }
+
+    return await this._email.sendMail(mailOptions)
+  }
+
+  public sendPasswordRecoveryConfirmationCode = async (dto: {
     email: string
     subject: string
     html: string

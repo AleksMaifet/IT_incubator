@@ -14,7 +14,13 @@ import { TYPES } from '../types'
 import { BaseUserDto, CreateUserDto } from '../users'
 import { JwtService } from '../services'
 import { SecurityDevicesService } from '../securityDevices'
-import { BaseAuthDto, RegConfirmAuthDto, RegEmailResendingAuthDto } from './dto'
+import {
+  BaseAuthDto,
+  PassRecoveryDto,
+  RegConfirmAuthDto,
+  RegEmailResendingAuthDto,
+  UpdatePassDto,
+} from './dto'
 import { AuthService } from './auth.service'
 import { REFRESH_TOKEN_COOKIE_NAME } from './constants'
 
@@ -42,6 +48,24 @@ class AuthController extends BaseController {
       middlewares: [
         new RateLimitMiddlewareGuard(5, 10),
         new ValidateBodyMiddleware(BaseAuthDto),
+      ],
+    })
+    this.bindRoutes({
+      path: '/password-recovery',
+      method: 'post',
+      func: this.passwordRecovery,
+      middlewares: [
+        new RateLimitMiddlewareGuard(5, 10),
+        new ValidateBodyMiddleware(PassRecoveryDto),
+      ],
+    })
+    this.bindRoutes({
+      path: '/new-password',
+      method: 'post',
+      func: this.updatePassword,
+      middlewares: [
+        new RateLimitMiddlewareGuard(5, 10),
+        new ValidateBodyMiddleware(UpdatePassDto),
       ],
     })
     this.bindRoutes({
@@ -129,6 +153,30 @@ class AuthController extends BaseController {
     res.status(200).json({
       accessToken: accessJwtToken,
     })
+  }
+
+  private passwordRecovery = async (
+    req: Request<{}, {}, PassRecoveryDto>,
+    res: Response
+  ) => {
+    const {
+      body: { email },
+    } = req
+
+    await this.authService.passwordRecovery(email)
+
+    res.sendStatus(204)
+  }
+
+  private updatePassword = async (
+    req: Request<{}, {}, UpdatePassDto>,
+    res: Response
+  ) => {
+    const { body } = req
+
+    await this.authService.updateUserPassword(body)
+
+    res.sendStatus(204)
   }
 
   private getNewPairAuthTokens = async (req: Request, res: Response) => {

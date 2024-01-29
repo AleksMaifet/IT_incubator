@@ -5,4 +5,6 @@ interface IEmailConfirmation {
   isConfirmed: boolean
 }
 
-export { IEmailConfirmation }
+interface IPasswordRecoveryConfirmation extends IEmailConfirmation {}
+
+export { IEmailConfirmation, IPasswordRecoveryConfirmation }

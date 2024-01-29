@@ -16,8 +16,8 @@ class VideosService {
     return await this.videosRepository.getAll()
   }
 
-  public getById = async (id: number) => {
-    return await this.videosRepository.getById(id)
+  public getById = (id: number) => {
+    return this.videosRepository.getById(id)
   }
 
   public updateById = async (id: number, dto: UpdateVideoDto) => {

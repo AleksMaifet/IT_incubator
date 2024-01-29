@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, Matches, Validate } from 'class-validator'
-import { IsUserNotExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsUserNotExist } from '../../../middlewares'
 
 class BaseUserDto {
   @IsNotEmpty()

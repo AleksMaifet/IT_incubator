@@ -11,7 +11,7 @@ class ManagerEmail {
     private readonly adapterEmail: AdapterEmail
   ) {}
 
-  public sendUserConfirmationCode = async (
+  public sendUserEmailConfirmationCode = async (
     dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
   ) => {
     const { login, email, code } = dto
@@ -25,7 +25,28 @@ class ManagerEmail {
       '</p>' +
       '</div>'
 
-    return await this.adapterEmail.sendConfirmationCode({
+    return await this.adapterEmail.sendEmailConfirmationCode({
+      email,
+      subject,
+      html,
+    })
+  }
+
+  public sendPasswordRecoveryConfirmationCode = async (
+    dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
+  ) => {
+    const { login, email, code } = dto
+
+    const subject = 'Confirm Account'
+    const html =
+      `<h1>Password recovery ${login}</h1> ` +
+      '<div>' +
+      '<p>To finish password recovery please follow the link below: ' +
+      `<a href="https://localhost:3000/password-recovery?recoveryCode=${code}">recovery password</a>` +
+      '</p>' +
+      '</div>'
+
+    return await this.adapterEmail.sendPasswordRecoveryConfirmationCode({
       email,
       subject,
       html,

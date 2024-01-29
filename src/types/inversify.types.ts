@@ -34,6 +34,9 @@ const TYPES = {
   UserModel: Symbol.for('UserModel'),
   CommentModel: Symbol.for('CommentModel'),
   EmailConfirmationModel: Symbol.for('EmailConfirmationModel'),
+  PasswordRecoveryConfirmationModel: Symbol.for(
+    'PasswordRecoveryConfirmationModel'
+  ),
   RefreshTokenMetaModel: Symbol.for('RefreshTokenMetaModel'),
   AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
   AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),

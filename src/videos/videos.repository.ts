@@ -14,8 +14,8 @@ class VideosRepository {
     return await this.videoModel.find().exec()
   }
 
-  public getById = async (id: number) => {
-    return await this.videoModel.findOne({ id }).exec()
+  public getById = (id: number) => {
+    return this.videoModel.findOne({ id }).exec()
   }
 
   public updateById = async (id: number, dto: UpdateVideoDto) => {

@@ -11,6 +11,17 @@ class UsersRepository {
     private readonly userModel: typeof UserModel
   ) {}
 
+  private _mapGenerateUserResponse = (user: IUser) => {
+    const { id, login, email, createdAt } = user
+
+    return {
+      id,
+      login,
+      email,
+      createdAt,
+    }
+  }
+
   private _getAllBySearchLoginOrEmailTerm = async (
     dto: GetUsersRequestQuery<number>
   ) => {
@@ -192,23 +203,22 @@ class UsersRepository {
     return this._mapGenerateUserResponse(user)
   }
 
+  public updatePassword = async (
+    dto: Pick<IUser, 'id' | 'passwordSalt' | 'passwordHash'>
+  ) => {
+    const { id, passwordHash, passwordSalt } = dto
+
+    return await this.userModel
+      .updateOne({ id }, { passwordSalt, passwordHash })
+      .exec()
+  }
+
   public getByLoginOrEmail = async (loginOrEmail: string) => {
     return await this.userModel
       .findOne({
         $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
       })
       .exec()
-  }
-
-  private _mapGenerateUserResponse = (user: IUser) => {
-    const { id, login, email, createdAt } = user
-
-    return {
-      id,
-      login,
-      email,
-      createdAt,
-    }
   }
 
   public deleteById = async (id: string) => {
