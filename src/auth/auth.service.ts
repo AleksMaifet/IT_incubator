@@ -98,6 +98,8 @@ class AuthService {
 
     const { id, login } = user
 
+    await this.authRepository.deletePasswordRecoveryConfirmationByUserId(id)
+
     const newPasswordRecoveryConfirmation =
       new PasswordRecoveryConfirmationEntity(id)
     const { code } = newPasswordRecoveryConfirmation

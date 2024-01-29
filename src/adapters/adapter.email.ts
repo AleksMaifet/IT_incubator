@@ -7,58 +7,36 @@ import { ConfigService } from '../services'
 
 @injectable()
 class AdapterEmail {
-  private _email: Mail
+  private readonly _email: Mail
+  private readonly _email_user: string
 
   constructor(
     @inject(TYPES.ConfigService)
     private readonly configService: ConfigService
   ) {
     const service = this.configService.get('EMAIL_SERVICE').toString()
-    const user = this.configService.get('EMAIL_USER').toString()
+    this._email_user = this.configService.get('EMAIL_USER').toString()
     const pass = this.configService.get('EMAIL_PASSWORD').toString()
 
     this._email = createTransport({
       service,
       auth: {
-        user,
+        user: this._email_user,
         pass,
       },
     })
   }
 
-  public sendEmailConfirmationCode = async (dto: {
+  public sendConfirmationCode = async (dto: {
     email: string
     subject: string
     html: string
   }) => {
     const { email, subject, html } = dto
 
-    const user = this.configService.get('EMAIL_USER').toString()
     const mailOptions = {
       // Sender address
-      from: `"It_Incubator 👻" <${user}>`,
-      // list of receivers
-      to: email,
-      // Subject line
-      subject,
-      // Html body
-      html,
-    }
-
-    return await this._email.sendMail(mailOptions)
-  }
-
-  public sendPasswordRecoveryConfirmationCode = async (dto: {
-    email: string
-    subject: string
-    html: string
-  }) => {
-    const { email, subject, html } = dto
-
-    const user = this.configService.get('EMAIL_USER').toString()
-    const mailOptions = {
-      // Sender address
-      from: `"It_Incubator 👻" <${user}>`,
+      from: `"It_Incubator 👻" <${this._email_user}>`,
       // list of receivers
       to: email,
       // Subject line

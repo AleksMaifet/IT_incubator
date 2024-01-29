@@ -25,7 +25,7 @@ class ManagerEmail {
       '</p>' +
       '</div>'
 
-    return await this.adapterEmail.sendEmailConfirmationCode({
+    return await this.adapterEmail.sendConfirmationCode({
       email,
       subject,
       html,
@@ -46,7 +46,7 @@ class ManagerEmail {
       '</p>' +
       '</div>'
 
-    return await this.adapterEmail.sendPasswordRecoveryConfirmationCode({
+    return await this.adapterEmail.sendConfirmationCode({
       email,
       subject,
       html,
