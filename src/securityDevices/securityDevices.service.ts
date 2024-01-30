@@ -10,13 +10,13 @@ class SecurityDevicesService {
     private readonly securityDevicesRepository: SecurityDevicesRepository
   ) {}
 
-  private _mapTimeStampsToDB = ({
+  private _mapTimeStampsToDB({
     issuedAt,
     expirationAt,
   }: {
     issuedAt: number
     expirationAt: number
-  }) => {
+  }) {
     const generateLocale = (value: number) => {
       return new Date(value * 1000)
     }
@@ -27,7 +27,7 @@ class SecurityDevicesService {
     }
   }
 
-  public createRefreshTokenMeta = async (
+  public async createRefreshTokenMeta(
     dto: Pick<
       IRefreshTokenMeta,
       'userId' | 'deviceId' | 'deviceName' | 'clientIp'
@@ -35,7 +35,7 @@ class SecurityDevicesService {
       issuedAt: number
       expirationAt: number
     }
-  ) => {
+  ) {
     const { userId, deviceId, issuedAt, expirationAt, deviceName, clientIp } =
       dto
 
@@ -53,12 +53,12 @@ class SecurityDevicesService {
     })
   }
 
-  public updateRefreshTokenMeta = async (
+  public async updateRefreshTokenMeta(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'> & {
       issuedAt: number
       expirationAt: number
     }
-  ) => {
+  ) {
     const { userId, deviceId, issuedAt, expirationAt } = dto
 
     const timeSteps = this._mapTimeStampsToDB({ issuedAt, expirationAt })
@@ -73,12 +73,12 @@ class SecurityDevicesService {
     })
   }
 
-  public getRefreshTokenMeta = async (
+  public async getRefreshTokenMeta(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'> & {
       issuedAt: number
       expirationAt: number
     }
-  ) => {
+  ) {
     const { userId, deviceId, issuedAt, expirationAt } = dto
 
     const timeSteps = this._mapTimeStampsToDB({ issuedAt, expirationAt })
@@ -93,31 +93,31 @@ class SecurityDevicesService {
     })
   }
 
-  public deleteRefreshTokenMeta = async (
+  public async deleteRefreshTokenMeta(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
-  ) => {
+  ) {
     return await this.securityDevicesRepository.deleteRefreshTokenMeta(dto)
   }
 
-  public deleteExpiredRefreshToken = async () => {
+  public async deleteExpiredRefreshToken() {
     return await this.securityDevicesRepository.deleteExpiredRefreshToken()
   }
 
-  public getAllDevices = async (id: string) => {
+  public async getAllDevices(id: string) {
     return await this.securityDevicesRepository.getAllDevices(id)
   }
 
-  public getDeviceByDeviceId = async (id: string) => {
+  public async getDeviceByDeviceId(id: string) {
     return await this.securityDevicesRepository.getDeviceByDeviceId(id)
   }
 
-  public deleteAllDevices = async (
+  public async deleteAllDevices(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
-  ) => {
+  ) {
     return await this.securityDevicesRepository.deleteAllDevices(dto)
   }
 
-  public deleteDeviceByDeviceId = async (id: string) => {
+  public async deleteDeviceByDeviceId(id: string) {
     return await this.securityDevicesRepository.deleteDeviceByDeviceId(id)
   }
 }

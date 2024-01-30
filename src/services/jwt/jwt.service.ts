@@ -8,40 +8,36 @@ import { LoggerService } from '../logger'
 
 @injectable()
 class JwtService {
+  private readonly _secretOrPrivateKey: string
+
   constructor(
     @inject(TYPES.ConfigService) private readonly configService: ConfigService,
     @inject(TYPES.ILogger) private readonly loggerService: LoggerService
-  ) {}
+  ) {
+    this._secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
+  }
 
-  public generateAccessToken = (userId: string) => {
-    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
-
-    return sign({ userId }, secretOrPrivateKey, {
+  public generateAccessToken(userId: string) {
+    return sign({ userId }, this._secretOrPrivateKey, {
       expiresIn: 10,
     })
   }
 
-  public generateRefreshToken = (userId: string) => {
-    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
-
-    return sign({ userId, deviceId: uuidv4() }, secretOrPrivateKey, {
+  public generateRefreshToken(userId: string) {
+    return sign({ userId, deviceId: uuidv4() }, this._secretOrPrivateKey, {
       expiresIn: 20,
     })
   }
 
-  public updateRefreshToken = (userId: string, deviceId: string) => {
-    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
-
-    return sign({ userId, deviceId }, secretOrPrivateKey, {
+  public updateRefreshToken(userId: string, deviceId: string) {
+    return sign({ userId, deviceId }, this._secretOrPrivateKey, {
       expiresIn: 20,
     })
   }
 
-  public getJwtDataByToken = (token: string): Nullable<any> => {
-    const secretOrPrivateKey = this.configService.get('JWT_SECRET').toString()
-
+  public getJwtDataByToken(token: string): Nullable<any> {
     try {
-      return verify(token, secretOrPrivateKey)
+      return verify(token, this._secretOrPrivateKey)
     } catch (error) {
       this.loggerService.error(`${error} ${token}`)
       return null

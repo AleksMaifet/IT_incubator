@@ -46,12 +46,13 @@ class VideosController extends BaseController {
     })
   }
 
-  private getAll = async (req: Request, res: Response) => {
+  private async getAll(_: Request, res: Response) {
     const result = await this.videosService.getAll()
 
     res.status(200).json(result)
   }
-  private getById = async ({ params }: Request<VideoExist>, res: Response) => {
+
+  private async getById({ params }: Request<VideoExist>, res: Response) {
     const { id } = params
 
     const result = await this.videosService.getById(+id)
@@ -59,28 +60,27 @@ class VideosController extends BaseController {
     res.status(200).json(result)
   }
 
-  private create = async (
+  private async create(
     { body }: Request<{}, {}, CreateVideoDto>,
     res: Response
-  ) => {
+  ) {
     const result = await this.videosService.create(body)
 
     res.status(201).json(result)
   }
-  private updateById = async (
+
+  private async updateById(
     { params, body }: Request<VideoExist, {}, UpdateVideoDto>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     await this.videosService.updateById(+id, body)
 
     res.sendStatus(204)
   }
-  private deleteById = async (
-    { params }: Request<VideoExist>,
-    res: Response
-  ) => {
+
+  private async deleteById({ params }: Request<VideoExist>, res: Response) {
     const { id } = params
 
     await this.videosService.deleteById(+id)

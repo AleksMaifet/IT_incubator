@@ -12,29 +12,25 @@ class VideosService {
     private readonly videosRepository: VideosRepository
   ) {}
 
-  public getAll = async () => {
+  public async getAll() {
     return await this.videosRepository.getAll()
   }
 
-  public getById = (id: number) => {
-    return this.videosRepository.getById(id)
+  public async getById(id: number) {
+    return await this.videosRepository.getById(id)
   }
 
-  public updateById = async (id: number, dto: UpdateVideoDto) => {
+  public async updateById(id: number, dto: UpdateVideoDto) {
     return await this.videosRepository.updateById(id, dto)
   }
 
-  public create = async ({
-    title,
-    author,
-    availableResolutions,
-  }: CreateVideoDto) => {
+  public async create({ title, author, availableResolutions }: CreateVideoDto) {
     const newVideo = new Video(title, author, false, null, availableResolutions)
 
     return await this.videosRepository.create(newVideo)
   }
 
-  public deleteById = async (id: number) => {
+  public async deleteById(id: number) {
     return await this.videosRepository.deleteById(id)
   }
 }

@@ -22,12 +22,12 @@ class SecurityDevicesRepository {
     }
   }
 
-  public updateRefreshTokenMeta = async (
+  public async updateRefreshTokenMeta(
     dto: Pick<
       IRefreshTokenMeta,
       'userId' | 'deviceId' | 'expirationAt' | 'issuedAt'
     >
-  ) => {
+  ) {
     const { userId, deviceId } = dto
 
     return await this.refreshTokenMetaModel
@@ -35,16 +35,16 @@ class SecurityDevicesRepository {
       .exec()
   }
 
-  public createRefreshTokenMeta = async (dto: IRefreshTokenMeta) => {
+  public async createRefreshTokenMeta(dto: IRefreshTokenMeta) {
     return await this.refreshTokenMetaModel.create(dto)
   }
 
-  public getRefreshTokenMeta = async (
+  public async getRefreshTokenMeta(
     dto: Pick<
       IRefreshTokenMeta,
       'userId' | 'deviceId' | 'issuedAt' | 'expirationAt'
     >
-  ) => {
+  ) {
     const { userId, deviceId, issuedAt, expirationAt } = dto
 
     return await this.refreshTokenMetaModel
@@ -52,9 +52,9 @@ class SecurityDevicesRepository {
       .exec()
   }
 
-  public deleteRefreshTokenMeta = async (
+  public async deleteRefreshTokenMeta(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
-  ) => {
+  ) {
     const { userId, deviceId } = dto
 
     return await this.refreshTokenMetaModel
@@ -62,7 +62,7 @@ class SecurityDevicesRepository {
       .exec()
   }
 
-  public deleteExpiredRefreshToken = async () => {
+  public async deleteExpiredRefreshToken() {
     const currentDate = new Date().toLocaleString('ru-RU')
 
     return await this.refreshTokenMetaModel
@@ -72,19 +72,19 @@ class SecurityDevicesRepository {
       .exec()
   }
 
-  public getAllDevices = async (userId: string) => {
+  public async getAllDevices(userId: string) {
     const devices = await this.refreshTokenMetaModel.find({ userId }).exec()
 
     return devices.map(this._mapGenerateDeviceResponse)
   }
 
-  public getDeviceByDeviceId = async (deviceId: string) => {
+  public async getDeviceByDeviceId(deviceId: string) {
     return await this.refreshTokenMetaModel.findOne({ deviceId }).exec()
   }
 
-  public deleteAllDevices = async (
+  public async deleteAllDevices(
     dto: Pick<IRefreshTokenMeta, 'userId' | 'deviceId'>
-  ) => {
+  ) {
     const { userId, deviceId } = dto
 
     return await this.refreshTokenMetaModel
@@ -92,7 +92,7 @@ class SecurityDevicesRepository {
       .exec()
   }
 
-  public deleteDeviceByDeviceId = async (id: string) => {
+  public async deleteDeviceByDeviceId(id: string) {
     return await this.refreshTokenMetaModel.deleteOne({ deviceId: id }).exec()
   }
 }

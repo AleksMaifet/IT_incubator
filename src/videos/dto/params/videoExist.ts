@@ -1,5 +1,5 @@
 import { Validate } from 'class-validator'
-import { IsVideoExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsVideoExist } from '../../../middlewares'
 
 class VideoExist {
   @Validate(IsVideoExist, {

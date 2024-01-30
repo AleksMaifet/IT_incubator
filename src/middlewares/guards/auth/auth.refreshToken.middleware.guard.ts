@@ -15,7 +15,7 @@ class AuthRefreshTokenMiddlewareGuard implements IMiddleware {
     private readonly usersRepository: UsersRepository
   ) {}
 
-  execute = async (req: Request, res: Response, next: NextFunction) => {
+  async execute(req: Request, res: Response, next: NextFunction) {
     const { cookies } = req
 
     const refreshToken = cookies[REFRESH_TOKEN_COOKIE_NAME]

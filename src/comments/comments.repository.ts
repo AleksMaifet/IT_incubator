@@ -11,13 +11,13 @@ class CommentsRepository {
     private readonly commentModel: typeof CommentModel
   ) {}
 
-  public create = async (dto: IComments) => {
+  public async create(dto: IComments) {
     const comment = await this.commentModel.create(dto)
 
     return this._mapGenerateCommentResponse(comment)
   }
 
-  public getById = async (id: string) => {
+  public async getById(id: string) {
     const comment = await this.commentModel.findOne({ id }).exec()
 
     if (!comment) {
@@ -27,10 +27,10 @@ class CommentsRepository {
     return this._mapGenerateCommentResponse(comment)
   }
 
-  public getAllByPostId = async (dto: {
+  public async getAllByPostId(dto: {
     postId: string
     query: GetCommentsRequestQuery<number>
-  }) => {
+  }) {
     const { postId, query } = dto
 
     const totalCount = await this.commentModel.find({ postId }).countDocuments()
@@ -49,17 +49,17 @@ class CommentsRepository {
     return response
   }
 
-  public updateById = async (dto: Pick<IComments, 'id' | 'content'>) => {
+  public async updateById(dto: Pick<IComments, 'id' | 'content'>) {
     const { id, content } = dto
 
     return await this.commentModel.updateOne({ id }, { content }).exec()
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     return await this.commentModel.deleteOne({ id }).exec()
   }
 
-  private _mapGenerateCommentResponse = (comment: IComments) => {
+  private _mapGenerateCommentResponse(comment: IComments) {
     const { id, content, commentatorInfo, createdAt } = comment
 
     return {
@@ -70,11 +70,11 @@ class CommentsRepository {
     }
   }
 
-  private _createdFindOptionsAndResponse = (
+  private _createdFindOptionsAndResponse(
     dto: GetCommentsRequestQuery<number> & {
       totalCount: number
     }
-  ) => {
+  ) {
     const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
 
     const pagesCount = Math.ceil(totalCount / pageSize)

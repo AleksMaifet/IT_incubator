@@ -44,7 +44,7 @@ class SecurityDevicesController extends BaseController {
     })
   }
 
-  private getAllDevices = async (req: Request, res: Response) => {
+  private async getAllDevices(req: Request, res: Response) {
     const {
       context: {
         user: { id },
@@ -56,7 +56,7 @@ class SecurityDevicesController extends BaseController {
     res.status(200).json(result)
   }
 
-  private deleteAllDevices = async (req: Request, res: Response) => {
+  private async deleteAllDevices(req: Request, res: Response) {
     const {
       context: {
         user: { id },
@@ -72,10 +72,10 @@ class SecurityDevicesController extends BaseController {
     res.sendStatus(204)
   }
 
-  private deleteDeviceByDeviceId = async (
+  private async deleteDeviceByDeviceId(
     req: Request<BaseDevice>,
     res: Response
-  ) => {
+  ) {
     const {
       params: { id },
     } = req

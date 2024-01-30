@@ -11,7 +11,7 @@ class UsersRepository {
     private readonly userModel: typeof UserModel
   ) {}
 
-  private _mapGenerateUserResponse = (user: IUser) => {
+  private _mapGenerateUserResponse(user: IUser) {
     const { id, login, email, createdAt } = user
 
     return {
@@ -22,9 +22,9 @@ class UsersRepository {
     }
   }
 
-  private _getAllBySearchLoginOrEmailTerm = async (
+  private async _getAllBySearchLoginOrEmailTerm(
     dto: GetUsersRequestQuery<number>
-  ) => {
+  ) {
     const { searchEmailTerm, searchLoginTerm, ...rest } = dto
 
     const regexEmailTerm = new RegExp(searchEmailTerm!, 'i')
@@ -62,12 +62,12 @@ class UsersRepository {
     return response
   }
 
-  private _getAllWithoutSearchLoginOrEmailTerm = async (
+  private async _getAllWithoutSearchLoginOrEmailTerm(
     dto: Omit<
       GetUsersRequestQuery<number>,
       'searchLoginTerm' | 'searchEmailTerm'
     >
-  ) => {
+  ) {
     const totalCount = await this.userModel.countDocuments()
 
     const { response, findOptions } = this._createdFindOptionsAndResponse({
@@ -82,9 +82,9 @@ class UsersRepository {
     return response
   }
 
-  private _getAllWithoutSearchLoginTerm = async (
+  private async _getAllWithoutSearchLoginTerm(
     dto: Omit<GetUsersRequestQuery<number>, 'searchLoginTerm'>
-  ) => {
+  ) {
     const { searchEmailTerm, ...rest } = dto
 
     const regexEmailTerm = new RegExp(searchEmailTerm!, 'i')
@@ -107,9 +107,9 @@ class UsersRepository {
     return response
   }
 
-  private _getAllWithoutSearchEmailTerm = async (
+  private async _getAllWithoutSearchEmailTerm(
     dto: Omit<GetUsersRequestQuery<number>, 'searchEmailTerm'>
-  ) => {
+  ) {
     const { searchLoginTerm, ...rest } = dto
 
     const regexLoginTerm = new RegExp(searchLoginTerm!, 'i')
@@ -132,14 +132,14 @@ class UsersRepository {
     return response
   }
 
-  private _createdFindOptionsAndResponse = (
+  private _createdFindOptionsAndResponse(
     dto: Omit<
       GetUsersRequestQuery<number> & {
         totalCount: number
       },
       'searchLoginTerm' | 'searchEmailTerm'
     >
-  ) => {
+  ) {
     const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
 
     const pagesCount = Math.ceil(totalCount / pageSize)
@@ -162,7 +162,7 @@ class UsersRepository {
     return { response, findOptions }
   }
 
-  public getAll = async (dto: GetUsersRequestQuery<number>) => {
+  public async getAll(dto: GetUsersRequestQuery<number>) {
     const { searchEmailTerm, searchLoginTerm, ...rest } = dto
 
     switch (true) {
@@ -183,7 +183,7 @@ class UsersRepository {
     }
   }
 
-  public getById = async (id: string) => {
+  public async getById(id: string) {
     const user = await this.userModel
       .findOne({
         id,
@@ -197,15 +197,15 @@ class UsersRepository {
     return this._mapGenerateUserResponse(user)
   }
 
-  public create = async (dto: IUser) => {
+  public async create(dto: IUser) {
     const user = await this.userModel.create(dto)
 
     return this._mapGenerateUserResponse(user)
   }
 
-  public updatePassword = async (
+  public async updatePassword(
     dto: Pick<IUser, 'id' | 'passwordSalt' | 'passwordHash'>
-  ) => {
+  ) {
     const { id, passwordHash, passwordSalt } = dto
 
     return await this.userModel
@@ -213,7 +213,7 @@ class UsersRepository {
       .exec()
   }
 
-  public getByLoginOrEmail = async (loginOrEmail: string) => {
+  public async getByLoginOrEmail(loginOrEmail: string) {
     return await this.userModel
       .findOne({
         $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
@@ -221,7 +221,7 @@ class UsersRepository {
       .exec()
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     return await this.userModel.deleteOne({ id }).exec()
   }
 }

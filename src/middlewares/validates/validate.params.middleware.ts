@@ -7,7 +7,7 @@ import { createErrorResponse } from './helpers'
 class ValidateParamsMiddleware implements IMiddleware {
   constructor(private readonly classToValidate: ClassConstructor<{}>) {}
 
-  execute = async ({ params }: Request, res: Response, next: NextFunction) => {
+  async execute({ params }: Request, res: Response, next: NextFunction) {
     const instance = plainToInstance(this.classToValidate, params)
 
     validate(instance).then((errors) => {

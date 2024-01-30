@@ -25,9 +25,9 @@ class AuthService {
     private readonly loggerService: LoggerService
   ) {}
 
-  private _sendEmailConfirmationCode = async (
+  private async _sendEmailConfirmationCode(
     user: Pick<IUser, 'id' | 'login' | 'email'> & { code: string }
-  ) => {
+  ) {
     const { id, login, email, code } = user
 
     try {
@@ -48,9 +48,9 @@ class AuthService {
     }
   }
 
-  private _sendPasswordRecoveryConfirmationCode = async (
+  private async _sendPasswordRecoveryConfirmationCode(
     user: Pick<IUser, 'id' | 'login' | 'email'> & { code: string }
-  ) => {
+  ) {
     const { id, login, email, code } = user
 
     try {
@@ -72,7 +72,7 @@ class AuthService {
     }
   }
 
-  public login = async (dto: BaseAuthDto) => {
+  public async login(dto: BaseAuthDto) {
     const { loginOrEmail, password } = dto
 
     const user = await this.usersRepository.getByLoginOrEmail(loginOrEmail)
@@ -91,20 +91,18 @@ class AuthService {
     return user.id
   }
 
-  public passwordRecovery = async (email: string) => {
+  public async passwordRecovery(email: string) {
     const user = await this.usersRepository.getByLoginOrEmail(email)
 
     if (!user) return false
 
     const { id, login } = user
 
-    await this.authRepository.deletePasswordRecoveryConfirmationByUserId(id)
-
     const newPasswordRecoveryConfirmation =
       new PasswordRecoveryConfirmationEntity(id)
     const { code } = newPasswordRecoveryConfirmation
 
-    await this.authRepository.createPasswordRecoveryConfirmation(
+    await this.authRepository.passwordRecoveryConfirmation(
       newPasswordRecoveryConfirmation
     )
 
@@ -116,7 +114,7 @@ class AuthService {
     })
   }
 
-  public updateUserPassword = async (dto: UpdatePassDto) => {
+  public async updateUserPassword(dto: UpdatePassDto) {
     const { recoveryCode, newPassword } = dto
 
     const confirmation =
@@ -134,7 +132,7 @@ class AuthService {
     })
   }
 
-  public registration = async (dto: CreateUserDto) => {
+  public async registration(dto: CreateUserDto) {
     const user = await this.usersService.create(dto)
     const { id, email, login } = user
 
@@ -146,11 +144,11 @@ class AuthService {
     return await this._sendEmailConfirmationCode({ id, email, login, code })
   }
 
-  public confirmEmail = async (code: string) => {
+  public async confirmEmail(code: string) {
     return await this.authRepository.deleteEmailConfirmationByCode(code)
   }
 
-  public registrationEmailResending = async (email: string) => {
+  public async registrationEmailResending(email: string) {
     const user = await this.usersRepository.getByLoginOrEmail(email)
 
     const { id, login, email: userEmail } = user!

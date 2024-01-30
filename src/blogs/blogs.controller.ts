@@ -80,17 +80,18 @@ class BlogsController extends BaseController {
     })
   }
 
-  private getAll = async (
+  private async getAll(
     req: Request<{}, {}, {}, GetBlogsRequestQuery<string>>,
     res: Response
-  ) => {
+  ) {
     const { query } = req
 
     const result = await this.blogsService.getAll(query)
 
     res.status(200).json(result)
   }
-  private getById = async ({ params }: Request<BlogExist>, res: Response) => {
+
+  private async getById({ params }: Request<BlogExist>, res: Response) {
     const { id } = params
 
     const result = await this.blogsService.getById(id)
@@ -98,7 +99,7 @@ class BlogsController extends BaseController {
     res.status(200).json(result)
   }
 
-  private getPostsByBlogId = async (
+  private async getPostsByBlogId(
     {
       params,
       query,
@@ -109,7 +110,7 @@ class BlogsController extends BaseController {
       Omit<GetBlogsRequestQuery<string>, 'searchNameTerm'>
     >,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     const result = await this.blogsService.getPostsByBlogId(id, query)
@@ -117,10 +118,10 @@ class BlogsController extends BaseController {
     res.status(200).json(result)
   }
 
-  private createPostByBlogId = async (
+  private async createPostByBlogId(
     { body, params }: Request<BlogExist, {}, BasePostDto>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     const result = await this.postsService.create({ ...body, blogId: id })
@@ -128,28 +129,27 @@ class BlogsController extends BaseController {
     res.status(201).json(result)
   }
 
-  private create = async (
+  private async create(
     { body }: Request<{}, {}, CreateBlogDto>,
     res: Response
-  ) => {
+  ) {
     const result = await this.blogsService.create(body)
 
     res.status(201).json(result)
   }
-  private updateById = async (
+
+  private async updateById(
     { params, body }: Request<BlogExist, {}, UpdateBlogDto>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     await this.blogsService.updateById(id, body)
 
     res.sendStatus(204)
   }
-  private deleteById = async (
-    { params }: Request<BlogExist>,
-    res: Response
-  ) => {
+
+  private async deleteById({ params }: Request<BlogExist>, res: Response) {
     const { id } = params
 
     await this.blogsService.deleteById(id)

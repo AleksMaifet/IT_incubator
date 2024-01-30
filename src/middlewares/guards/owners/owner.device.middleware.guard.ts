@@ -7,11 +7,11 @@ class OwnerDeviceMiddlewareGuard implements IMiddleware {
     private readonly securityDevicesService: SecurityDevicesService
   ) {}
 
-  execute = async (
+  async execute(
     { params, context }: Request<BaseDevice>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     const { id } = params
     const { user } = context
 

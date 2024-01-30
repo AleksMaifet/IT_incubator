@@ -12,7 +12,7 @@ class AuthBasicMiddlewareGuard implements IMiddleware {
     private readonly configService: ConfigService
   ) {}
 
-  execute = (req: Request, res: Response, next: NextFunction) => {
+  execute(req: Request, res: Response, next: NextFunction) {
     const { authorization } = req.headers
 
     const sendResponse = () => {

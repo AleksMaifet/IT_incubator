@@ -17,33 +17,43 @@ class AuthRepository {
     private readonly passwordRecoveryConfirmationModel: typeof PasswordRecoveryConfirmationModel
   ) {}
 
-  public createEmailConfirmation = async (dto: IEmailConfirmation) => {
+  public async createEmailConfirmation(dto: IEmailConfirmation) {
     return await this.emailConfirmationModel.create(dto)
   }
 
-  public createPasswordRecoveryConfirmation = async (
+  public async passwordRecoveryConfirmation(
     dto: IPasswordRecoveryConfirmation
-  ) => {
-    return await this.passwordRecoveryConfirmationModel.create(dto)
+  ) {
+    const { userId } = dto
+
+    const result =
+      await this.passwordRecoveryConfirmationModel.findOneAndUpdate(
+        { userId },
+        dto
+      )
+
+    if (!result) {
+      return await this.passwordRecoveryConfirmationModel.create(dto)
+    }
+
+    return result
   }
 
-  public deleteEmailConfirmationByUserId = async (userId: string) => {
+  public async deleteEmailConfirmationByUserId(userId: string) {
     return await this.emailConfirmationModel.deleteOne({ userId }).exec()
   }
 
-  public deleteEmailConfirmationByCode = async (code: string) => {
+  public async deleteEmailConfirmationByCode(code: string) {
     return await this.emailConfirmationModel.deleteOne({ code }).exec()
   }
 
-  public deletePasswordRecoveryConfirmationByUserId = async (
-    userId: string
-  ) => {
+  public async deletePasswordRecoveryConfirmationByUserId(userId: string) {
     return await this.passwordRecoveryConfirmationModel
       .deleteOne({ userId })
       .exec()
   }
 
-  public getEmailConfirmationByCodeOrUserId = async (codeOrUserId: string) => {
+  public async getEmailConfirmationByCodeOrUserId(codeOrUserId: string) {
     return await this.emailConfirmationModel
       .findOne({
         $or: [{ code: codeOrUserId }, { userId: codeOrUserId }],
@@ -51,11 +61,11 @@ class AuthRepository {
       .exec()
   }
 
-  public getPasswordRecoveryConfirmationByCode = async (code: string) => {
+  public async getPasswordRecoveryConfirmationByCode(code: string) {
     return await this.passwordRecoveryConfirmationModel.findOne({ code }).exec()
   }
 
-  public updateEmailConfirmationCode = async (userId: string) => {
+  public async updateEmailConfirmationCode(userId: string) {
     return await this.emailConfirmationModel
       .findOneAndUpdate({ userId }, { code: uuidv4() }, { new: true })
       .exec()

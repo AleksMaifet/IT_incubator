@@ -2,7 +2,7 @@ import { config, DotenvParseOutput } from 'dotenv'
 import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../../types'
-import { ILogger } from '../logger/logger.interface'
+import { ILogger } from '../logger'
 import { IConfigService } from './config.interface'
 
 @injectable()
@@ -20,7 +20,7 @@ class ConfigService implements IConfigService {
     }
   }
 
-  get = <T extends number | string>(key: string) => {
+  get<T extends number | string>(key: string) {
     return (process.env[key] || this.config[key]) as T
   }
 }

@@ -51,10 +51,7 @@ class CommentsController extends BaseController {
     })
   }
 
-  private getById = async (
-    { params }: Request<CommentExist>,
-    res: Response
-  ) => {
+  private async getById({ params }: Request<CommentExist>, res: Response) {
     const { id } = params
 
     const result = await this.commentsService.getById(id)
@@ -62,10 +59,10 @@ class CommentsController extends BaseController {
     res.status(200).json(result)
   }
 
-  private updateById = async (
+  private async updateById(
     { params, body }: Request<CommentExist, {}, BaseCommentDto>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
     const { content } = body
 
@@ -74,10 +71,7 @@ class CommentsController extends BaseController {
     res.sendStatus(204)
   }
 
-  private deleteById = async (
-    { params }: Request<CommentExist>,
-    res: Response
-  ) => {
+  private async deleteById({ params }: Request<CommentExist>, res: Response) {
     const { id } = params
 
     await this.commentsService.deleteById(id)

@@ -7,7 +7,7 @@ import { IControllerRouter } from './route.interface'
 export abstract class BaseController {
   private readonly _router: Router
 
-  public constructor() {
+  constructor() {
     this._router = Router()
   }
 
@@ -15,11 +15,12 @@ export abstract class BaseController {
     return this._router
   }
 
-  protected bindRoutes = (route: IControllerRouter) => {
+  protected bindRoutes(route: IControllerRouter) {
     const { func, method, path } = route
 
-    const middleware = route.middlewares?.map((m) => m.execute)
-    const pipeline = middleware ? [...middleware, func] : func
+    const middleware = route.middlewares?.map((m) => m.execute.bind(m))
+    const bindingFunc = func.bind(this)
+    const pipeline = middleware ? [...middleware, bindingFunc] : bindingFunc
 
     this.router[method](path, pipeline)
   }

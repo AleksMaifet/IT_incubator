@@ -47,30 +47,26 @@ class UsersController extends BaseController {
     })
   }
 
-  private getAll = async (
+  private async getAll(
     req: Request<{}, {}, {}, GetUsersRequestQuery<string>>,
     res: Response
-  ) => {
+  ) {
     const { query } = req
 
     const result = await this.usersService.getAll(query)
 
     res.status(200).json(result)
   }
-  private create = async (
-    req: Request<{}, {}, CreateUserDto>,
-    res: Response
-  ) => {
+
+  private async create(req: Request<{}, {}, CreateUserDto>, res: Response) {
     const { body } = req
 
     const result = await this.usersService.create(body)
 
     res.status(201).json(result)
   }
-  private deleteById = async (
-    { params }: Request<UserExist>,
-    res: Response
-  ) => {
+
+  private async deleteById({ params }: Request<UserExist>, res: Response) {
     const { id } = params
 
     await this.usersService.deleteById(id)

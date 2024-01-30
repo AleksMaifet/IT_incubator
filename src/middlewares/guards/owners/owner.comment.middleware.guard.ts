@@ -6,11 +6,11 @@ import { CommentsService } from '../../../comments'
 class OwnerCommentMiddlewareGuard implements IMiddleware {
   constructor(private readonly commentsService: CommentsService) {}
 
-  execute = async (
+  async execute(
     { params, context }: Request<CommentExist>,
     res: Response,
     next: NextFunction
-  ) => {
+  ) {
     const { id } = params
     const { user } = context
 

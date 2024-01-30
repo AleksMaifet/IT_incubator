@@ -10,24 +10,24 @@ class VideosRepository {
     @inject(TYPES.VideoModel) private readonly videoModel: typeof VideoModel
   ) {}
 
-  public getAll = async () => {
-    return await this.videoModel.find().exec()
+  public getAll() {
+    return this.videoModel.find().exec()
   }
 
-  public getById = (id: number) => {
+  public getById(id: number) {
     return this.videoModel.findOne({ id }).exec()
   }
 
-  public updateById = async (id: number, dto: UpdateVideoDto) => {
-    return await this.videoModel.updateOne({ id }, dto).exec()
+  public updateById(id: number, dto: UpdateVideoDto) {
+    return this.videoModel.updateOne({ id }, dto).exec()
   }
 
-  public create = async (dto: CreateVideoDto) => {
-    return await this.videoModel.create(dto)
+  public create(dto: CreateVideoDto) {
+    return this.videoModel.create(dto)
   }
 
-  public deleteById = async (id: number) => {
-    return await this.videoModel.deleteOne({ id }).exec()
+  public deleteById(id: number) {
+    return this.videoModel.deleteOne({ id }).exec()
   }
 }
 

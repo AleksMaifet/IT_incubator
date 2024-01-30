@@ -16,9 +16,7 @@ class BlogsRepository {
     private readonly postModel: typeof PostModel
   ) {}
 
-  private getAllBySearchNameTerm = async (
-    dto: GetBlogsRequestQuery<number>
-  ) => {
+  private async getAllBySearchNameTerm(dto: GetBlogsRequestQuery<number>) {
     const { searchNameTerm, ...rest } = dto
 
     const regex = new RegExp(searchNameTerm!, 'i')
@@ -26,12 +24,11 @@ class BlogsRepository {
       .find({ name: { $regex: regex } })
       .countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse<IBlog>(
-      {
+    const { response, findOptions } =
+      this._createdFindOptionsAndResponse<IBlog>({
         ...rest,
         totalCount,
-      }
-    )
+      })
 
     response.items = await this.blogModel
       .find({ name: { $regex: regex } }, null, findOptions)
@@ -40,31 +37,30 @@ class BlogsRepository {
     return response
   }
 
-  private getAllWithoutSearchNameTerm = async (
+  private async getAllWithoutSearchNameTerm(
     dto: Omit<GetBlogsRequestQuery<number>, 'searchNameTerm'>
-  ) => {
+  ) {
     const totalCount = await this.blogModel.countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse<IBlog>(
-      {
+    const { response, findOptions } =
+      this._createdFindOptionsAndResponse<IBlog>({
         ...dto,
         totalCount,
-      }
-    )
+      })
 
     response.items = await this.blogModel.find({}, null, findOptions).exec()
 
     return response
   }
 
-  private createdFindOptionsAndResponse = <T>(
+  private _createdFindOptionsAndResponse<T>(
     dto: Omit<
       GetBlogsRequestQuery<number> & {
         totalCount: number
       },
       'searchNameTerm'
     >
-  ) => {
+  ) {
     const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
 
     const pagesCount = Math.ceil(totalCount / pageSize)
@@ -87,7 +83,7 @@ class BlogsRepository {
     return { response, findOptions }
   }
 
-  public getAll = async (dto: GetBlogsRequestQuery<number>) => {
+  public async getAll(dto: GetBlogsRequestQuery<number>) {
     const { searchNameTerm, ...rest } = dto
 
     if (searchNameTerm === 'null') {
@@ -97,24 +93,23 @@ class BlogsRepository {
     return await this.getAllBySearchNameTerm(dto)
   }
 
-  public getById = async (id: string) => {
+  public async getById(id: string) {
     return await this.blogModel.findOne({ id }).exec()
   }
 
-  public getPostsByBlogId = async (
+  public async getPostsByBlogId(
     id: string,
     query: Omit<GetBlogsRequestQuery<number>, 'searchNameTerm'>
-  ) => {
+  ) {
     const totalCount = await this.postModel
       .find({ blogId: id })
       .countDocuments()
 
-    const { response, findOptions } = this.createdFindOptionsAndResponse<IPost>(
-      {
+    const { response, findOptions } =
+      this._createdFindOptionsAndResponse<IPost>({
         ...query,
         totalCount,
-      }
-    )
+      })
 
     response.items = await this.postModel
       .find({ blogId: id }, null, findOptions)
@@ -123,15 +118,15 @@ class BlogsRepository {
     return response
   }
 
-  public updateById = async (id: string, dto: UpdateBlogDto) => {
+  public async updateById(id: string, dto: UpdateBlogDto) {
     return await this.blogModel.updateOne({ id }, dto).exec()
   }
 
-  public create = async (dto: CreateBlogDto) => {
+  public async create(dto: CreateBlogDto) {
     return await this.blogModel.create(dto)
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     return await this.blogModel.deleteOne({ id }).exec()
   }
 }

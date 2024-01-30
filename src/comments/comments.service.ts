@@ -15,41 +15,7 @@ class CommentsService {
     private readonly commentsRepository: CommentsRepository
   ) {}
 
-  public create = async (
-    dto: Pick<IComments, 'content' | 'commentatorInfo'> & { postId: string }
-  ) => {
-    const { postId, content, commentatorInfo } = dto
-
-    const newComment = new Comment(postId, content, commentatorInfo)
-
-    return await this.commentsRepository.create(newComment)
-  }
-
-  public getAllByPostId = async ({
-    postId,
-    query,
-  }: {
-    postId: string
-    query: GetCommentsRequestQuery<string>
-  }) => {
-    const dto = this._mapQueryParamsToDB(query)
-
-    return await this.commentsRepository.getAllByPostId({ postId, query: dto })
-  }
-
-  public getById = async (id: string) => {
-    return await this.commentsRepository.getById(id)
-  }
-
-  public updateById = async (dto: Pick<IComments, 'id' | 'content'>) => {
-    return await this.commentsRepository.updateById(dto)
-  }
-
-  public deleteById = async (id: string) => {
-    return await this.commentsRepository.deleteById(id)
-  }
-
-  private _mapQueryParamsToDB = (query: GetCommentsRequestQuery<string>) => {
+  private _mapQueryParamsToDB(query: GetCommentsRequestQuery<string>) {
     const { sortBy, sortDirection, pageNumber, pageSize } = query
 
     const numPageNumber = Number(pageNumber)
@@ -63,6 +29,40 @@ class CommentsService {
         : PAGE_NUMBER,
       pageSize: isFinite(numPageSize) ? numPageSize : PAGE_SIZE,
     }
+  }
+
+  public async create(
+    dto: Pick<IComments, 'content' | 'commentatorInfo'> & { postId: string }
+  ) {
+    const { postId, content, commentatorInfo } = dto
+
+    const newComment = new Comment(postId, content, commentatorInfo)
+
+    return await this.commentsRepository.create(newComment)
+  }
+
+  public async getAllByPostId({
+    postId,
+    query,
+  }: {
+    postId: string
+    query: GetCommentsRequestQuery<string>
+  }) {
+    const dto = this._mapQueryParamsToDB(query)
+
+    return await this.commentsRepository.getAllByPostId({ postId, query: dto })
+  }
+
+  public async getById(id: string) {
+    return await this.commentsRepository.getById(id)
+  }
+
+  public async updateById(dto: Pick<IComments, 'id' | 'content'>) {
+    return await this.commentsRepository.updateById(dto)
+  }
+
+  public async deleteById(id: string) {
+    return await this.commentsRepository.deleteById(id)
   }
 }
 

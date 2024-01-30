@@ -33,7 +33,7 @@ class TestingRepository {
     private readonly passwordRecoveryConfirmationModel: typeof PasswordRecoveryConfirmationModel
   ) {}
 
-  public deleteAll = async () => {
+  public async deleteAll() {
     await this.videoModel.deleteMany()
     await this.blogModel.deleteMany()
     await this.postModel.deleteMany()

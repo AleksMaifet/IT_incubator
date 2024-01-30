@@ -12,7 +12,7 @@ class AuthCredentialRefreshTokenMiddlewareGuard implements IMiddleware {
     private readonly securityDevicesService: SecurityDevicesService
   ) {}
 
-  execute = async (req: Request, res: Response, next: NextFunction) => {
+  async execute(req: Request, res: Response, next: NextFunction) {
     const {
       context: {
         user: { id },

@@ -13,7 +13,7 @@ class AuthBearerMiddlewareGuard {
     private readonly usersRepository: UsersRepository
   ) {}
 
-  execute = async (req: Request, res: Response, next: NextFunction) => {
+  async execute(req: Request, res: Response, next: NextFunction) {
     const { authorization } = req.headers
 
     const sendResponse = () => {

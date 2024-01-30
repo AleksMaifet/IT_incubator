@@ -5,7 +5,7 @@ import { ILogger } from './logger.interface'
 
 @injectable()
 class LoggerService implements ILogger {
-  public logger: Logger
+  public readonly logger: Logger
 
   constructor() {
     const { combine, timestamp, colorize, printf } = format
@@ -28,15 +28,15 @@ class LoggerService implements ILogger {
     })
   }
 
-  log = (...args: unknown[]) => {
+  public log(...args: unknown[]) {
     this.logger.info(args)
   }
 
-  error = (...args: unknown[]) => {
+  public error(...args: unknown[]) {
     this.logger.error(args)
   }
 
-  warn = (...args: unknown[]) => {
+  public warn(...args: unknown[]) {
     this.logger.warn(args)
   }
 }

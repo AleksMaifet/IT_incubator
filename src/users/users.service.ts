@@ -28,11 +28,11 @@ class UsersService {
     private readonly authRepository: AuthRepository
   ) {}
 
-  private _generateSalt = async () => {
+  private async _generateSalt() {
     return await genSalt(SALT_ROUNDS)
   }
 
-  private _mapQueryParamsToDB = (query: GetUsersRequestQuery<string>) => {
+  private _mapQueryParamsToDB(query: GetUsersRequestQuery<string>) {
     const {
       searchLoginTerm,
       searchEmailTerm,
@@ -57,7 +57,7 @@ class UsersService {
     }
   }
 
-  public create = async (dto: CreateUserDto) => {
+  public async create(dto: CreateUserDto) {
     const { login, email, password } = dto
 
     const passwordSalt = await this._generateSalt()
@@ -67,10 +67,7 @@ class UsersService {
     return await this.usersRepository.create(newUser)
   }
 
-  public updatePassword = async (dto: {
-    userId: string
-    newPassword: string
-  }) => {
+  public async updatePassword(dto: { userId: string; newPassword: string }) {
     const { userId, newPassword } = dto
 
     const passwordSalt = await this._generateSalt()
@@ -83,18 +80,18 @@ class UsersService {
     })
   }
 
-  public getAll = async (query: GetUsersRequestQuery<string>) => {
+  public async getAll(query: GetUsersRequestQuery<string>) {
     const dto = this._mapQueryParamsToDB(query)
 
     return await this.usersRepository.getAll(dto)
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     await this.authRepository.deleteEmailConfirmationByUserId(id)
     return await this.usersRepository.deleteById(id)
   }
 
-  public generateHash = async (password: string, passwordSalt: string) => {
+  public async generateHash(password: string, passwordSalt: string) {
     return await hash(password, passwordSalt)
   }
 }

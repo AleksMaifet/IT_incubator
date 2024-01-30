@@ -27,11 +27,11 @@ class AdapterEmail {
     })
   }
 
-  public sendConfirmationCode = async (dto: {
+  public async sendConfirmationCode(dto: {
     email: string
     subject: string
     html: string
-  }) => {
+  }) {
     const { email, subject, html } = dto
 
     const mailOptions = {

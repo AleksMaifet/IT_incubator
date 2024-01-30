@@ -13,7 +13,16 @@ class MongoService {
     private readonly configService: ConfigService
   ) {}
 
-  public connect = async () => {
+  private _getNameDB(env: string) {
+    switch (true) {
+      case env === 'test':
+        return this.configService.get('MONGO_DB_NAME_TEST').toString()
+      default:
+        return this.configService.get('MONGO_DB_NAME').toString()
+    }
+  }
+
+  public async connect() {
     try {
       const NODE_ENV = this.configService.get('NODE_ENV')?.toString()
       const DB = this._getNameDB(NODE_ENV)
@@ -32,16 +41,7 @@ class MongoService {
     }
   }
 
-  private _getNameDB = (env: string) => {
-    switch (true) {
-      case env === 'test':
-        return this.configService.get('MONGO_DB_NAME_TEST').toString()
-      default:
-        return this.configService.get('MONGO_DB_NAME').toString()
-    }
-  }
-
-  public disconnect = async () => {
+  public async disconnect() {
     await disconnect()
     this.loggerService.log('Disconnect to MongoDB')
   }

@@ -17,40 +17,40 @@ class BlogsService {
     private readonly blogsRepository: BlogsRepository
   ) {}
 
-  public getAll = async (query: GetBlogsRequestQuery<string>) => {
+  public async getAll(query: GetBlogsRequestQuery<string>) {
     const dto = this._mapQueryParamsToDB(query)
 
     return await this.blogsRepository.getAll(dto)
   }
 
-  public getById = async (id: string) => {
+  public async getById(id: string) {
     return await this.blogsRepository.getById(id)
   }
 
-  public getPostsByBlogId = async (
+  public async getPostsByBlogId(
     id: string,
     query: Omit<GetBlogsRequestQuery<string>, 'searchNameTerm'>
-  ) => {
+  ) {
     const dto = this._mapQueryParamsToDB(query)
 
     return await this.blogsRepository.getPostsByBlogId(id, dto)
   }
 
-  public updateById = async (id: string, dto: UpdateBlogDto) => {
+  public async updateById(id: string, dto: UpdateBlogDto) {
     return await this.blogsRepository.updateById(id, dto)
   }
 
-  public create = async ({ name, description, websiteUrl }: CreateBlogDto) => {
+  public async create({ name, description, websiteUrl }: CreateBlogDto) {
     const newBlog = new Blog(name, description, websiteUrl)
 
     return await this.blogsRepository.create(newBlog)
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     return await this.blogsRepository.deleteById(id)
   }
 
-  private _mapQueryParamsToDB = (query: GetBlogsRequestQuery<string>) => {
+  private _mapQueryParamsToDB(query: GetBlogsRequestQuery<string>) {
     const { searchNameTerm, sortBy, sortDirection, pageNumber, pageSize } =
       query
 

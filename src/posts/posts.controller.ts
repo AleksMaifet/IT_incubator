@@ -84,17 +84,18 @@ class PostsController extends BaseController {
     })
   }
 
-  private getAll = async (
+  private async getAll(
     req: Request<{}, {}, {}, GetPostsRequestQuery<string>>,
     res: Response
-  ) => {
+  ) {
     const { query } = req
 
     const result = await this.postsService.getAll(query)
 
     res.status(200).json(result)
   }
-  private getById = async ({ params }: Request<PostExist>, res: Response) => {
+
+  private async getById({ params }: Request<PostExist>, res: Response) {
     const { id } = params
 
     const result = await this.postsService.getById(id)
@@ -102,28 +103,27 @@ class PostsController extends BaseController {
     res.status(200).json(result)
   }
 
-  private create = async (
+  private async create(
     { body }: Request<{}, {}, CreatePostDto>,
     res: Response
-  ) => {
+  ) {
     const result = await this.postsService.create(body)
 
     res.status(201).json(result)
   }
-  private updateById = async (
+
+  private async updateById(
     { params, body }: Request<PostExist, {}, UpdatePostDto>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     await this.postsService.updateById(id, body)
 
     res.sendStatus(204)
   }
-  private deleteById = async (
-    { params }: Request<PostExist>,
-    res: Response
-  ) => {
+
+  private async deleteById({ params }: Request<PostExist>, res: Response) {
     const { id } = params
 
     await this.postsService.deleteById(id)
@@ -131,13 +131,13 @@ class PostsController extends BaseController {
     res.sendStatus(204)
   }
 
-  private getAllCommentById = async (
+  private async getAllCommentById(
     {
       params,
       query,
     }: Request<PostExist, {}, {}, GetCommentsRequestQuery<string>>,
     res: Response
-  ) => {
+  ) {
     const { id } = params
 
     const result = await this.commentsService.getAllByPostId({
@@ -148,10 +148,10 @@ class PostsController extends BaseController {
     return res.status(200).json(result)
   }
 
-  private createCommentById = async (
+  private async createCommentById(
     { params, body, context }: Request<PostExist, {}, BaseCommentDto>,
     res: Response
-  ) => {
+  ) {
     const { id: postId } = params
     const { content } = body
     const {

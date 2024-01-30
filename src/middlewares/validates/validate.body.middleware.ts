@@ -7,7 +7,7 @@ import { createErrorResponse } from './helpers'
 class ValidateBodyMiddleware implements IMiddleware {
   constructor(private readonly classToValidate: ClassConstructor<{}>) {}
 
-  execute = async ({ body }: Request, res: Response, next: NextFunction) => {
+  async execute({ body }: Request, res: Response, next: NextFunction) {
     const instance = plainToInstance(this.classToValidate, body)
 
     validate(instance).then((errors) => {

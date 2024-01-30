@@ -121,7 +121,7 @@ class AuthController extends BaseController {
     })
   }
 
-  private login = async (req: Request<{}, {}, BaseAuthDto>, res: Response) => {
+  private async login(req: Request<{}, {}, BaseAuthDto>, res: Response) {
     const { body, headers, ip } = req
 
     const userId = await this.authService.login(body)
@@ -155,10 +155,10 @@ class AuthController extends BaseController {
     })
   }
 
-  private passwordRecovery = async (
+  private async passwordRecovery(
     req: Request<{}, {}, PassRecoveryDto>,
     res: Response
-  ) => {
+  ) {
     const {
       body: { email },
     } = req
@@ -168,10 +168,10 @@ class AuthController extends BaseController {
     res.sendStatus(204)
   }
 
-  private updatePassword = async (
+  private async updatePassword(
     req: Request<{}, {}, UpdatePassDto>,
     res: Response
-  ) => {
+  ) {
     const { body } = req
 
     await this.authService.updateUserPassword(body)
@@ -179,7 +179,7 @@ class AuthController extends BaseController {
     res.sendStatus(204)
   }
 
-  private getNewPairAuthTokens = async (req: Request, res: Response) => {
+  private async getNewPairAuthTokens(req: Request, res: Response) {
     const {
       context: {
         user: { id },
@@ -209,7 +209,7 @@ class AuthController extends BaseController {
     })
   }
 
-  private logout = async (req: Request, res: Response) => {
+  private async logout(req: Request, res: Response) {
     const {
       context: {
         user: { id },
@@ -226,7 +226,7 @@ class AuthController extends BaseController {
     res.sendStatus(204)
   }
 
-  private getMe = async (req: Request, res: Response) => {
+  private async getMe(req: Request, res: Response) {
     const {
       context: {
         user: { email, id, login },
@@ -240,10 +240,10 @@ class AuthController extends BaseController {
     })
   }
 
-  private registration = async (
+  private async registration(
     req: Request<{}, {}, CreateUserDto>,
     res: Response
-  ) => {
+  ) {
     const { body } = req
 
     const result = await this.authService.registration(body)
@@ -256,10 +256,10 @@ class AuthController extends BaseController {
     res.sendStatus(204)
   }
 
-  private registrationConfirmation = async (
+  private async registrationConfirmation(
     req: Request<{}, {}, RegConfirmAuthDto>,
     res: Response
-  ) => {
+  ) {
     const {
       body: { code },
     } = req
@@ -269,10 +269,10 @@ class AuthController extends BaseController {
     res.sendStatus(204)
   }
 
-  private registrationEmailResending = async (
+  private async registrationEmailResending(
     req: Request<{}, {}, BaseUserDto>,
     res: Response
-  ) => {
+  ) {
     const {
       body: { email },
     } = req

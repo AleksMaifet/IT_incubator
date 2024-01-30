@@ -11,9 +11,9 @@ class ManagerEmail {
     private readonly adapterEmail: AdapterEmail
   ) {}
 
-  public sendUserEmailConfirmationCode = async (
+  public async sendUserEmailConfirmationCode(
     dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
-  ) => {
+  ) {
     const { login, email, code } = dto
 
     const subject = 'Confirm Account'
@@ -32,9 +32,9 @@ class ManagerEmail {
     })
   }
 
-  public sendPasswordRecoveryConfirmationCode = async (
+  public async sendPasswordRecoveryConfirmationCode(
     dto: Pick<CreateUserDto, 'login' | 'email'> & { code: string }
-  ) => {
+  ) {
     const { login, email, code } = dto
 
     const subject = 'Confirm Account'

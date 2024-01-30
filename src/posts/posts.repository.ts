@@ -12,7 +12,7 @@ class PostsRepository {
     private readonly postModel: typeof PostModel
   ) {}
 
-  public getAll = async (dto: GetPostsRequestQuery<number>) => {
+  public async getAll(dto: GetPostsRequestQuery<number>) {
     const { sortBy, sortDirection, pageNumber, pageSize } = dto
 
     const totalCount = await this.postModel.countDocuments()
@@ -38,19 +38,19 @@ class PostsRepository {
     return response
   }
 
-  public getById = async (id: string) => {
+  public async getById(id: string) {
     return await this.postModel.findOne({ id }).exec()
   }
 
-  public updateById = async (id: string, dto: UpdatePostDto) => {
+  public async updateById(id: string, dto: UpdatePostDto) {
     return await this.postModel.updateOne({ id }, dto).exec()
   }
 
-  public create = async (dto: CreatePostDto) => {
+  public async create(dto: CreatePostDto) {
     return await this.postModel.create(dto)
   }
 
-  public deleteById = async (id: string) => {
+  public async deleteById(id: string) {
     return await this.postModel.deleteOne({ id }).exec()
   }
 }
