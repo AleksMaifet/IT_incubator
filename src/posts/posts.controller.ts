@@ -146,11 +146,10 @@ class PostsController extends BaseController {
     res: Response
   ) {
     const { id } = params
-    const { user } = context
 
     const result = await this.commentsService.getAllByPostId({
       postId: id,
-      userId: user.id,
+      userId: context?.user.id,
       query,
     })
 

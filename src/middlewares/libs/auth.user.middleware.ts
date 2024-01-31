@@ -16,16 +16,15 @@ class AuthUserMiddleware {
   async execute(req: Request, _: Response, next: NextFunction) {
     const { authorization } = req.headers
 
-    console.log(req.cookies[REFRESH_TOKEN_COOKIE_NAME], '@')
-    console.log(authorization, '@@')
+    if (!authorization) {
+      next()
 
-    const [__, token] = authorization!.split(' ')
-
-    const payload = this.jwtService.getJwtDataByToken(token)
-
-    if (!payload) {
       return
     }
+
+    const [__, token] = authorization.split(' ')
+
+    const payload = this.jwtService.getJwtDataByToken(token)
 
     const { userId, deviceId, iat, exp } = payload
 

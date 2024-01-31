@@ -106,6 +106,13 @@ class CommentsService {
   }) {
     const dto = this._mapQueryParamsToDB(query)
 
+    if (!userId) {
+      return await this.commentsRepository.getAllByPostId({
+        postId,
+        query: dto,
+      })
+    }
+
     const likes = await this.likesService.getUserCommentLikesByUserId(userId)
 
     if (!likes) return null
@@ -126,6 +133,10 @@ class CommentsService {
   public async getById({ id, userId }: { id: string; userId: string }) {
     const comment = await this.commentsRepository.getById(id)
     if (!comment) return null
+
+    if (!userId) {
+      return comment
+    }
 
     const likes = await this.likesService.getUserCommentLikesByUserId(userId)
     if (!likes) return null

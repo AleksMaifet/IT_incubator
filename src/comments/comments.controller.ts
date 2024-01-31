@@ -71,11 +71,10 @@ class CommentsController extends BaseController {
     res: Response
   ) {
     const { id } = params
-    const { user } = context
 
     const result = await this.commentsService.getById({
       id,
-      userId: user.id,
+      userId: context?.user.id,
     })
 
     res.status(200).json(result)
