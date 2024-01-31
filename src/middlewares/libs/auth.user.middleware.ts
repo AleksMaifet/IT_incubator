@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { JwtService } from '../../services'
 import { UsersRepository } from '../../users'
+import { REFRESH_TOKEN_COOKIE_NAME } from '../../auth'
 
 @injectable()
 class AuthUserMiddleware {
@@ -15,7 +16,7 @@ class AuthUserMiddleware {
   async execute(req: Request, _: Response, next: NextFunction) {
     const { authorization } = req.headers
 
-    console.log(req.headers, '@')
+    console.log(req.cookies[REFRESH_TOKEN_COOKIE_NAME], '@')
     console.log(authorization, '@@')
 
     const [__, token] = authorization!.split(' ')
