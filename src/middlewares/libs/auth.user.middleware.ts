@@ -15,6 +15,9 @@ class AuthUserMiddleware {
   async execute(req: Request, _: Response, next: NextFunction) {
     const { authorization } = req.headers
 
+    console.log(req.headers, '@')
+    console.log(authorization, '@@')
+
     const [__, token] = authorization!.split(' ')
 
     const payload = this.jwtService.getJwtDataByToken(token)
