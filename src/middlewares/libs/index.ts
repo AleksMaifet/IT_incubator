@@ -1,2 +1,2 @@
 export * from './customValidDecorators'
-export * from './rate.limit.middleware.guard'
+export * from './auth.user.middleware'

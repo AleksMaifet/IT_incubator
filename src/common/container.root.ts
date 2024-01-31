@@ -46,17 +46,18 @@ import {
   AuthBearerMiddlewareGuard,
   AuthCredentialRefreshTokenMiddlewareGuard,
   AuthRefreshTokenMiddlewareGuard,
+  AuthUserMiddleware,
   IMiddleware,
 } from '../middlewares'
 import { AdapterEmail } from '../adapters'
 import { ManagerEmail } from '../managers'
-
 import {
   RefreshTokenMetaModel,
   SecurityDevicesController,
   SecurityDevicesRepository,
   SecurityDevicesService,
 } from '../securityDevices'
+import { LikesModel, LikesRepository, LikesService } from '../likes'
 
 export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<App>(TYPES.Application).to(App)
@@ -82,6 +83,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<SecurityDevicesService>(TYPES.SecurityDevicesService).to(
     SecurityDevicesService
   )
+  bind<LikesService>(TYPES.LikesService).to(LikesService)
   bind<VideosRepository>(TYPES.VideosRepository).to(VideosRepository)
   bind<BlogsRepository>(TYPES.BlogsRepository).to(BlogsRepository)
   bind<PostsRepository>(TYPES.PostsRepository).to(PostsRepository)
@@ -91,6 +93,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<SecurityDevicesRepository>(TYPES.SecurityDevicesRepository).to(
     SecurityDevicesRepository
   )
+  bind<LikesRepository>(TYPES.LikesRepository).to(LikesRepository)
   bind<TestingController>(TYPES.TestingController).to(TestingController)
   bind<TestingRepository>(TYPES.TestingRepository).to(TestingRepository)
   bind<typeof BlogModel>(TYPES.BlogModel).toConstantValue(BlogModel)
@@ -107,6 +110,7 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   bind<typeof RefreshTokenMetaModel>(
     TYPES.RefreshTokenMetaModel
   ).toConstantValue(RefreshTokenMetaModel)
+  bind<typeof LikesModel>(TYPES.LikesModel).toConstantValue(LikesModel)
   bind<IMiddleware>(TYPES.AuthBasicMiddlewareGuard).to(AuthBasicMiddlewareGuard)
   bind<IMiddleware>(TYPES.AuthBearerMiddlewareGuard).to(
     AuthBearerMiddlewareGuard
@@ -119,4 +123,5 @@ export const appBindings = new ContainerModule((bind: interfaces.Bind) => {
   )
   bind<AdapterEmail>(TYPES.AdapterEmail).to(AdapterEmail).inSingletonScope()
   bind<ManagerEmail>(TYPES.ManagerEmail).to(ManagerEmail)
+  bind<IMiddleware>(TYPES.AuthUserMiddleware).to(AuthUserMiddleware)
 })

@@ -5,6 +5,7 @@ import { BaseController } from '../common'
 import {
   AuthBasicMiddlewareGuard,
   AuthBearerMiddlewareGuard,
+  AuthUserMiddleware,
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
@@ -25,6 +26,8 @@ class PostsController extends BaseController {
     private readonly postsService: PostsService,
     @inject(TYPES.CommentsService)
     private readonly commentsService: CommentsService,
+    @inject(TYPES.AuthUserMiddleware)
+    private readonly authUserMiddleware: AuthUserMiddleware,
     @inject(TYPES.AuthBasicMiddlewareGuard)
     private readonly authBasicMiddlewareGuard: AuthBasicMiddlewareGuard,
     @inject(TYPES.AuthBearerMiddlewareGuard)
@@ -70,7 +73,10 @@ class PostsController extends BaseController {
       path: '/:id/comments',
       method: 'get',
       func: this.getAllCommentById,
-      middlewares: [new ValidateParamsMiddleware(PostExist)],
+      middlewares: [
+        new ValidateParamsMiddleware(PostExist),
+        this.authUserMiddleware,
+      ],
     })
     this.bindRoutes({
       path: '/:id/comments',
@@ -135,13 +141,16 @@ class PostsController extends BaseController {
     {
       params,
       query,
+      context,
     }: Request<PostExist, {}, {}, GetCommentsRequestQuery<string>>,
     res: Response
   ) {
     const { id } = params
+    const { user } = context
 
     const result = await this.commentsService.getAllByPostId({
       postId: id,
+      userId: user.id,
       query,
     })
 

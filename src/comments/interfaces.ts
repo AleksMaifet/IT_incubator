@@ -1,8 +1,13 @@
-import { DEFAULTS } from './constants'
+enum LIKE_USER_STATUS_ENUM {
+  None = 'None',
+  Like = 'Like',
+  Dislike = 'Dislike',
+}
 
-const { SORT_DIRECTION } = DEFAULTS
-
-type sortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+enum SORT_DIRECTION_ENUM {
+  asc = 'asc',
+  desc = 'desc',
+}
 
 interface IComments {
   id: string
@@ -13,11 +18,16 @@ interface IComments {
     userLogin: string
   }
   createdAt: Date
+  likesInfo: {
+    likesCount: number
+    dislikesCount: number
+    myStatus: LIKE_USER_STATUS_ENUM
+  }
 }
 
 interface GetCommentsRequestQuery<T> {
   sortBy: string
-  sortDirection: sortDirectionType
+  sortDirection: SORT_DIRECTION_ENUM
   pageNumber: T
   pageSize: T
 }
@@ -27,7 +37,13 @@ interface ICommentsResponse {
   page: number
   pageSize: number
   totalCount: number
-  items: IComments[]
+  items: Omit<IComments, 'postId'>[]
 }
 
-export { IComments, GetCommentsRequestQuery, ICommentsResponse }
+export {
+  IComments,
+  GetCommentsRequestQuery,
+  ICommentsResponse,
+  LIKE_USER_STATUS_ENUM,
+  SORT_DIRECTION_ENUM,
+}

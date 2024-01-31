@@ -1,0 +1,5 @@
+export * from './like.model'
+export * from './like.entity'
+export * from './likes.service'
+export * from './likes.repository'
+export * from './interfaces'

@@ -2,11 +2,11 @@ import { DEFAULTS } from './constants'
 
 const { SORT_DIRECTION } = DEFAULTS
 
-type sortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+type SortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
 
 interface GetPostsRequestQuery<T> {
   sortBy: string
-  sortDirection: sortDirectionType
+  sortDirection: SortDirectionType
   pageNumber: T
   pageSize: T
 }
@@ -29,4 +29,4 @@ interface IPostsResponse {
   items: IPost[]
 }
 
-export { GetPostsRequestQuery, sortDirectionType, IPost, IPostsResponse }
+export { GetPostsRequestQuery, IPost, IPostsResponse }

@@ -2,7 +2,16 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
 import { CommentModel } from './comment.model'
-import { GetCommentsRequestQuery, IComments } from './interfaces'
+import {
+  GetCommentsRequestQuery,
+  IComments,
+  ICommentsResponse,
+  LIKE_USER_STATUS_ENUM,
+} from './interfaces'
+import { BaseCommentLikeDto } from './dto'
+import { DEFAULTS_LIKE_STATUS } from './constants'
+
+const { LIKES_COUNT, DISLIKES_COUNT } = DEFAULTS_LIKE_STATUS
 
 @injectable()
 class CommentsRepository {
@@ -10,6 +19,18 @@ class CommentsRepository {
     @inject(TYPES.CommentModel)
     private readonly commentModel: typeof CommentModel
   ) {}
+
+  private _mapGenerateCommentResponse(comment: IComments) {
+    const { id, content, commentatorInfo, createdAt, likesInfo } = comment
+
+    return {
+      id,
+      content,
+      commentatorInfo,
+      createdAt,
+      likesInfo,
+    }
+  }
 
   public async create(dto: IComments) {
     const comment = await this.commentModel.create(dto)
@@ -55,19 +76,39 @@ class CommentsRepository {
     return await this.commentModel.updateOne({ id }, { content }).exec()
   }
 
-  public async deleteById(id: string) {
-    return await this.commentModel.deleteOne({ id }).exec()
+  public async updateLikeById(dto: { commentId: string } & BaseCommentLikeDto) {
+    const { commentId, likeStatus } = dto
+
+    const comment = await this.commentModel.findOne({ id: commentId })
+    const currentComment = comment!
+    const { likesInfo } = currentComment
+
+    switch (likeStatus) {
+      case LIKE_USER_STATUS_ENUM.Like:
+        likesInfo.likesCount += 1
+
+        if (likesInfo.dislikesCount > DISLIKES_COUNT) {
+          likesInfo.dislikesCount -= 1
+        }
+
+        break
+      case LIKE_USER_STATUS_ENUM.Dislike:
+        likesInfo.dislikesCount += 1
+
+        if (likesInfo.likesCount > LIKES_COUNT) {
+          likesInfo.likesCount -= 1
+        }
+
+        break
+      default:
+        break
+    }
+
+    return await currentComment.save()
   }
 
-  private _mapGenerateCommentResponse(comment: IComments) {
-    const { id, content, commentatorInfo, createdAt } = comment
-
-    return {
-      id,
-      content,
-      commentatorInfo,
-      createdAt,
-    }
+  public async deleteById(id: string) {
+    return await this.commentModel.deleteOne({ id }).exec()
   }
 
   private _createdFindOptionsAndResponse(
@@ -86,7 +127,7 @@ class CommentsRepository {
       sort: { [sortBy]: sortDirection },
     }
 
-    const response: any = {
+    const response: ICommentsResponse = {
       pagesCount,
       page: pageNumber,
       pageSize,

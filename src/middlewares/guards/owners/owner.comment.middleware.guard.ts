@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { IMiddleware } from '../../middleware.interface'
-import { CommentExist } from '../../../comments/dto/params'
-import { CommentsService } from '../../../comments'
+import { CommentExist, CommentsService } from '../../../comments'
 
 class OwnerCommentMiddlewareGuard implements IMiddleware {
   constructor(private readonly commentsService: CommentsService) {}
@@ -14,7 +13,7 @@ class OwnerCommentMiddlewareGuard implements IMiddleware {
     const { id } = params
     const { user } = context
 
-    const comment = await this.commentsService.getById(id)
+    const comment = await this.commentsService.getById({ id, userId: user.id })
 
     if (user.id !== comment?.commentatorInfo.userId) {
       res.sendStatus(403)

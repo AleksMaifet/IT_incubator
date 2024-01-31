@@ -2,7 +2,7 @@ import { DEFAULTS } from './constants'
 
 const { SORT_DIRECTION } = DEFAULTS
 
-type sortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+type SortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
 
 interface IUser {
   id: string
@@ -15,7 +15,7 @@ interface IUser {
 
 interface GetUsersRequestQuery<T> {
   sortBy: string
-  sortDirection: sortDirectionType
+  sortDirection: SortDirectionType
   pageNumber: T
   pageSize: T
   searchLoginTerm: string

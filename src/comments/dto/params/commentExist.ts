@@ -1,5 +1,5 @@
 import { Validate } from 'class-validator'
-import { IsCommentExist } from '../../../middlewares/libs/customValidDecorators'
+import { IsCommentExist } from '../../../middlewares'
 
 class CommentExist {
   @Validate(IsCommentExist, {

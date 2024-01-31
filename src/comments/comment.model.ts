@@ -6,6 +6,7 @@ const CommentSchema = new Schema<IComments>(
     id: {
       type: String,
       required: true,
+      index: true,
     },
     postId: {
       type: String,
@@ -28,6 +29,20 @@ const CommentSchema = new Schema<IComments>(
     createdAt: {
       type: Date,
       required: true,
+    },
+    likesInfo: {
+      likesCount: {
+        type: Number,
+        required: true,
+      },
+      dislikesCount: {
+        type: Number,
+        required: true,
+      },
+      myStatus: {
+        type: Schema.Types.Mixed,
+        required: true,
+      },
     },
   },
   {

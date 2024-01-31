@@ -19,6 +19,7 @@ const TYPES = {
   JwtService: Symbol.for('JwtService'),
   CommentsService: Symbol.for('CommentsService'),
   SecurityDevicesService: Symbol.for('SecurityDevicesService'),
+  LikesService: Symbol.for('LikesService'),
   VideosRepository: Symbol.for('VideosRepository'),
   BlogsRepository: Symbol.for('BlogsRepository'),
   PostsRepository: Symbol.for('PostsRepository'),
@@ -26,6 +27,7 @@ const TYPES = {
   CommentsRepository: Symbol.for('CommentsRepository'),
   AuthRepository: Symbol.for('AuthRepository'),
   SecurityDevicesRepository: Symbol.for('SecurityDevicesRepository'),
+  LikesRepository: Symbol.for('LikesRepository'),
   TestingController: Symbol.for('TestingController'),
   TestingRepository: Symbol.for('TestingRepository'),
   BlogModel: Symbol.for('BlogModel'),
@@ -38,6 +40,7 @@ const TYPES = {
     'PasswordRecoveryConfirmationModel'
   ),
   RefreshTokenMetaModel: Symbol.for('RefreshTokenMetaModel'),
+  LikesModel: Symbol.for('LikesModel'),
   AuthBasicMiddlewareGuard: Symbol.for('AuthBasicMiddlewareGuard'),
   AuthBearerMiddlewareGuard: Symbol.for('AuthBearerMiddlewareGuard'),
   AuthCredentialRefreshTokenMiddlewareGuard: Symbol.for(
@@ -48,6 +51,7 @@ const TYPES = {
   ),
   AdapterEmail: Symbol.for('AdapterEmail'),
   ManagerEmail: Symbol.for('ManagerEmail'),
+  AuthUserMiddleware: Symbol.for('AuthUserMiddleware'),
 }
 
 export { TYPES }

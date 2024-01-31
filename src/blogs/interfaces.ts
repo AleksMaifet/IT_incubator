@@ -2,12 +2,12 @@ import { DEFAULTS } from './constants'
 
 const { SORT_DIRECTION } = DEFAULTS
 
-type sortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+type SortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
 
 interface GetBlogsRequestQuery<T> {
   searchNameTerm?: string
   sortBy: string
-  sortDirection: sortDirectionType
+  sortDirection: SortDirectionType
   pageNumber: T
   pageSize: T
 }

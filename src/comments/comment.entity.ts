@@ -1,9 +1,17 @@
 import { Types } from 'mongoose'
-import { IComments } from './interfaces'
+import { IComments, LIKE_USER_STATUS_ENUM } from './interfaces'
+import { DEFAULTS_LIKE_STATUS } from './constants'
+
+const { LIKES_COUNT, DISLIKES_COUNT, MY_STATUS } = DEFAULTS_LIKE_STATUS
 
 class Comment implements IComments {
   public readonly id: string
   public readonly createdAt: Date
+  public readonly likesInfo: {
+    likesCount: number
+    dislikesCount: number
+    myStatus: LIKE_USER_STATUS_ENUM
+  }
 
   constructor(
     public postId: string,
@@ -15,6 +23,11 @@ class Comment implements IComments {
   ) {
     this.id = new Types.ObjectId().toString()
     this.createdAt = new Date()
+    this.likesInfo = {
+      likesCount: LIKES_COUNT,
+      dislikesCount: DISLIKES_COUNT,
+      myStatus: MY_STATUS,
+    }
   }
 }
 

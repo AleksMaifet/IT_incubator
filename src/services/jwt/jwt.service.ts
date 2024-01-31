@@ -19,19 +19,19 @@ class JwtService {
 
   public generateAccessToken(userId: string) {
     return sign({ userId }, this._secretOrPrivateKey, {
-      expiresIn: 10,
+      expiresIn: '30m',
     })
   }
 
   public generateRefreshToken(userId: string) {
     return sign({ userId, deviceId: uuidv4() }, this._secretOrPrivateKey, {
-      expiresIn: 20,
+      expiresIn: '1h',
     })
   }
 
   public updateRefreshToken(userId: string, deviceId: string) {
     return sign({ userId, deviceId }, this._secretOrPrivateKey, {
-      expiresIn: 20,
+      expiresIn: '1h',
     })
   }
 

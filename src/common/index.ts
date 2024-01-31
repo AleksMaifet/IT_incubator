@@ -1,3 +1,3 @@
 export * from './base.controller'
-export * from './container.module'
+export * from './container.root'
 export * from './route.interface'
