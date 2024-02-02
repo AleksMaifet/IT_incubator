@@ -26,13 +26,7 @@ class CommentsService {
 
   private _mapGenerateLikeResponse(
     comments: ICommentsResponse,
-    {
-      likeComments,
-      dislikeComments,
-    }: {
-      likeComments: CommentInfoLikeType<LIKE_USER_STATUS_ENUM.Like>
-      dislikeComments: CommentInfoLikeType<LIKE_USER_STATUS_ENUM.Dislike>
-    }
+    likeStatusComments: CommentInfoLikeType<LIKE_USER_STATUS_ENUM>[]
   ) {
     const commentsStash: Record<string, number> = {}
 
@@ -40,7 +34,7 @@ class CommentsService {
       commentsStash[item.id] = index
     })
 
-    likeComments.info.forEach((l) => {
+    likeStatusComments.forEach((l) => {
       const currentId = l.commentId
 
       if (commentsStash[currentId] !== undefined) {
@@ -48,20 +42,7 @@ class CommentsService {
 
         comments.items[currentIndex].likesInfo = {
           ...comments.items[currentIndex].likesInfo,
-          myStatus: likeComments.status,
-        }
-      }
-    })
-
-    dislikeComments.info.forEach((l) => {
-      const currentId = l.commentId
-
-      if (commentsStash[currentId] !== undefined) {
-        const currentIndex = commentsStash[currentId]
-
-        comments.items[currentIndex].likesInfo = {
-          ...comments.items[currentIndex].likesInfo,
-          myStatus: dislikeComments.status,
+          myStatus: l.status,
         }
       }
     })
@@ -117,17 +98,14 @@ class CommentsService {
 
     if (!likes) return null
 
-    const { likeComments, dislikeComments } = likes
+    const { likeStatusComments } = likes
 
     const comments = await this.commentsRepository.getAllByPostId({
       postId,
       query: dto,
     })
 
-    return this._mapGenerateLikeResponse(comments, {
-      likeComments,
-      dislikeComments,
-    })
+    return this._mapGenerateLikeResponse(comments, likeStatusComments)
   }
 
   public async getById({ id, userId }: { id: string; userId: string }) {
@@ -141,20 +119,11 @@ class CommentsService {
     const likes = await this.likesService.getUserCommentLikesByUserId(userId)
     if (!likes) return null
 
-    likes.likeComments.info.forEach((l) => {
+    likes.likeStatusComments.forEach((l) => {
       if (l.commentId === comment.id) {
         comment.likesInfo = {
           ...comment.likesInfo,
-          myStatus: likes.likeComments.status,
-        }
-      }
-    })
-
-    likes.dislikeComments.info.forEach((l) => {
-      if (l.commentId === comment.id) {
-        comment.likesInfo = {
-          ...comment.likesInfo,
-          myStatus: likes.dislikeComments.status,
+          myStatus: l.status,
         }
       }
     })
@@ -169,33 +138,18 @@ class CommentsService {
 
     const result = await this.likesService.getUserCommentLikesByUserId(userId)
 
-    const { likeComments, dislikeComments } = result!
+    const { likeStatusComments } = result!
 
-    switch (likeStatus) {
-      case LIKE_USER_STATUS_ENUM.Like:
-        {
-          const index = likeComments.info.findIndex(
-            (info) => info.commentId === commentId
-          )
+    const isExist = likeStatusComments.findIndex(
+      (info) => info.commentId === commentId && info.status === likeStatus
+    )
 
-          if (index !== -1) {
-            return
-          }
-        }
-        break
-      case LIKE_USER_STATUS_ENUM.Dislike:
-        {
-          const index = dislikeComments.info.findIndex(
-            (info) => info.commentId === commentId
-          )
+    const isFirst = likeStatusComments.findIndex(
+      (info) => info.commentId === commentId
+    )
 
-          if (index !== -1) {
-            return
-          }
-        }
-        break
-      default:
-        break
+    if (isExist !== -1) {
+      return
     }
 
     await this.likesService.updateUserCommentLikes({
@@ -205,6 +159,7 @@ class CommentsService {
     })
 
     await this.commentsRepository.updateLikeById({
+      isFirstTime: isFirst === -1,
       likeStatus,
       commentId,
     })

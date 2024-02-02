@@ -15,88 +15,43 @@ const LikesSchema = new Schema<ILikes>(
         required: true,
       },
     },
-    likeComments: {
-      status: {
-        type: String,
-        enum: LIKE_USER_STATUS_ENUM.Like,
-        required: true,
-      },
-      info: [
-        {
-          commentId: {
-            type: String,
-            required: true,
-            index: true,
-          },
-          createdAt: {
-            type: Date,
-            required: true,
-          },
+    likeStatusComments: [
+      {
+        status: {
+          type: String,
+          enum: Object.values(LIKE_USER_STATUS_ENUM),
+          required: true,
         },
-      ],
-    },
-    likePosts: {
-      status: {
-        type: String,
-        enum: LIKE_USER_STATUS_ENUM.Like,
-        required: true,
-      },
-      info: [
-        {
-          postId: {
-            type: String,
-            required: true,
-            index: true,
-          },
-          createdAt: {
-            type: Date,
-            required: true,
-            index: true,
-          },
+        commentId: {
+          type: String,
+          required: true,
+          index: true,
         },
-      ],
-    },
-    dislikeComments: {
-      status: {
-        type: String,
-        enum: LIKE_USER_STATUS_ENUM.Dislike,
-        required: true,
-      },
-      info: [
-        {
-          commentId: {
-            type: String,
-            required: true,
-            index: true,
-          },
-          createdAt: {
-            type: Date,
-            required: true,
-          },
+        createdAt: {
+          type: Date,
+          required: true,
         },
-      ],
-    },
-    dislikePosts: {
-      status: {
-        type: String,
-        enum: LIKE_USER_STATUS_ENUM.Dislike,
-        required: true,
       },
-      info: [
-        {
-          postId: {
-            type: String,
-            required: true,
-            index: true,
-          },
-          createdAt: {
-            type: Date,
-            required: true,
-            index: true,
-          },
+    ],
+    likeStatusPosts: [
+      {
+        status: {
+          type: String,
+          enum: Object.values(LIKE_USER_STATUS_ENUM),
+          required: true,
         },
-      ],
-    },
+        postId: {
+          type: String,
+          required: true,
+          index: true,
+        },
+        createdAt: {
+          type: Date,
+          required: true,
+          index: true,
+        },
+      },
+    ],
   },
   {
     toJSON: {

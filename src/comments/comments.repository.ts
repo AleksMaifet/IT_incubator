@@ -9,9 +9,6 @@ import {
   LIKE_USER_STATUS_ENUM,
 } from './interfaces'
 import { BaseCommentLikeDto } from './dto'
-import { DEFAULTS_LIKE_STATUS } from './constants'
-
-const { LIKES_COUNT, DISLIKES_COUNT } = DEFAULTS_LIKE_STATUS
 
 @injectable()
 class CommentsRepository {
@@ -76,8 +73,13 @@ class CommentsRepository {
     return await this.commentModel.updateOne({ id }, { content }).exec()
   }
 
-  public async updateLikeById(dto: { commentId: string } & BaseCommentLikeDto) {
-    const { commentId, likeStatus } = dto
+  public async updateLikeById(
+    dto: {
+      commentId: string
+      isFirstTime: boolean
+    } & BaseCommentLikeDto
+  ) {
+    const { commentId, likeStatus, isFirstTime } = dto
 
     const comment = await this.commentModel.findOne({ id: commentId })
     const currentComment = comment!
@@ -87,17 +89,21 @@ class CommentsRepository {
       case LIKE_USER_STATUS_ENUM.Like:
         likesInfo.likesCount += 1
 
-        if (likesInfo.dislikesCount > DISLIKES_COUNT) {
-          likesInfo.dislikesCount -= 1
+        if (isFirstTime) {
+          break
         }
+
+        likesInfo.dislikesCount -= 1
 
         break
       case LIKE_USER_STATUS_ENUM.Dislike:
         likesInfo.dislikesCount += 1
 
-        if (likesInfo.likesCount > LIKES_COUNT) {
-          likesInfo.likesCount -= 1
+        if (isFirstTime) {
+          break
         }
+
+        likesInfo.likesCount -= 1
 
         break
       default:

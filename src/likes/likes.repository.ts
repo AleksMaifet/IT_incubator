@@ -2,8 +2,8 @@ import { inject, injectable } from 'inversify'
 import 'reflect-metadata'
 import { TYPES } from '../types'
 import { LikesModel } from './like.model'
-import { ILikes, CommentInfoLikeType } from './interfaces'
-import { BaseCommentLikeDto, LIKE_USER_STATUS_ENUM } from '../comments'
+import { ILikes } from './interfaces'
+import { BaseCommentLikeDto } from '../comments'
 
 @injectable()
 class LikesRepository {
@@ -11,30 +11,6 @@ class LikesRepository {
     @inject(TYPES.LikesModel)
     private readonly likeModel: typeof LikesModel
   ) {}
-
-  private _generateUpdateLikes(
-    commentId: string,
-    {
-      addArr,
-      removeArr,
-    }: {
-      addArr: CommentInfoLikeType<LIKE_USER_STATUS_ENUM>
-      removeArr: CommentInfoLikeType<LIKE_USER_STATUS_ENUM>
-    }
-  ) {
-    addArr.info.push({
-      commentId: commentId,
-      createdAt: new Date(),
-    })
-
-    const index = removeArr.info.findIndex(
-      (info) => info.commentId === commentId
-    )
-
-    if (index !== -1) {
-      removeArr.info.splice(index, 1)
-    }
-  }
 
   public async create(dto: ILikes) {
     const {
@@ -55,7 +31,7 @@ class LikesRepository {
       .findOne({
         'likerInfo.userId': userId,
       })
-      .select(['likeComments', 'dislikeComments'])
+      .select('likeStatusComments')
       .exec()
   }
 
@@ -64,32 +40,27 @@ class LikesRepository {
   ) {
     const { commentId, userId, likeStatus } = dto
 
-    const like = await this.likeModel
-      .findOne({
-        'likerInfo.userId': userId,
-      })
-      .select(['likeComments', 'dislikeComments'])
+    const like = await this.likeModel.findOne({
+      'likerInfo.userId': userId,
+    })
 
     if (!like) return null
 
-    const { likeComments, dislikeComments } = like
+    const { likeStatusComments } = like
 
-    switch (likeStatus) {
-      case LIKE_USER_STATUS_ENUM.Like:
-        this._generateUpdateLikes(commentId, {
-          addArr: likeComments,
-          removeArr: dislikeComments,
-        })
-        break
-      case LIKE_USER_STATUS_ENUM.Dislike:
-        this._generateUpdateLikes(commentId, {
-          addArr: dislikeComments,
-          removeArr: likeComments,
-        })
-        break
-      default:
-        break
+    const index = likeStatusComments.findIndex(
+      (info) => info.commentId === commentId
+    )
+
+    if (index !== -1) {
+      likeStatusComments.splice(index, 1)
     }
+
+    likeStatusComments.push({
+      status: likeStatus,
+      commentId,
+      createdAt: new Date(),
+    })
 
     return await like.save()
   }
