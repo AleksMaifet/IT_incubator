@@ -290,7 +290,7 @@ describe('Homework 11 > Comment likes', () => {
       )
 
       expect(resGetComment.status).toBe(200)
-      // expect(resGetComment.body.likesInfo.likesCount).toBe(1)
+      expect(resGetComment.body.likesInfo.likesCount).toBe(1)
     }
   )
 
@@ -333,7 +333,7 @@ describe('Homework 11 > Comment likes', () => {
         `/comments/${commentId}`
       )
 
-      // TODO expect - 1 dis / 0 like / myStatus None
+      // TODO expect - 0 dis / 0 like / myStatus None
 
       expect(resGetComment.status).toBe(200)
     }

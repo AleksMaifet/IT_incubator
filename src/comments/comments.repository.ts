@@ -9,6 +9,9 @@ import {
   LIKE_USER_STATUS_ENUM,
 } from './interfaces'
 import { BaseCommentLikeDto } from './dto'
+import { DEFAULTS_LIKE_STATUS } from './constants'
+
+const { LIKES_COUNT, DISLIKES_COUNT } = DEFAULTS_LIKE_STATUS
 
 @injectable()
 class CommentsRepository {
@@ -86,6 +89,10 @@ class CommentsRepository {
     const { likesInfo } = currentComment
 
     switch (likeStatus) {
+      case LIKE_USER_STATUS_ENUM.None:
+        likesInfo.likesCount = LIKES_COUNT
+        likesInfo.dislikesCount = DISLIKES_COUNT
+        break
       case LIKE_USER_STATUS_ENUM.Like:
         likesInfo.likesCount += 1
 
