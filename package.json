@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node ./dist/main.js",
     "dev": "concurrently \"tsc -w\" \"yarn nodemon --inspect dist/main.js\"",
-    "jest": "PORT=0 jest -i",
+    "jest": "PORT=0 jest -i --watchAll",
     "format": "prettier . --write",
     "postinstall": "husky install"
   },
