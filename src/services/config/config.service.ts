@@ -1,6 +1,5 @@
 import { config, DotenvParseOutput } from 'dotenv'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../../types'
 import { ILogger } from '../logger'
 import { IConfigService } from './config.interface'

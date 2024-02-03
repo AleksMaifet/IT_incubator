@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { IMiddleware } from '../../middleware.interface'
 import { TYPES } from '../../../types'
 import { SecurityDevicesService } from '../../../securityDevices'

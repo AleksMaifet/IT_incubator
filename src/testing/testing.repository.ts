@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { VideoModel } from '../videos'
 import { PostModel } from '../posts'
 import { BlogModel } from '../blogs'

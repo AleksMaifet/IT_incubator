@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../types'
 import { VideosRepository } from './videos.repository'
 import { CreateVideoDto, UpdateVideoDto } from './dto'

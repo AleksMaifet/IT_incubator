@@ -1,6 +1,5 @@
 import { connect, disconnect } from 'mongoose'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { ConfigService } from '../services'
 import { TYPES } from '../types'
 import { ILogger } from '../services'

@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../../../types'
 import { JwtService } from '../../../services'
 import { UsersRepository } from '../../../users'

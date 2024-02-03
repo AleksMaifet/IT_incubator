@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { genSalt, hash } from 'bcrypt'
 import { TYPES } from '../types'
 import { AuthRepository } from '../auth'

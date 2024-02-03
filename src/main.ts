@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import { Container } from 'inversify'
 import { useContainer } from 'class-validator'
 import { App } from './app'

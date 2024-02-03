@@ -1,7 +1,6 @@
 import express, { Express, json } from 'express'
 import { Server } from 'http'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import cookieParser from 'cookie-parser'
 import { ConfigService, ILogger } from './services'
 import { TestingController } from './testing'
@@ -86,10 +85,10 @@ class App {
     })
   }
 
-  public init = async () => {
+  public init = () => {
     this.useMiddleware()
     this.useRoutes()
-    await this.mongoService.connect()
+    this.mongoService.connect()
     this.server = this.app.listen(this.port)
 
     this.loggerService.log(`Server started on port: ${this.port}`)

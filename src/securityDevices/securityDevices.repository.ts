@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../types'
 import { RefreshTokenMetaModel } from './refreshTokenMeta.model'
 import { IRefreshTokenMeta } from './interface'

@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../types'
 import { LikesRepository } from './likes.repository'
 import { Likes } from './like.entity'

@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { v4 as uuidv4 } from 'uuid'
 import { TYPES } from '../types'
 import { IEmailConfirmation, IPasswordRecoveryConfirmation } from './interfaces'

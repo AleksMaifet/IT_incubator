@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../types'
 import { AdapterEmail } from '../adapters'
 import { CreateUserDto } from '../users'

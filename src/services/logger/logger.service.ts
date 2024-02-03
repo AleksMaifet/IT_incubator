@@ -1,6 +1,5 @@
 import { createLogger, format, Logger, transports } from 'winston'
 import { injectable } from 'inversify'
-import 'reflect-metadata'
 import { ILogger } from './logger.interface'
 
 @injectable()

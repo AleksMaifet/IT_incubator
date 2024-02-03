@@ -1,7 +1,6 @@
 import { createTransport } from 'nodemailer'
 import Mail from 'nodemailer/lib/mailer'
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { TYPES } from '../types'
 import { ConfigService } from '../services'
 

@@ -1,5 +1,4 @@
 import { inject, injectable } from 'inversify'
-import 'reflect-metadata'
 import { BlogsRepository } from './blogs.repository'
 import { CreateBlogDto, UpdateBlogDto } from './dto/body'
 import { Blog } from './blog.entity'
