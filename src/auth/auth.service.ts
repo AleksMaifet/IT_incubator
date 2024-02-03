@@ -9,15 +9,12 @@ import {
 import { BaseAuthDto, UpdatePassDto } from './dto'
 import { AuthRepository } from './auth.repository'
 import { LoggerService } from '../services'
-import { LikesService } from '../likes'
 
 @injectable()
 class AuthService {
   constructor(
     @inject(TYPES.UsersService)
     private readonly usersService: UsersService,
-    @inject(TYPES.LikesService)
-    private readonly likesService: LikesService,
     @inject(TYPES.AuthRepository)
     private readonly authRepository: AuthRepository,
     @inject(TYPES.UsersRepository)
@@ -140,8 +137,6 @@ class AuthService {
   public async registration(dto: CreateUserDto) {
     const user = await this.usersService.create(dto)
     const { id, email, login } = user
-
-    await this.likesService.create({ userId: id, userLogin: login })
 
     const newEmailConfirmation = new EmailConfirmation(id)
     const { code } = newEmailConfirmation

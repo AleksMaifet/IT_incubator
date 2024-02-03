@@ -42,7 +42,7 @@ class CommentsService {
 
         comments.items[currentIndex].likesInfo = {
           ...comments.items[currentIndex].likesInfo,
-          myStatus: l.status,
+          myStatus: l.status ?? LIKE_USER_STATUS_ENUM.None,
         }
       }
     })
@@ -87,29 +87,29 @@ class CommentsService {
   }) {
     const dto = this._mapQueryParamsToDB(query)
 
-    if (!userId) {
-      return await this.commentsRepository.getAllByPostId({
-        postId,
-        query: dto,
-      })
-    }
-
-    const likes = await this.likesService.getUserCommentLikesByUserId(userId)
-
-    if (!likes) return null
-
-    const { likeStatusComments } = likes
-
     const comments = await this.commentsRepository.getAllByPostId({
       postId,
       query: dto,
     })
+
+    if (!userId) {
+      return comments
+    }
+
+    const likes = await this.likesService.getUserCommentLikesByUserId(userId)
+
+    if (!likes) {
+      return comments
+    }
+
+    const { likeStatusComments } = likes
 
     return this._mapGenerateLikeResponse(comments, likeStatusComments)
   }
 
   public async getById({ id, userId }: { id: string; userId: string }) {
     const comment = await this.commentsRepository.getById(id)
+
     if (!comment) return null
 
     if (!userId) {
@@ -117,7 +117,10 @@ class CommentsService {
     }
 
     const likes = await this.likesService.getUserCommentLikesByUserId(userId)
-    if (!likes) return null
+
+    if (!likes) {
+      return comment
+    }
 
     likes.likeStatusComments.forEach((l) => {
       if (l.commentId === comment.id) {
@@ -138,7 +141,9 @@ class CommentsService {
 
     const result = await this.likesService.getUserCommentLikesByUserId(userId)
 
-    const { likeStatusComments } = result!
+    if (!result) return
+
+    const { likeStatusComments } = result
 
     const isExist = likeStatusComments.findIndex(
       (info) => info.commentId === commentId && info.status === likeStatus
@@ -158,7 +163,7 @@ class CommentsService {
       commentId,
     })
 
-    await this.commentsRepository.updateLikeById({
+    await this.commentsRepository.updateLikeWithStatusLikeOrDislike({
       isFirstTime: isFirst === -1,
       likeStatus,
       commentId,

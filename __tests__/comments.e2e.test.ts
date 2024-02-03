@@ -21,6 +21,7 @@ beforeAll(async () => {
     '/blogs',
     BLOG_DATA
   )
+
   /// Created post
   const postRes = await makeAuthBasicRequest(
     application.app,
@@ -31,6 +32,7 @@ beforeAll(async () => {
       blogId: blogRes.body.id,
     }
   )
+
   /// Created user
   await makeAuthBasicRequest(application.app, 'post', '/users', USER_DATA)
   /// Login user

@@ -246,9 +246,10 @@ describe('Homework 11 > Comment likes', () => {
         `/comments/${commentId}`
       )
 
-      // TODO expect - 2 dis / 1 like
-
       expect(resGetComment.status).toBe(200)
+      expect(resGetComment.body.likesInfo.likesCount).toBe(1)
+      expect(resGetComment.body.likesInfo.dislikesCount).toBe(2)
+      expect(resGetComment.body.likesInfo.myStatus).toBe('Dislike')
     }
   )
 
@@ -333,15 +334,16 @@ describe('Homework 11 > Comment likes', () => {
         `/comments/${commentId}`
       )
 
-      // TODO expect - 0 dis / 0 like / myStatus None
-
       expect(resGetComment.status).toBe(200)
+      expect(resGetComment.body.likesInfo.likesCount).toBe(0)
+      expect(resGetComment.body.likesInfo.dislikesCount).toBe(0)
+      expect(resGetComment.body.likesInfo.myStatus).toBe('None')
     }
   )
 
   it(
-    'PUT -> "/comments/:commentId/like-status": create comment then: like the comment by user 1 ' +
-      'then get by user 2; dislike the comment by user 2 then get by the user 1; status 204; ' +
+    'PUT -> "/comments/:commentId/like-status": create comment then: like the comment by user 1;' +
+      ' dislike the comment by user 2 then get by the user 1; status 204; ' +
       'used additional methods: POST => /blogs, POST => /posts, POST => /posts/:postId/comments, ' +
       'GET => /comments/:id',
     async () => {
@@ -377,23 +379,12 @@ describe('Homework 11 > Comment likes', () => {
         `/comments/${commentId}`
       )
 
-      // TODO expect - 1 dis / 1 like
-
       expect(resGetComment.status).toBe(200)
+      expect(resGetComment.body.likesInfo.likesCount).toBe(1)
+      expect(resGetComment.body.likesInfo.dislikesCount).toBe(1)
+      expect(resGetComment.body.likesInfo.myStatus).toBe('Like')
     }
   )
-
-  // it(
-  //   'GET -> "/posts/:postId/comments": create 6 comments then: like comment 1 by user 1, user 2; ' +
-  //     'like comment 2 by user 2, user 3; dislike comment 3 by user 1; like comment 4 by user 1, user 4, ' +
-  //     'user 2, user 3; like comment 5 by user 2, dislike by user 3; like comment 6 by user 1, dislike ' +
-  //     'by user 2. Get the comments by user 1 after all likes; status 200; content: comments array for post ' +
-  //     'with pagination; used additional methods: POST => /blogs, POST => ' +
-  //     '/posts, POST => /posts/:postId/comments, PUT => /posts/:postId/like-status',
-  //   async () => {
-  //     // Test code here
-  //   }
-  // )
 })
 
 afterAll(async () => {

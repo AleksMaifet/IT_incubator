@@ -3,7 +3,6 @@ import 'reflect-metadata'
 import { genSalt, hash } from 'bcrypt'
 import { TYPES } from '../types'
 import { AuthRepository } from '../auth'
-import { LikesService } from '../likes'
 import { UsersRepository } from './users.repository'
 import { CreateUserDto } from './dto'
 import { User } from './user.entity'
@@ -26,9 +25,7 @@ class UsersService {
     @inject(TYPES.UsersRepository)
     private readonly usersRepository: UsersRepository,
     @inject(TYPES.AuthRepository)
-    private readonly authRepository: AuthRepository,
-    @inject(TYPES.LikesService)
-    private readonly likesService: LikesService
+    private readonly authRepository: AuthRepository
   ) {}
 
   private async _generateSalt() {
@@ -66,12 +63,6 @@ class UsersService {
     const passwordSalt = await this._generateSalt()
     const passwordHash = await this.generateHash(password, passwordSalt)
     const newUser = new User(login, email, passwordSalt, passwordHash)
-    const { id: userId, login: userLogin } = newUser
-
-    await this.likesService.create({
-      userId,
-      userLogin,
-    })
 
     return await this.usersRepository.create(newUser)
   }

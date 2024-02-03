@@ -11,6 +11,7 @@ import {
   PasswordRecoveryConfirmationModel,
 } from '../auth'
 import { RefreshTokenMetaModel } from '../securityDevices'
+import { LikesModel } from '../likes'
 
 @injectable()
 class TestingRepository {
@@ -30,7 +31,9 @@ class TestingRepository {
     @inject(TYPES.EmailConfirmationModel)
     private readonly emailConfirmationModel: typeof EmailConfirmationModel,
     @inject(TYPES.PasswordRecoveryConfirmationModel)
-    private readonly passwordRecoveryConfirmationModel: typeof PasswordRecoveryConfirmationModel
+    private readonly passwordRecoveryConfirmationModel: typeof PasswordRecoveryConfirmationModel,
+    @inject(TYPES.LikesModel)
+    private readonly likesModel: typeof LikesModel
   ) {}
 
   public async deleteAll() {
@@ -42,6 +45,7 @@ class TestingRepository {
     await this.refreshTokenMetaModel.deleteMany()
     await this.emailConfirmationModel.deleteMany()
     await this.passwordRecoveryConfirmationModel.deleteMany()
+    await this.likesModel.deleteMany()
   }
 }
 

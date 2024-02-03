@@ -20,6 +20,33 @@ class CommentsRepository {
     private readonly commentModel: typeof CommentModel
   ) {}
 
+  private _createdFindOptionsAndResponse(
+    dto: GetCommentsRequestQuery<number> & {
+      totalCount: number
+    }
+  ) {
+    const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
+
+    const pagesCount = Math.ceil(totalCount / pageSize)
+    const skip = (pageNumber - 1) * pageSize
+
+    const findOptions = {
+      limit: pageSize,
+      skip: skip,
+      sort: { [sortBy]: sortDirection },
+    }
+
+    const response: ICommentsResponse = {
+      pagesCount,
+      page: pageNumber,
+      pageSize,
+      totalCount,
+      items: [],
+    }
+
+    return { response, findOptions }
+  }
+
   private _mapGenerateCommentResponse(comment: IComments) {
     const { id, content, commentatorInfo, createdAt, likesInfo } = comment
 
@@ -76,7 +103,7 @@ class CommentsRepository {
     return await this.commentModel.updateOne({ id }, { content }).exec()
   }
 
-  public async updateLikeById(
+  public async updateLikeWithStatusLikeOrDislike(
     dto: {
       commentId: string
       isFirstTime: boolean
@@ -122,33 +149,6 @@ class CommentsRepository {
 
   public async deleteById(id: string) {
     return await this.commentModel.deleteOne({ id }).exec()
-  }
-
-  private _createdFindOptionsAndResponse(
-    dto: GetCommentsRequestQuery<number> & {
-      totalCount: number
-    }
-  ) {
-    const { totalCount, sortBy, sortDirection, pageNumber, pageSize } = dto
-
-    const pagesCount = Math.ceil(totalCount / pageSize)
-    const skip = (pageNumber - 1) * pageSize
-
-    const findOptions = {
-      limit: pageSize,
-      skip: skip,
-      sort: { [sortBy]: sortDirection },
-    }
-
-    const response: ICommentsResponse = {
-      pagesCount,
-      page: pageNumber,
-      pageSize,
-      totalCount,
-      items: [],
-    }
-
-    return { response, findOptions }
   }
 }
 
