@@ -11,15 +11,12 @@ import {
 import { TYPES } from '../types'
 import { CommentsService } from './comments.service'
 import { BaseCommentDto, BaseCommentLikeDto, CommentExist } from './dto'
-import { LikesService } from '../likes'
 
 @injectable()
 class CommentsController extends BaseController {
   constructor(
     @inject(TYPES.CommentsService)
     private readonly commentsService: CommentsService,
-    @inject(TYPES.LikesService)
-    private readonly likesService: LikesService,
     @inject(TYPES.AuthUserMiddleware)
     private readonly authUserMiddleware: AuthUserMiddleware,
     @inject(TYPES.AuthBearerMiddlewareGuard)
@@ -92,14 +89,9 @@ class CommentsController extends BaseController {
       context: { user },
     } = req
 
-    await this.likesService.create({
-      userId: user.id,
-      userLogin: user.login,
-    })
-
     await this.commentsService.updateLikeById({
       commentId: id,
-      userId: user.id,
+      user,
       likeStatus,
     })
 

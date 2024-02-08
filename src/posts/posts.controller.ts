@@ -10,11 +10,12 @@ import {
 } from '../middlewares'
 import {
   BaseCommentDto,
+  CommentExist,
   CommentsService,
   GetCommentsRequestQuery,
 } from '../comments'
 import { TYPES } from '../types'
-import { CreatePostDto, UpdatePostDto, PostExist } from './dto'
+import { BasePostLikeDto, CreatePostDto, PostExist, UpdatePostDto } from './dto'
 import { PostsService } from './posts.service'
 import { GetPostsRequestQuery } from './interfaces'
 
@@ -33,12 +34,30 @@ class PostsController extends BaseController {
     private readonly authBearerMiddlewareGuard: AuthBearerMiddlewareGuard
   ) {
     super()
-    this.bindRoutes({ path: '/', method: 'get', func: this.getAll })
+    this.bindRoutes({
+      path: '/:id/like-status',
+      method: 'put',
+      func: this.updateLikeById,
+      middlewares: [
+        this.authBearerMiddlewareGuard,
+        new ValidateBodyMiddleware(BasePostLikeDto),
+        new ValidateParamsMiddleware(PostExist),
+      ],
+    })
+    this.bindRoutes({
+      path: '/',
+      method: 'get',
+      func: this.getAll,
+      middlewares: [this.authUserMiddleware],
+    })
     this.bindRoutes({
       path: '/:id',
       method: 'get',
       func: this.getById,
-      middlewares: [new ValidateParamsMiddleware(PostExist)],
+      middlewares: [
+        new ValidateParamsMiddleware(PostExist),
+        this.authUserMiddleware,
+      ],
     })
     this.bindRoutes({
       path: '',
@@ -89,21 +108,49 @@ class PostsController extends BaseController {
     })
   }
 
+  private async updateLikeById(
+    req: Request<CommentExist, {}, BasePostLikeDto>,
+    res: Response
+  ) {
+    const {
+      body: { likeStatus },
+      params: { id },
+      context: { user },
+    } = req
+
+    await this.postsService.updateLikeById({
+      postId: id,
+      user,
+      likeStatus,
+    })
+
+    res.sendStatus(204)
+  }
+
   private async getAll(
     req: Request<{}, {}, {}, GetPostsRequestQuery<string>>,
     res: Response
   ) {
-    const { query } = req
+    const { query, context } = req
 
-    const result = await this.postsService.getAll(query)
+    const result = await this.postsService.getAll({
+      userId: context?.user.id,
+      query,
+    })
 
     res.status(200).json(result)
   }
 
-  private async getById({ params }: Request<PostExist>, res: Response) {
+  private async getById(
+    { params, context }: Request<PostExist>,
+    res: Response
+  ) {
     const { id } = params
 
-    const result = await this.postsService.getById(id)
+    const result = await this.postsService.getById({
+      id,
+      userId: context?.user.id,
+    })
 
     res.status(200).json(result)
   }

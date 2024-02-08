@@ -1,8 +1,17 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
-import { CreatePostDto, UpdatePostDto } from './dto'
+import { BasePostLikeDto, CreatePostDto, UpdatePostDto } from './dto'
 import { PostModel } from './post.model'
-import { GetPostsRequestQuery, IPostsResponse } from './interfaces'
+import {
+  GetPostsRequestQuery,
+  IPostsResponse,
+  LIKE_POST_USER_STATUS_ENUM,
+  IUserPostLike,
+} from './interfaces'
+import { DEFAULTS_LIKE_STATUS } from './constants'
+
+const { LIKES_COUNT, DISLIKES_COUNT, MAX_NEWEST_LIKES_COUNT } =
+  DEFAULTS_LIKE_STATUS
 
 @injectable()
 class PostsRepository {
@@ -35,6 +44,57 @@ class PostsRepository {
     response.items = await this.postModel.find({}, null, findOptions).exec()
 
     return response
+  }
+
+  public async updateLikeWithStatusLikeOrDislike(
+    dto: {
+      postId: string
+      isFirstTime: boolean
+      userLikeInfo: IUserPostLike
+    } & BasePostLikeDto
+  ) {
+    const { postId, likeStatus, isFirstTime, userLikeInfo } = dto
+
+    const post = await this.postModel.findOne({ id: postId })
+    const currentPost = post!
+    const { extendedLikesInfo } = currentPost
+
+    switch (likeStatus) {
+      case LIKE_POST_USER_STATUS_ENUM.None:
+        extendedLikesInfo.likesCount = LIKES_COUNT
+        extendedLikesInfo.dislikesCount = DISLIKES_COUNT
+        break
+      case LIKE_POST_USER_STATUS_ENUM.Like:
+        extendedLikesInfo.likesCount += 1
+
+        if (extendedLikesInfo.newestLikes.length >= MAX_NEWEST_LIKES_COUNT) {
+          extendedLikesInfo.newestLikes.shift()
+        }
+
+        extendedLikesInfo.newestLikes.push(userLikeInfo)
+
+        if (isFirstTime) {
+          break
+        }
+
+        extendedLikesInfo.dislikesCount -= 1
+
+        break
+      case LIKE_POST_USER_STATUS_ENUM.Dislike:
+        extendedLikesInfo.dislikesCount += 1
+
+        if (isFirstTime) {
+          break
+        }
+
+        extendedLikesInfo.likesCount -= 1
+
+        break
+      default:
+        break
+    }
+
+    return await currentPost.save()
   }
 
   public async getById(id: string) {

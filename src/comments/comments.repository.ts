@@ -5,7 +5,7 @@ import {
   GetCommentsRequestQuery,
   IComments,
   ICommentsResponse,
-  LIKE_USER_STATUS_ENUM,
+  LIKE_COMMENT_USER_STATUS_ENUM,
 } from './interfaces'
 import { BaseCommentLikeDto } from './dto'
 import { DEFAULTS_LIKE_STATUS } from './constants'
@@ -115,11 +115,11 @@ class CommentsRepository {
     const { likesInfo } = currentComment
 
     switch (likeStatus) {
-      case LIKE_USER_STATUS_ENUM.None:
+      case LIKE_COMMENT_USER_STATUS_ENUM.None:
         likesInfo.likesCount = LIKES_COUNT
         likesInfo.dislikesCount = DISLIKES_COUNT
         break
-      case LIKE_USER_STATUS_ENUM.Like:
+      case LIKE_COMMENT_USER_STATUS_ENUM.Like:
         likesInfo.likesCount += 1
 
         if (isFirstTime) {
@@ -129,7 +129,7 @@ class CommentsRepository {
         likesInfo.dislikesCount -= 1
 
         break
-      case LIKE_USER_STATUS_ENUM.Dislike:
+      case LIKE_COMMENT_USER_STATUS_ENUM.Dislike:
         likesInfo.dislikesCount += 1
 
         if (isFirstTime) {

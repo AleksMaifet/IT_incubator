@@ -1,3 +1,6 @@
+import { LIKE_POST_USER_STATUS_ENUM } from './interfaces'
+import { SORT_DIRECTION_ENUM } from '../comments'
+
 const MIN_LENGTH = 1
 const MAX_POST_TITLE_LENGTH = 30
 const MAX_POST_SHORT_DESCRIPTION_LENGTH = 100
@@ -7,10 +10,14 @@ const DEFAULTS = {
   SORT_BY: 'createdAt',
   PAGE_NUMBER: 1,
   PAGE_SIZE: 10,
-  SORT_DIRECTION: {
-    ['asc']: 'asc',
-    ['desc']: 'desc',
-  } as const,
+  SORT_DIRECTION: SORT_DIRECTION_ENUM,
+}
+
+const DEFAULTS_LIKE_STATUS = {
+  LIKES_COUNT: 0,
+  DISLIKES_COUNT: 0,
+  MAX_NEWEST_LIKES_COUNT: 3,
+  MY_STATUS: LIKE_POST_USER_STATUS_ENUM.None,
 }
 
 export {
@@ -19,4 +26,5 @@ export {
   MAX_POST_SHORT_DESCRIPTION_LENGTH,
   MAX_POST_CONTENT_LENGTH,
   DEFAULTS,
+  DEFAULTS_LIKE_STATUS,
 }

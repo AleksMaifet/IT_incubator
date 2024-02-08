@@ -1,4 +1,4 @@
-enum LIKE_USER_STATUS_ENUM {
+enum LIKE_COMMENT_USER_STATUS_ENUM {
   None = 'None',
   Like = 'Like',
   Dislike = 'Dislike',
@@ -21,7 +21,7 @@ interface IComments {
   likesInfo: {
     likesCount: number
     dislikesCount: number
-    myStatus: LIKE_USER_STATUS_ENUM
+    myStatus: LIKE_COMMENT_USER_STATUS_ENUM
   }
 }
 
@@ -44,6 +44,6 @@ export {
   IComments,
   GetCommentsRequestQuery,
   ICommentsResponse,
-  LIKE_USER_STATUS_ENUM,
+  LIKE_COMMENT_USER_STATUS_ENUM,
   SORT_DIRECTION_ENUM,
 }

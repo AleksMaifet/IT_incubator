@@ -1,14 +1,25 @@
-import { DEFAULTS } from './constants'
+enum SORT_DIRECTION_ENUM {
+  asc = 'asc',
+  desc = 'desc',
+}
 
-const { SORT_DIRECTION } = DEFAULTS
-
-type SortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+enum LIKE_POST_USER_STATUS_ENUM {
+  None = 'None',
+  Like = 'Like',
+  Dislike = 'Dislike',
+}
 
 interface GetPostsRequestQuery<T> {
   sortBy: string
-  sortDirection: SortDirectionType
+  sortDirection: SORT_DIRECTION_ENUM
   pageNumber: T
   pageSize: T
+}
+
+interface IUserPostLike {
+  addedAt: Date
+  userId: string
+  login: string
 }
 
 interface IPost {
@@ -19,6 +30,12 @@ interface IPost {
   blogId: string
   blogName: string
   createdAt: Date
+  extendedLikesInfo: {
+    likesCount: number
+    dislikesCount: number
+    myStatus: LIKE_POST_USER_STATUS_ENUM
+    newestLikes: IUserPostLike[]
+  }
 }
 
 interface IPostsResponse {
@@ -29,4 +46,11 @@ interface IPostsResponse {
   items: IPost[]
 }
 
-export { GetPostsRequestQuery, IPost, IPostsResponse }
+export {
+  GetPostsRequestQuery,
+  IPost,
+  IPostsResponse,
+  IUserPostLike,
+  LIKE_POST_USER_STATUS_ENUM,
+  SORT_DIRECTION_ENUM,
+}

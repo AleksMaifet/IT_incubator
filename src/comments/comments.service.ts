@@ -6,11 +6,12 @@ import {
   GetCommentsRequestQuery,
   IComments,
   ICommentsResponse,
-  LIKE_USER_STATUS_ENUM,
+  LIKE_COMMENT_USER_STATUS_ENUM,
 } from './interfaces'
 import { Comment } from './comment.entity'
 import { DEFAULTS } from './constants'
 import { BaseCommentLikeDto } from './dto'
+import { IUser } from '../users'
 
 const { SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } = DEFAULTS
 
@@ -25,23 +26,23 @@ class CommentsService {
 
   private _mapGenerateLikeResponse(
     comments: ICommentsResponse,
-    likeStatusComments: CommentInfoLikeType<LIKE_USER_STATUS_ENUM>[]
+    likeStatusComments: CommentInfoLikeType<LIKE_COMMENT_USER_STATUS_ENUM>[]
   ) {
-    const commentsStash: Record<string, number> = {}
+    const stash: Record<string, number> = {}
 
     comments.items.forEach((item, index) => {
-      commentsStash[item.id] = index
+      stash[item.id] = index
     })
 
     likeStatusComments.forEach((l) => {
       const currentId = l.commentId
 
-      if (commentsStash[currentId] !== undefined) {
-        const currentIndex = commentsStash[currentId]
+      if (stash[currentId] in stash) {
+        const currentIndex = stash[currentId]
 
         comments.items[currentIndex].likesInfo = {
           ...comments.items[currentIndex].likesInfo,
-          myStatus: l.status ?? LIKE_USER_STATUS_ENUM.None,
+          myStatus: l.status ?? LIKE_COMMENT_USER_STATUS_ENUM.None,
         }
       }
     })
@@ -95,7 +96,7 @@ class CommentsService {
       return comments
     }
 
-    const likes = await this.likesService.getUserCommentLikesByUserId(userId)
+    const likes = await this.likesService.getUserLikesByUserId(userId)
 
     if (!likes) {
       return comments
@@ -115,7 +116,7 @@ class CommentsService {
       return comment
     }
 
-    const likes = await this.likesService.getUserCommentLikesByUserId(userId)
+    const likes = await this.likesService.getUserLikesByUserId(userId)
 
     if (!likes) {
       return comment
@@ -134,15 +135,23 @@ class CommentsService {
   }
 
   public async updateLikeById(
-    dto: { commentId: string; userId: string } & BaseCommentLikeDto
+    dto: {
+      commentId: string
+      user: Omit<IUser, 'passwordSalt' | 'passwordHash'>
+    } & BaseCommentLikeDto
   ) {
-    const { commentId, likeStatus, userId } = dto
+    const {
+      commentId,
+      likeStatus,
+      user: { id, login },
+    } = dto
 
-    const result = await this.likesService.getUserCommentLikesByUserId(userId)
+    const { likeStatusComments } = await this.likesService.create({
+      userId: id,
+      userLogin: login,
+    })
 
-    if (!result) return
-
-    const { likeStatusComments } = result
+    if (!likeStatusComments) return
 
     const isExist = likeStatusComments.findIndex(
       (info) => info.commentId === commentId && info.status === likeStatus
@@ -157,7 +166,7 @@ class CommentsService {
     }
 
     await this.likesService.updateUserCommentLikes({
-      userId,
+      userId: id,
       likeStatus,
       commentId,
     })

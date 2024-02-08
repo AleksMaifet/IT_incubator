@@ -3,6 +3,7 @@ import { TYPES } from '../types'
 import { LikesModel } from './like.model'
 import { ILikes } from './interfaces'
 import { BaseCommentLikeDto } from '../comments'
+import { BasePostLikeDto } from '../posts'
 
 @injectable()
 class LikesRepository {
@@ -25,12 +26,11 @@ class LikesRepository {
     return result
   }
 
-  public async getUserCommentLikesByUserId(userId: string) {
+  public async getUserLikesByUserId(userId: string) {
     return await this.likeModel
       .findOne({
         'likerInfo.userId': userId,
       })
-      .select('likeStatusComments')
       .exec()
   }
 
@@ -58,7 +58,35 @@ class LikesRepository {
     likeStatusComments.push({
       status: likeStatus,
       commentId,
-      createdAt: new Date(),
+      addedAt: new Date(),
+    })
+
+    return await like.save()
+  }
+
+  public async updateUserPostLikes(
+    dto: { postId: string; userId: string } & BasePostLikeDto
+  ) {
+    const { postId, userId, likeStatus } = dto
+
+    const like = await this.likeModel.findOne({
+      'likerInfo.userId': userId,
+    })
+
+    if (!like) return null
+
+    const { likeStatusPosts } = like
+
+    const index = likeStatusPosts.findIndex((info) => info.postId === postId)
+
+    if (index !== -1) {
+      likeStatusPosts.splice(index, 1)
+    }
+
+    likeStatusPosts.push({
+      status: likeStatus,
+      postId,
+      addedAt: new Date(),
     })
 
     return await like.save()

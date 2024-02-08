@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose'
 import { ILikes } from './interfaces'
-import { LIKE_USER_STATUS_ENUM } from '../comments'
+import { LIKE_COMMENT_USER_STATUS_ENUM } from '../comments'
+import { LIKE_POST_USER_STATUS_ENUM } from '../posts'
 
 const LikesSchema = new Schema<ILikes>(
   {
@@ -19,7 +20,7 @@ const LikesSchema = new Schema<ILikes>(
       {
         status: {
           type: String,
-          enum: Object.values(LIKE_USER_STATUS_ENUM),
+          enum: Object.values(LIKE_COMMENT_USER_STATUS_ENUM),
           required: true,
         },
         commentId: {
@@ -27,7 +28,7 @@ const LikesSchema = new Schema<ILikes>(
           required: true,
           index: true,
         },
-        createdAt: {
+        addedAt: {
           type: Date,
           required: true,
         },
@@ -37,7 +38,7 @@ const LikesSchema = new Schema<ILikes>(
       {
         status: {
           type: String,
-          enum: Object.values(LIKE_USER_STATUS_ENUM),
+          enum: Object.values(LIKE_POST_USER_STATUS_ENUM),
           required: true,
         },
         postId: {
@@ -45,7 +46,7 @@ const LikesSchema = new Schema<ILikes>(
           required: true,
           index: true,
         },
-        createdAt: {
+        addedAt: {
           type: Date,
           required: true,
           index: true,

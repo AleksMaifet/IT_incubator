@@ -1,10 +1,17 @@
 import { inject, injectable } from 'inversify'
 import { TYPES } from '../types'
 import { BlogsRepository } from '../blogs'
+import { LikesService, PostInfoLikeType } from '../likes'
+import { LIKE_COMMENT_USER_STATUS_ENUM } from '../comments'
+import { IUser } from '../users'
 import { PostsRepository } from './posts.repository'
-import { CreatePostDto, UpdatePostDto } from './dto'
-import { GetPostsRequestQuery } from './interfaces'
-import { Post } from './post.entity'
+import { BasePostLikeDto, CreatePostDto, UpdatePostDto } from './dto'
+import {
+  GetPostsRequestQuery,
+  IPostsResponse,
+  LIKE_POST_USER_STATUS_ENUM,
+} from './interfaces'
+import { Post, UserLikeInfoEntity } from './entities'
 import { DEFAULTS } from './constants'
 
 const { SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } = DEFAULTS
@@ -12,11 +19,39 @@ const { SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } = DEFAULTS
 @injectable()
 class PostsService {
   constructor(
+    @inject(TYPES.LikesService)
+    private readonly likesService: LikesService,
     @inject(TYPES.BlogsRepository)
     private readonly blogsRepository: BlogsRepository,
     @inject(TYPES.PostsRepository)
     private readonly postsRepository: PostsRepository
   ) {}
+
+  private _mapGenerateLikeResponse(
+    posts: IPostsResponse,
+    likeStatusPosts: PostInfoLikeType<LIKE_POST_USER_STATUS_ENUM>[]
+  ) {
+    const stash: Record<string, number> = {}
+
+    posts.items.forEach((item, index) => {
+      stash[item.id] = index
+    })
+
+    likeStatusPosts.forEach((l) => {
+      const currentId = l.postId
+
+      if (stash[currentId] in stash) {
+        const currentIndex = stash[currentId]
+
+        posts.items[currentIndex].extendedLikesInfo = {
+          ...posts.items[currentIndex].extendedLikesInfo,
+          myStatus: l.status ?? LIKE_COMMENT_USER_STATUS_ENUM.None,
+        }
+      }
+    })
+
+    return posts
+  }
 
   private _mapQueryParamsToDB(query: GetPostsRequestQuery<string>) {
     const { sortBy, sortDirection, pageNumber, pageSize } = query
@@ -36,14 +71,104 @@ class PostsService {
     }
   }
 
-  public async getAll(query: GetPostsRequestQuery<string>) {
-    const dto = this._mapQueryParamsToDB(query)
+  public async updateLikeById(
+    dto: {
+      postId: string
+      user: Omit<IUser, 'passwordSalt' | 'passwordHash'>
+    } & BasePostLikeDto
+  ) {
+    const {
+      postId,
+      likeStatus,
+      user: { id, login },
+    } = dto
 
-    return await this.postsRepository.getAll(dto)
+    const newUserLikeInfo = new UserLikeInfoEntity(id, login)
+
+    const { likeStatusPosts } = await this.likesService.create({
+      userId: id,
+      userLogin: login,
+    })
+
+    if (!likeStatusPosts) return
+
+    const isExist = likeStatusPosts.findIndex(
+      (info) => info.postId === postId && info.status === likeStatus
+    )
+
+    const isFirst = likeStatusPosts.findIndex((info) => info.postId === postId)
+
+    if (isExist !== -1) {
+      return
+    }
+
+    await this.likesService.updateUserPostLikes({
+      userId: id,
+      likeStatus,
+      postId,
+    })
+
+    await this.postsRepository.updateLikeWithStatusLikeOrDislike({
+      isFirstTime: isFirst === -1,
+      likeStatus,
+      postId,
+      userLikeInfo: newUserLikeInfo,
+    })
+
+    return true
   }
 
-  public async getById(id: string) {
-    return await this.postsRepository.getById(id)
+  public async getAll({
+    userId,
+    query,
+  }: {
+    userId: string
+    query: GetPostsRequestQuery<string>
+  }) {
+    const dto = this._mapQueryParamsToDB(query)
+
+    const posts = await this.postsRepository.getAll(dto)
+
+    if (!userId) {
+      return posts
+    }
+
+    const likes = await this.likesService.getUserLikesByUserId(userId)
+
+    if (!likes) {
+      return posts
+    }
+
+    const { likeStatusPosts } = likes
+
+    return this._mapGenerateLikeResponse(posts, likeStatusPosts)
+  }
+
+  public async getById({ id, userId }: { id: string; userId: string }) {
+    const post = await this.postsRepository.getById(id)
+
+    if (!post) return null
+
+    if (!userId) {
+      return post
+    }
+
+    const likes = await this.likesService.getUserLikesByUserId(userId)
+
+    if (!likes) {
+      return post
+    }
+
+    likes.likeStatusPosts.forEach((l) => {
+      if (l.postId === post.id) {
+        post.extendedLikesInfo = {
+          ...post.extendedLikesInfo,
+          myStatus: l.status,
+        }
+      }
+    })
+
+    return post
   }
 
   public async updateById(id: string, dto: UpdatePostDto) {
