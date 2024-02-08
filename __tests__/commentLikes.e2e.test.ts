@@ -137,7 +137,7 @@ describe('Comment likes', () => {
 
   it(
     'GET -> "/comments/:commentId": get comment by unauthorized user. Should return liked comment with ' +
-      '"myStatus: None"; status 204; ' +
+      '"myStatus: None"; status 200; ' +
       'used additional methods: POST => /blogs, POST => /posts, POST => /posts/:postId/comments, ' +
       'PUT => /comments/:commentId/like-status',
     async () => {
