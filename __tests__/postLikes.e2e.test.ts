@@ -290,52 +290,58 @@ describe('Post likes', () => {
   //   }
   // )
   //
-  // it(
-  //   'PUT -> "/comments/:commentId/like-status": create comment then: like the comment by user 1; ' +
-  //     'dislike the comment by user 1; set "none" status by user 1; get the comment after each like by user 1; ' +
-  //     'status 204; used additional methods: POST => /blogs, POST => /posts, POST => /posts/:postId/comments, ' +
-  //     'GET => /comments/:id',
-  //   async () => {
-  //     const stash = ['Like', 'Dislike', 'None']
-  //
-  //     const resPostComment = await makeAuthBearerRequest(
-  //       application.app,
-  //       'post',
-  //       accessToken,
-  //       `/posts/${postId}/comments`,
-  //       {
-  //         content: COMMENT_DATA.content,
-  //       }
-  //     ).expect(201)
-  //
-  //     commentId = resPostComment.body.id
-  //
-  //     for (let i = 0; i < 3; i++) {
-  //       await makeAuthBearerRequest(
-  //         application.app,
-  //         'put',
-  //         users[0],
-  //         `/comments/${commentId}/like-status`,
-  //         {
-  //           likeStatus: stash[i],
-  //         }
-  //       ).expect(204)
-  //     }
-  //
-  //     const resGetComment = await makeAuthBearerRequest(
-  //       application.app,
-  //       'get',
-  //       users[0],
-  //       `/comments/${commentId}`
-  //     )
-  //
-  //     expect(resGetComment.status).toBe(200)
-  //     expect(resGetComment.body.likesInfo.likesCount).toBe(0)
-  //     expect(resGetComment.body.likesInfo.dislikesCount).toBe(0)
-  //     expect(resGetComment.body.likesInfo.myStatus).toBe('None')
-  //   }
-  // )
-  //
+  it(
+    'PUT -> "/posts/:postId/like-status": create post then: like the post by user 1; dislike ' +
+      "the post by user 1; set 'none' status by user 1; get the post after each like by user 1; status 204; " +
+      'used additional methods: POST => /blogs, POST => /posts, GET => /posts/:id;',
+    async () => {
+      const stash = ['Like', 'Dislike', 'None']
+      /// Created blog
+      const blogRes = await makeAuthBasicRequest(
+        application.app,
+        'post',
+        '/blogs',
+        BLOG_DATA
+      ).expect(201)
+
+      /// Created post
+      const resPost = await makeAuthBasicRequest(
+        application.app,
+        'post',
+        '/posts',
+        {
+          ...POST_DATA,
+          blogId: blogRes.body.id,
+        }
+      ).expect(201)
+
+      for (let i = 0; i < 3; i++) {
+        await makeAuthBearerRequest(
+          application.app,
+          'put',
+          users[0],
+          `/posts/${resPost.body.id}/like-status`,
+          {
+            likeStatus: stash[i],
+          }
+        ).expect(204)
+      }
+
+      const resGetComment = await makeAuthBearerRequest(
+        application.app,
+        'get',
+        users[0],
+        `/posts/${resPost.body.id}`
+      )
+
+      expect(resGetComment.status).toBe(200)
+      expect(resGetComment.body.extendedLikesInfo.likesCount).toBe(0)
+      expect(resGetComment.body.extendedLikesInfo.dislikesCount).toBe(0)
+      expect(resGetComment.body.extendedLikesInfo.myStatus).toBe('None')
+      expect(resGetComment.body.extendedLikesInfo.newestLikes).toMatchObject([])
+    }
+  )
+
   // it(
   //   'PUT -> "/comments/:commentId/like-status": create comment then: like the comment by user 1;' +
   //     ' dislike the comment by user 2 then get by the user 1; status 204; ' +

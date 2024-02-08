@@ -68,10 +68,10 @@ class PostsRepository {
         extendedLikesInfo.likesCount += 1
 
         if (extendedLikesInfo.newestLikes.length >= MAX_NEWEST_LIKES_COUNT) {
-          extendedLikesInfo.newestLikes.shift()
+          extendedLikesInfo.newestLikes.pop()
         }
 
-        extendedLikesInfo.newestLikes.push(userLikeInfo)
+        extendedLikesInfo.newestLikes.unshift(userLikeInfo)
 
         if (isFirstTime) {
           break
@@ -82,6 +82,14 @@ class PostsRepository {
         break
       case LIKE_POST_USER_STATUS_ENUM.Dislike:
         extendedLikesInfo.dislikesCount += 1
+
+        const index = extendedLikesInfo.newestLikes.findIndex(
+          (info) => info.userId === userLikeInfo.userId
+        )
+
+        if (index !== -1) {
+          extendedLikesInfo.newestLikes.splice(index, 1)
+        }
 
         if (isFirstTime) {
           break
