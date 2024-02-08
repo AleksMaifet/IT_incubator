@@ -4,8 +4,8 @@ class UserLikeInfoEntity implements IUserPostLike {
   public addedAt: Date
 
   constructor(
-    public readonly login: string,
-    public userId: string
+    public userId: string,
+    public readonly login: string
   ) {
     this.addedAt = new Date()
   }

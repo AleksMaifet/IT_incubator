@@ -20,7 +20,7 @@ beforeAll(async () => {
   await request(application.app).delete('/testing/all-data').expect(204)
 })
 
-describe('Homework 11 > Comment likes', () => {
+describe('Comment likes', () => {
   it('POST -> "/users": should create new user; status 201; content: created user; used additional methods: GET => /users', async () => {
     const response = await makeAuthBasicRequest(
       application.app,
