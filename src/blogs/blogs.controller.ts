@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify'
 import { BaseController } from '../common'
 import {
   AuthBasicMiddlewareGuard,
+  AuthUserMiddleware,
   ValidateBodyMiddleware,
   ValidateParamsMiddleware,
 } from '../middlewares'
@@ -19,7 +20,9 @@ class BlogsController extends BaseController {
     @inject(TYPES.BlogsService) private readonly blogsService: BlogsService,
     @inject(TYPES.PostsService) private readonly postsService: PostsService,
     @inject(TYPES.AuthBasicMiddlewareGuard)
-    private readonly authBasicMiddlewareGuard: AuthBasicMiddlewareGuard
+    private readonly authBasicMiddlewareGuard: AuthBasicMiddlewareGuard,
+    @inject(TYPES.AuthUserMiddleware)
+    private readonly authUserMiddleware: AuthUserMiddleware
   ) {
     super()
     this.bindRoutes({
@@ -46,7 +49,10 @@ class BlogsController extends BaseController {
       path: '/:id/posts',
       method: 'get',
       func: this.getPostsByBlogId,
-      middlewares: [new ValidateParamsMiddleware(BlogExist)],
+      middlewares: [
+        new ValidateParamsMiddleware(BlogExist),
+        this.authUserMiddleware,
+      ],
     })
     this.bindRoutes({
       path: '/:id/posts',
@@ -102,6 +108,7 @@ class BlogsController extends BaseController {
     {
       params,
       query,
+      context,
     }: Request<
       BlogExist,
       {},
@@ -112,7 +119,11 @@ class BlogsController extends BaseController {
   ) {
     const { id } = params
 
-    const result = await this.blogsService.getPostsByBlogId(id, query)
+    const result = await this.blogsService.getPostsByBlogId({
+      id,
+      userId: context?.user.id,
+      query,
+    })
 
     res.status(200).json(result)
   }

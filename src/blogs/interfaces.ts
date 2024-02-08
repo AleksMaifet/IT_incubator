@@ -1,13 +1,12 @@
-import { DEFAULTS } from './constants'
-
-const { SORT_DIRECTION } = DEFAULTS
-
-type SortDirectionType = (typeof SORT_DIRECTION)[keyof typeof SORT_DIRECTION]
+enum SORT_DIRECTION_ENUM {
+  asc = 'asc',
+  desc = 'desc',
+}
 
 interface GetBlogsRequestQuery<T> {
   searchNameTerm?: string
   sortBy: string
-  sortDirection: SortDirectionType
+  sortDirection: SORT_DIRECTION_ENUM
   pageNumber: T
   pageSize: T
 }

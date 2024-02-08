@@ -4,7 +4,6 @@ import { BlogModel } from './blog.model'
 import { GetBlogsRequestQuery, IBlog, IBlogsResponse } from './interfaces'
 import { PostModel } from '../posts'
 import { TYPES } from '../types'
-import { IPost } from '../posts/interfaces'
 
 @injectable()
 class BlogsRepository {
@@ -96,26 +95,26 @@ class BlogsRepository {
     return await this.blogModel.findOne({ id }).exec()
   }
 
-  public async getPostsByBlogId(
-    id: string,
-    query: Omit<GetBlogsRequestQuery<number>, 'searchNameTerm'>
-  ) {
-    const totalCount = await this.postModel
-      .find({ blogId: id })
-      .countDocuments()
-
-    const { response, findOptions } =
-      this._createdFindOptionsAndResponse<IPost>({
-        ...query,
-        totalCount,
-      })
-
-    response.items = await this.postModel
-      .find({ blogId: id }, null, findOptions)
-      .exec()
-
-    return response
-  }
+  // public async getPostsByBlogId(
+  //   id: string,
+  //   query: Omit<GetBlogsRequestQuery<number>, 'searchNameTerm'>
+  // ) {
+  //   const totalCount = await this.postModel
+  //     .find({ blogId: id })
+  //     .countDocuments()
+  //
+  //   const { response, findOptions } =
+  //     this._createdFindOptionsAndResponse<IPost>({
+  //       ...query,
+  //       totalCount,
+  //     })
+  //
+  //   response.items = await this.postModel
+  //     .find({ blogId: id }, null, findOptions)
+  //     .exec()
+  //
+  //   return response
+  // }
 
   public async updateById(id: string, dto: UpdateBlogDto) {
     return await this.blogModel.updateOne({ id }, dto).exec()

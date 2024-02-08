@@ -37,7 +37,7 @@ class CommentsService {
     likeStatusComments.forEach((l) => {
       const currentId = l.commentId
 
-      if (stash[currentId] in stash) {
+      if (currentId in stash) {
         const currentIndex = stash[currentId]
 
         comments.items[currentIndex].likesInfo = {

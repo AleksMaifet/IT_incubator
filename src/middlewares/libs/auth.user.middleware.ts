@@ -3,7 +3,6 @@ import { inject, injectable } from 'inversify'
 import { TYPES } from '../../types'
 import { JwtService } from '../../services'
 import { UsersRepository } from '../../users'
-import { REFRESH_TOKEN_COOKIE_NAME } from '../../auth'
 
 @injectable()
 class AuthUserMiddleware {
@@ -18,13 +17,17 @@ class AuthUserMiddleware {
 
     if (!authorization) {
       next()
-
       return
     }
 
     const [__, token] = authorization.split(' ')
 
     const payload = this.jwtService.getJwtDataByToken(token)
+
+    if (!payload) {
+      next()
+      return
+    }
 
     const { userId, deviceId, iat, exp } = payload
 

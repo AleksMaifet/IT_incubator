@@ -40,7 +40,7 @@ class PostsService {
     likeStatusPosts.forEach((l) => {
       const currentId = l.postId
 
-      if (stash[currentId] in stash) {
+      if (currentId in stash) {
         const currentIndex = stash[currentId]
 
         posts.items[currentIndex].extendedLikesInfo = {
@@ -169,6 +169,34 @@ class PostsService {
     })
 
     return post
+  }
+
+  public async getPostsByBlogId({
+    id,
+    userId,
+    query,
+  }: {
+    id: string
+    userId: string
+    query: GetPostsRequestQuery<string>
+  }) {
+    const dto = this._mapQueryParamsToDB(query)
+
+    const posts = await this.postsRepository.getPostsByBlogId(id, dto)
+
+    if (!userId) {
+      return posts
+    }
+
+    const likes = await this.likesService.getUserLikesByUserId(userId)
+
+    if (!likes) {
+      return posts
+    }
+
+    const { likeStatusPosts } = likes
+
+    return this._mapGenerateLikeResponse(posts, likeStatusPosts)
   }
 
   public async updateById(id: string, dto: UpdatePostDto) {

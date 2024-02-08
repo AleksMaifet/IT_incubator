@@ -5,6 +5,7 @@ import { Blog } from './blog.entity'
 import { GetBlogsRequestQuery } from './interfaces'
 import { DEFAULTS } from './constants'
 import { TYPES } from '../types'
+import { PostsService } from '../posts'
 
 const { SEARCH_NAME_TERM, SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } =
   DEFAULTS
@@ -13,7 +14,9 @@ const { SEARCH_NAME_TERM, SORT_DIRECTION, PAGE_NUMBER, PAGE_SIZE, SORT_BY } =
 class BlogsService {
   constructor(
     @inject(TYPES.BlogsRepository)
-    private readonly blogsRepository: BlogsRepository
+    private readonly blogsRepository: BlogsRepository,
+    @inject(TYPES.PostsService)
+    private readonly postsService: PostsService
   ) {}
 
   public async getAll(query: GetBlogsRequestQuery<string>) {
@@ -26,13 +29,16 @@ class BlogsService {
     return await this.blogsRepository.getById(id)
   }
 
-  public async getPostsByBlogId(
-    id: string,
+  public async getPostsByBlogId({
+    id,
+    userId,
+    query,
+  }: {
+    id: string
+    userId: string
     query: Omit<GetBlogsRequestQuery<string>, 'searchNameTerm'>
-  ) {
-    const dto = this._mapQueryParamsToDB(query)
-
-    return await this.blogsRepository.getPostsByBlogId(id, dto)
+  }) {
+    return await this.postsService.getPostsByBlogId({ id, userId, query })
   }
 
   public async updateById(id: string, dto: UpdateBlogDto) {

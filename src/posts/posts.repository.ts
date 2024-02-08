@@ -5,8 +5,8 @@ import { PostModel } from './post.model'
 import {
   GetPostsRequestQuery,
   IPostsResponse,
-  LIKE_POST_USER_STATUS_ENUM,
   IUserPostLike,
+  LIKE_POST_USER_STATUS_ENUM,
 } from './interfaces'
 import { DEFAULTS_LIKE_STATUS } from './constants'
 
@@ -42,6 +42,39 @@ class PostsRepository {
     }
 
     response.items = await this.postModel.find({}, null, findOptions).exec()
+
+    return response
+  }
+
+  public async getPostsByBlogId(
+    id: string,
+    query: GetPostsRequestQuery<number>
+  ) {
+    const { pageSize, pageNumber, sortDirection, sortBy } = query
+
+    const totalCount = await this.postModel
+      .find({ blogId: id })
+      .countDocuments()
+    const pagesCount = Math.ceil(totalCount / pageSize)
+    const skip = (pageNumber - 1) * pageSize
+
+    const findOptions = {
+      limit: pageSize,
+      skip: skip,
+      sort: { [sortBy]: sortDirection },
+    }
+
+    const response: IPostsResponse = {
+      pagesCount,
+      page: pageNumber,
+      pageSize,
+      totalCount,
+      items: [],
+    }
+
+    response.items = await this.postModel
+      .find({ blogId: id }, null, findOptions)
+      .exec()
 
     return response
   }
